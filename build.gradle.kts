@@ -12,6 +12,9 @@ subprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+        maven {
+            url = uri("https://maven.iais.fraunhofer.de/artifactory/eis-ids-public/")
+        }
     }
 }
 
@@ -19,7 +22,7 @@ val jetBrainsAnnotationsVersion: String by project
 val jacksonVersion: String by project
 val jupiterVersion: String by project
 
-allprojects{
+allprojects {
     pluginManager.withPlugin("java-library") {
         group = "com.microsoft"
         version = "1.0-SNAPSHOT"

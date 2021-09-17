@@ -14,15 +14,13 @@ val edcversion: String by project
 dependencies {
     implementation("org.eclipse.dataspaceconnector:core:${edcversion}")
     implementation("org.eclipse.dataspaceconnector:in-mem.process-store:${edcversion}")
+    implementation("org.eclipse.dataspaceconnector:azure.vault:${edcversion}")
 
-//    // TODO HACKATHON-1 TASK 6A Commented out until private keys placed in Azure Vault
-//    implementation(project(":extensions:azure:vault"))
-//
 //    implementation(project(":extensions:in-memory:policy-registry-memory"))
 //    implementation(project(":extensions:in-memory:metadata-memory"))
 //    implementation(project(":extensions:filesystem:configuration-fs"))
 //
-//    implementation(project(":data-protocols:ids"))
+    implementation("org.eclipse.dataspaceconnector:data-protocols.ids:${edcversion}")
 //    implementation(project(":data-protocols:ids:ids-policy-mock"))
 //
 //    implementation(project(":samples:other:copy-between-azure-and-s3"))

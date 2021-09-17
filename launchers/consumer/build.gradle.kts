@@ -5,40 +5,43 @@
 
 plugins {
     `java-library`
-    id("application")
+    application
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 val edcversion: String by project
+val group = "org.eclipse.dataspaceconnector"
 
 dependencies {
-    implementation("org.eclipse.dataspaceconnector:core:${edcversion}")
-    implementation("org.eclipse.dataspaceconnector:in-mem.process-store:${edcversion}")
+    implementation(project(":identity-gaiax-verifier"))
 
-//    // TODO HACKATHON-1 TASK 6A Commented out until private keys placed in Azure Vault
-//    implementation(":extensions:azure:vault")
-//    implementation(":extensions:in-memory:policy-registry-memory")
-//    implementation(":extensions:in-memory:metadata-memory")
-//    implementation(":extensions:filesystem:configuration-fs")
-//    implementation(":extensions:aws:s3:provision")
-//
-//    implementation(":data-protocols:ids")
-//    implementation(":data-protocols:ids:ids-policy-mock")
-//
-//
-//    implementation(":extensions:iam:distributed-identity:identity-did-service")
-//    implementation(":extensions:iam:distributed-identity:identity-did-spi")
-//    implementation(":extensions:iam:distributed-identity:identity-did-core")
-//    implementation(":extensions:in-memory:identity-hub-memory")
-//    implementation(":samples:other:identity-gaiax-verifier")
-//
-//    implementation(":samples:other:public-rest-api")
+    implementation("${group}:core:${edcversion}")
+    implementation("${group}:in-mem.process-store:${edcversion}")
+
+    implementation("${group}:azure.vault:${edcversion}")
+    implementation("${group}:in-mem.policy-registry:${edcversion}")
+    implementation("${group}:in-mem.metadata:${edcversion}")
+    implementation("${group}:filesystem.configuration:${edcversion}")
+    implementation("${group}:aws.s3.provision:${edcversion}")
+    implementation("${group}:data-protocols.ids:${edcversion}")
+    implementation("${group}:data-protocols..ids-policy-mock:${edcversion}")
+    implementation("${group}:iam.distributed:${edcversion}")
+    implementation("${group}:aws.s3.provision:${edcversion}")
+
+    implementation("${group}:in-mem.identity-hub:${edcversion}")
+    implementation("${group}:data-protocols.ion:${edcversion}")
+    implementation("${group}:in-mem.did-document-store:${edcversion}")
+    //    implementation(":extensions:iam:distributed-identity:identity-did-service")
+    //    implementation(":extensions:iam:distributed-identity:identity-did-spi")
+    //    implementation(":extensions:iam:distributed-identity:identity-did-core")
+    //    implementation(":samples:other:identity-gaiax-verifier")
+    //    implementation(":samples:other:public-rest-api")
 
 }
 
 application {
     @Suppress("DEPRECATION")
-    mainClassName = "com.microsoft.ion-demo.ConsumerRuntime"
+    mainClassName = "com.microsoft.ion.consumer.ConsumerRuntime"
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
