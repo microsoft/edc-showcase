@@ -3,8 +3,8 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "edc-infrastructure"
     storage_account_name = "edcstate"
-    container_name       = "terraform-state-hackathon"
-    key                  = "terraform-paul.state"
+    container_name       = "terraform-state-ion-demo"
+    key                  = "terraform.state"
   }
   required_providers {
     azurerm = {
