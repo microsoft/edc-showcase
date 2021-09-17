@@ -12,7 +12,7 @@
  *
  */
 
-package org.eclipse.dataspaceconnector.did;
+package com.microsoft.ion.hub;
 
 import org.eclipse.dataspaceconnector.monitor.MonitorProvider;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -25,7 +25,7 @@ import java.util.ListIterator;
 
 import static org.eclipse.dataspaceconnector.system.ExtensionLoader.*;
 
-public class ProviderRuntime {
+public class HubRuntime {
 
     public static void main(String[] args) {
         TypeManager typeManager = new TypeManager();
@@ -43,7 +43,7 @@ public class ProviderRuntime {
             monitor.severe("Error booting runtime", e);
             System.exit(-1);  // stop the process
         }
-        monitor.info("Provider Connector ready");
+        monitor.info("Consumer Connector ready");
 
     }
 
@@ -52,7 +52,7 @@ public class ProviderRuntime {
         while (iter.hasPrevious()) {
             iter.previous().shutdown();
         }
-        monitor.info("Provider Connector shutdown complete");
+        monitor.info("Consumer Connector shutdown complete");
     }
 
 }

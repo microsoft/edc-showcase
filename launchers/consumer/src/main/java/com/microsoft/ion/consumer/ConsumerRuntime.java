@@ -12,7 +12,7 @@
  *
  */
 
-package org.eclipse.dataspaceconnector.did;
+package com.microsoft.ion.consumer;
 
 import org.eclipse.dataspaceconnector.monitor.MonitorProvider;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;

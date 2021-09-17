@@ -39,7 +39,7 @@ dependencies {
 
 application {
     @Suppress("DEPRECATION")
-    mainClassName = "org.eclipse.dataspaceconnector.did.ProviderRuntime"
+    mainClassName = "com.microsoft.ion-demo.ProviderRuntime"
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
