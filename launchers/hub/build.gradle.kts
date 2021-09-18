@@ -6,7 +6,6 @@
 plugins {
     `java-library`
     id("application")
-    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 val edcversion: String by project
@@ -35,15 +34,3 @@ dependencies {
 //    implementation(":samples:other:public-rest-api")
 
 }
-
-application {
-    @Suppress("DEPRECATION")
-    mainClassName = "com.microsoft.ion-demo.ConsumerRuntime"
-}
-
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-    exclude("**/pom.properties", "**/pom.xm")
-    mergeServiceFiles()
-    archiveFileName.set("consumer.jar")
-}
-
