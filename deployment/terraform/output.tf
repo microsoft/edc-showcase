@@ -19,7 +19,7 @@ output "rev-svc-url" {
 }
 
 output "vault-name" {
-  value= "${azurerm_key_vault.main-vault.name}"
+  value = azurerm_key_vault.main-vault.name
 }
 
 //output "URLs" {

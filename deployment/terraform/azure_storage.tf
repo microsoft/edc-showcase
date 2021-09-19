@@ -10,8 +10,8 @@ resource "azurerm_storage_account" "main-blobstore" {
 }
 
 # storage container
-resource "azurerm_storage_container" "main-blob-container"{
+resource "azurerm_storage_container" "main-blob-container" {
 
-  name = "src-container"
+  name                 = "src-container"
   storage_account_name = azurerm_storage_account.main-blobstore.name
 }

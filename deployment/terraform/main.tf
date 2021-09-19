@@ -64,7 +64,8 @@ resource "azuread_service_principal" "main-app-sp" {
   application_id               = azuread_application.demo-app-id.application_id
   app_role_assignment_required = false
   tags = [
-  "terraform"]
+    "terraform"
+  ]
 }
 
 # Keyvault
@@ -97,9 +98,15 @@ resource "azurerm_role_assignment" "primary-id-arm" {
 }
 
 # Role assignment so that the currently logged in user may access the vault, needed to add secrets
-resource "azurerm_role_assignment" "current-user" {
+resource "azurerm_role_assignment" "current-user-secretsofficer" {
   scope                = azurerm_key_vault.main-vault.id
   role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+# Role assignment so that the currently logged in user may access the vault, needed to add keys
+resource "azurerm_role_assignment" "current-user-cryptoofficer" {
+  scope                = azurerm_key_vault.main-vault.id
+  role_definition_name = "Key Vault Crypto Officer"
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
@@ -241,38 +248,3 @@ resource "azurerm_container_group" "consumer-connector" {
 }
 
 
-# vault secrets
-resource "azurerm_key_vault_secret" "aws-keyid" {
-  name         = "dataspaceconnector-aws-access-key"
-  value        = aws_iam_access_key.gx_access_key.id
-  key_vault_id = azurerm_key_vault.main-vault.id
-  depends_on = [
-  azurerm_role_assignment.current-user]
-}
-
-resource "azurerm_key_vault_secret" "aws-secret" {
-  name         = "dataspaceconnector-aws-secret-access-key"
-  value        = aws_iam_access_key.gx_access_key.secret
-  key_vault_id = azurerm_key_vault.main-vault.id
-  depends_on = [
-  azurerm_role_assignment.current-user]
-}
-
-resource "azurerm_key_vault_secret" "aws-credentials" {
-  key_vault_id = azurerm_key_vault.main-vault.id
-  name         = "aws-credentials"
-  value = jsonencode({
-    "accessKeyId"     = aws_iam_access_key.gx_access_key.id,
-    "secretAccessKey" = aws_iam_access_key.gx_access_key.secret
-  })
-  depends_on = [
-  azurerm_role_assignment.current-user]
-}
-
-resource "azurerm_key_vault_secret" "blobstorekey" {
-  name         = "${azurerm_storage_account.main-blobstore.name}-key1"
-  value        = azurerm_storage_account.main-blobstore.primary_access_key
-  key_vault_id = azurerm_key_vault.main-vault.id
-  depends_on = [
-    azurerm_role_assignment.current-user]
-}

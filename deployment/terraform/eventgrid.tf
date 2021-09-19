@@ -11,7 +11,8 @@ resource "azurerm_key_vault_secret" "event-grid-key" {
   name         = azurerm_eventgrid_topic.control-topic.name
   value        = azurerm_eventgrid_topic.control-topic.primary_access_key
   depends_on = [
-  azurerm_role_assignment.current-user]
+    azurerm_role_assignment.current-user-secretsofficer
+  ]
 }
 
 // storage queue that will be used for control events
