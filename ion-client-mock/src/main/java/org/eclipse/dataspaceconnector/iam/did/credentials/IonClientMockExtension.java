@@ -13,16 +13,10 @@
  */
 package org.eclipse.dataspaceconnector.iam.did.credentials;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.ECKey;
-import com.nimbusds.jose.jwk.JWK;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Set;
 
 
@@ -40,14 +34,4 @@ public class IonClientMockExtension implements ServiceExtension {
         context.registerService(IonClient.class, ionClient);
     }
 
-    private JWK parsePemAsJWK(String resourceName) {
-
-        try {
-            var pemContents = Files.readString(Path.of(resourceName));
-            return ECKey.parseFromPEMEncodedObjects(pemContents);
-
-        } catch (JOSEException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
