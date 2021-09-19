@@ -1,7 +1,10 @@
 package org.eclipse.dataspaceconnector.verifiable_credential;
 
 import net.jodah.failsafe.RetryPolicy;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolver.DidPublicKeyResolver;
+import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.eclipse.dataspaceconnector.spi.EdcException;
+import org.eclipse.dataspaceconnector.spi.security.PrivateKeyResolver;
 import org.eclipse.dataspaceconnector.spi.security.Vault;
 import org.eclipse.dataspaceconnector.spi.security.VaultResponse;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
@@ -20,7 +23,12 @@ public class VerifiableCredentialLoaderExtension implements ServiceExtension {
 
     @Override
     public Set<String> provides() {
-        return Set.of("edc:identity:verifiable-credential");
+        return Set.of(VerifiableCredential.FEATURE, PrivateKeyResolver.FEATURE, DidPublicKeyResolver.FEATURE);
+    }
+
+    @Override
+    public Set<String> requires() {
+        return Set.of(IonClient.FEATURE);
     }
 
     @Override
@@ -57,6 +65,13 @@ public class VerifiableCredentialLoaderExtension implements ServiceExtension {
             monitor.info(format("Verifiable Credential for \"%s\" stored in Vault.", connectorName));
         });
 
+        registerResolvers(context);
+    }
+
+    private void registerResolvers(ServiceExtensionContext context) {
+        var ionClient = context.getService(IonClient.class);
+        context.registerService(PrivateKeyResolver.class, new EcPrivateKeyResolver(context.getService(Vault.class)));
+        context.registerService(DidPublicKeyResolver.class, new IonDidPublicKeyResolver(ionClient));
     }
 
     @Override

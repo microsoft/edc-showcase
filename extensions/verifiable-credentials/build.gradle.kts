@@ -8,6 +8,8 @@ val group = "org.eclipse.dataspaceconnector"
 dependencies {
 
     implementation("${group}:spi:${edcversion}")
+    implementation("${group}:data-protocols.ion.core:${edcversion}")
+    implementation("${group}:iam.identity-did-spi:${edcversion}")
 
     api("com.nimbusds:nimbus-jose-jwt:8.14.1")
     // this is required for the JcaPEMKeyConverter, which we use to restore keys from PEM files
