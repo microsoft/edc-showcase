@@ -1,0 +1,31 @@
+{
+  "content": {
+    "publicKeys": [
+      {
+        "id": "key-1",
+        "type": "EcdsaSecp256k1VerificationKey2019",
+        "publicKeyJwk": {
+          "kty": "EC",
+          "crv": "secp156k1",
+          "x": "2i8e8o1itUdsLam8A-hwJa7rqMYjcvXCAFItk6a45Ew",
+          "y": "do9GHgRTREiJ3KCsI-Ux0-q-WfxyO__is867HPIM6x4"
+        },
+        "purposes": [
+          "authentication"
+        ]
+      }
+    ],
+    "services": [
+      {
+        "id": "domain-1",
+        "type": "LinkedDomains",
+        "serviceEndpoint": "https://theuselessweb.com/"
+      },
+      {
+        "id": "identity-hub-1",
+        "type": "IdentityHubService",
+        "serviceEndpoint": "https://my.identity.hub/some-id"
+      }
+    ]
+  }
+}
