@@ -15,6 +15,7 @@ val group = "org.eclipse.dataspaceconnector"
 dependencies {
     implementation(project(":identity-gaiax-verifier"))
     implementation(project(":ion-client-mock"))
+    implementation(project(":extensions:verifiable-credentials"))
 
     implementation("${group}:core:${edcversion}")
     implementation("${group}:in-mem.process-store:${edcversion}")

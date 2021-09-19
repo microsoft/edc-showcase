@@ -16,6 +16,7 @@ subprojects {
             url = uri("https://maven.iais.fraunhofer.de/artifactory/eis-ids-public/")
         }
     }
+    tasks.register<DependencyReportTask>("allDeps") {}
 }
 
 val jetBrainsAnnotationsVersion: String by project

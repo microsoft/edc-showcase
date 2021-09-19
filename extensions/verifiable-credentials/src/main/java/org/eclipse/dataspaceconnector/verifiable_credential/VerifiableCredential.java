@@ -15,6 +15,16 @@ import java.util.UUID;
 
 public class VerifiableCredential {
 
+
+    public static SignedJWT create(String privateKeyPemContent, Map<String, String> claims, String issuer) {
+        try {
+            var key = ECKey.parseFromPEMEncodedObjects(privateKeyPemContent);
+            return create((ECKey) key, claims, issuer);
+        } catch (JOSEException e) {
+            throw new CryptoException(e);
+        }
+    }
+
     public static SignedJWT create(ECKey privateKey, Map<String, String> claims, String issuer) {
         var claimssetBuilder = new JWTClaimsSet.Builder();
 
