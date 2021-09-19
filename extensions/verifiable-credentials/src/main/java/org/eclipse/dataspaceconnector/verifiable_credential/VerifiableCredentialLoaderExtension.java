@@ -38,7 +38,7 @@ public class VerifiableCredentialLoaderExtension implements ServiceExtension {
         var privateKeyString = vault.resolveSecret(connectorName); //to get the private key
 
         // we'll store the VC in the vault if not already exists
-        var vcSecretName = connectorName + "-vc";
+        var vcSecretName = VerifiableCredential.getVaultSecretName(connectorName);
         // lets use a retry policy, bc sometimes delete and create are not 100% sequential operations...
         RetryPolicy<Object> retryPolicy = new RetryPolicy<>().withMaxRetries(5).withDelay(500, 1000, ChronoUnit.MILLIS);
 

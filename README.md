@@ -9,7 +9,7 @@ _This document describes the working concept rather than the finished applicatio
 - for each connector:
   + generate a DID Document containing the Public Key and its Hub URL on ION
   + generate a JWT (signed with connectors Private Key) containing the DID URL as claim (=payload)
-  + regard that JWT as "VerifiableCredential" (= VC)
+  + store that JWT as "VerifiableCredential" (= VC) in Vault using the connector name +"-vc"
 - for the Verifier (="accenture"): put a DID with it's public key on ION
 
 ## Deployment
