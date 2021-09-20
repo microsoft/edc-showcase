@@ -14,6 +14,7 @@
 package org.eclipse.dataspaceconnector.iam.did.credentials;
 
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
+import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHub;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
@@ -30,7 +31,7 @@ public class GaiaXCredentialsVerifierExtension implements ServiceExtension {
 
     @Override
     public Set<String> requires() {
-        return Set.of("identity-did-core");
+        return Set.of(IdentityHub.FEATURE);
     }
 
     @Override

@@ -65,6 +65,7 @@ public class VerifiableCredentialLoaderExtension implements ServiceExtension {
             monitor.info(format("Verifiable Credential for \"%s\" stored in Vault.", connectorName));
         });
 
+        // register private and public key resolvers
         registerResolvers(context);
     }
 

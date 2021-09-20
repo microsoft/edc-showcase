@@ -27,7 +27,7 @@ dependencies {
     implementation("${group}:aws.s3.provision:${edcversion}")
     implementation("${group}:data-protocols.ids:${edcversion}")
     implementation("${group}:data-protocols..ids-policy-mock:${edcversion}")
-    implementation("${group}:iam.distributed:${edcversion}")
+    implementation("${group}:iam.identity-did-spi:${edcversion}")
     implementation("${group}:aws.s3.provision:${edcversion}")
 
     implementation("${group}:in-mem.identity-hub:${edcversion}")

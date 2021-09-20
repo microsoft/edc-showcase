@@ -8,7 +8,6 @@ import org.eclipse.dataspaceconnector.ion.model.did.resolution.Service;
 import org.eclipse.dataspaceconnector.ion.model.did.resolution.VerificationMethod;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -38,7 +37,6 @@ class IonDidPublicKeyResolverTest {
     }
 
     @Test
-    @Disabled("converting ECKeys to PublicKeys is not yet implemented")
     void resolve() {
         expect(ionClient.resolve(DID_URL)).andReturn(didDocument);
         replay(ionClient);
@@ -79,7 +77,6 @@ class IonDidPublicKeyResolverTest {
     }
 
     @Test
-    @Disabled("converting ECKeys to PublicKeys is not yet implemented")
     void resolve_publicKeyNotInPemFormat() {
         didDocument.getVerificationMethod().clear();
         var vm = VerificationMethod.Builder.create().id("second-key").type("EcdsaSecp256k1VerificationKey2019").controller("")
@@ -90,6 +87,6 @@ class IonDidPublicKeyResolverTest {
         expect(ionClient.resolve(DID_URL)).andReturn(didDocument);
         replay(ionClient);
 
-        assertThatThrownBy(() -> resolver.resolvePublicKey(DID_URL)).isInstanceOf(PublicKeyResolutionException.class).hasMessage("Public Key was not a valid EC Key!");
+        assertThatThrownBy(() -> resolver.resolvePublicKey(DID_URL)).isInstanceOf(PublicKeyResolutionException.class).hasMessageStartingWith("Public Key was not a valid EC Key!");
     }
 }
