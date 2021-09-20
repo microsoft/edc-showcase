@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +34,9 @@ class VerifiableCredentialTest {
         assertThat(vc.getJWTClaimsSet().getClaim("did-url")).isEqualTo("someUrl");
         assertThat(vc.getJWTClaimsSet().getClaim("iss")).isEqualTo("test-connector");
         assertThat(vc.getJWTClaimsSet().getClaim("sub")).isEqualTo("verifiable-credential");
+        assertThat(vc.getJWTClaimsSet().getExpirationTime()).isNotNull()
+                .isAfter(Instant.now())
+                .isBefore(Instant.now().plus(11, ChronoUnit.MINUTES));
     }
 
     @Test

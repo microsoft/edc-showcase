@@ -24,7 +24,7 @@ public class IonClientMockExtension implements ServiceExtension {
 
     @Override
     public Set<String> provides() {
-        return Set.of("edc:ion:client");
+        return Set.of(IonClient.FEATURE);
     }
 
 

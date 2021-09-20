@@ -13,7 +13,7 @@ val edcversion: String by project
 val group = "org.eclipse.dataspaceconnector"
 
 dependencies {
-    implementation(project(":identity-gaiax-verifier"))
+    implementation(project(":identity-hub-verifier"))
     implementation(project(":ion-client-mock"))
     implementation(project(":extensions:verifiable-credentials"))
 
@@ -23,16 +23,22 @@ dependencies {
     implementation("${group}:azure.vault:${edcversion}")
     implementation("${group}:in-mem.policy-registry:${edcversion}")
     implementation("${group}:in-mem.metadata:${edcversion}")
+    implementation("${group}:in-mem.identity-hub:${edcversion}")
+    implementation("${group}:in-mem.did-document-store:${edcversion}")
+
     implementation("${group}:filesystem.configuration:${edcversion}")
     implementation("${group}:aws.s3.provision:${edcversion}")
-    implementation("${group}:data-protocols.ids:${edcversion}")
-    implementation("${group}:data-protocols..ids-policy-mock:${edcversion}")
-    implementation("${group}:iam.identity-did-spi:${edcversion}")
     implementation("${group}:aws.s3.provision:${edcversion}")
 
-    implementation("${group}:in-mem.identity-hub:${edcversion}")
+    implementation("${group}:data-protocols.ids:${edcversion}")
+    implementation("${group}:data-protocols..ids-policy-mock:${edcversion}")
     implementation("${group}:data-protocols.ion:${edcversion}")
-    implementation("${group}:in-mem.did-document-store:${edcversion}")
+
+    implementation("${group}:iam.identity-did-spi:${edcversion}")
+    implementation("${group}:iam.identity-did-core:${edcversion}")
+    implementation("${group}:iam.identity-did-service:${edcversion}")
+
+
     //    implementation(":extensions:iam:distributed-identity:identity-did-service")
     //    implementation(":extensions:iam:distributed-identity:identity-did-spi")
     //    implementation(":extensions:iam:distributed-identity:identity-did-core")

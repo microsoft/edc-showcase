@@ -10,6 +10,9 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,6 +50,7 @@ public class VerifiableCredential {
         claims.forEach(claimssetBuilder::claim);
         var claimsSet = claimssetBuilder.issuer(issuer)
                 .subject("verifiable-credential")
+                .expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.MINUTES)))
                 .jwtID(UUID.randomUUID().toString())
                 .build();
 
