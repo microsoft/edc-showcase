@@ -4,11 +4,13 @@ import org.easymock.EasyMock;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.ClientResponse;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQueryRequest;
-import org.eclipse.dataspaceconnector.iam.did.testFixtures.TemporaryKeyLoader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
@@ -31,8 +33,11 @@ class IonCredentialsVerifierTest {
     }
 
     @BeforeEach
-    void setUp() {
-        publicKey = TemporaryKeyLoader.loadPublicKey();
+    void setUp() throws NoSuchAlgorithmException {
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(2048);
+        KeyPair kp = kpg.generateKeyPair();
+        publicKey = (RSAPublicKey) kp.getPublic();
         hubClient = EasyMock.createMock(IdentityHubClient.class);
         credentialsVerifier = new IonCredentialsVerifier(hubClient);
 
