@@ -21,8 +21,6 @@ import java.util.UUID;
  */
 public class VerifiableCredential {
 
-    public static final String FEATURE = "edc:identity:verifiable-credential";
-
     /**
      * Creates a signed JWT {@link SignedJWT} that contains a set of claims and an issuer
      *
