@@ -13,8 +13,8 @@ val edcversion: String by project
 val group = "org.eclipse.dataspaceconnector"
 
 dependencies {
-    implementation(project(":identity-hub-verifier"))
-    implementation(project(":ion-client-mock"))
+    implementation(project(":extensions:identity-hub-verifier"))
+    implementation(project(":extensions:ion-client-mock"))
     implementation(project(":extensions:verifiable-credentials"))
 
     implementation("${group}:core:${edcversion}")
@@ -36,7 +36,6 @@ dependencies {
 
     implementation("${group}:iam.identity-did-spi:${edcversion}")
     implementation("${group}:iam.identity-did-core:${edcversion}")
-    implementation("${group}:iam.identity-did-service:${edcversion}")
 
 
     //    implementation(":extensions:iam:distributed-identity:identity-did-service")
