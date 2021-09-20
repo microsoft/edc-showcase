@@ -14,33 +14,33 @@
 package org.eclipse.dataspaceconnector.iam.did.credentials;
 
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
-import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHub;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
+import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 
 import java.util.Set;
 
 
-public class GaiaXCredentialsVerifierExtension implements ServiceExtension {
+public class IonCredentialsVerifierExtension implements ServiceExtension {
 
     @Override
     public Set<String> provides() {
-        return Set.of("identity-did-verifier");
+        return Set.of(CredentialsVerifier.FEATURE);
     }
 
     @Override
     public Set<String> requires() {
-        return Set.of(IdentityHub.FEATURE);
+        return Set.of(IdentityHubClient.FEATURE, IonClient.FEATURE);
     }
 
     @Override
     public void initialize(ServiceExtensionContext context) {
         var hubClient = context.getService(IdentityHubClient.class);
 
-        var credentialsVerifier = new GaiaXCredentialsVerifier(hubClient);
+        var credentialsVerifier = new IonCredentialsVerifier(hubClient);
         context.registerService(CredentialsVerifier.class, credentialsVerifier);
 
-        context.getMonitor().info("GAIA-X credentials verifier extension");
+        context.getMonitor().info("ION Credentials verifier extension");
     }
 }

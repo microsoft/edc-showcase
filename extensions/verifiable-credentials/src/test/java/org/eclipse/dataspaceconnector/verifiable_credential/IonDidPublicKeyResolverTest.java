@@ -2,10 +2,10 @@ package org.eclipse.dataspaceconnector.verifiable_credential;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.ECKey;
-import org.eclipse.dataspaceconnector.ion.model.did.resolution.DidDocument;
-import org.eclipse.dataspaceconnector.ion.model.did.resolution.EllipticCurvePublicKey;
-import org.eclipse.dataspaceconnector.ion.model.did.resolution.Service;
-import org.eclipse.dataspaceconnector.ion.model.did.resolution.VerificationMethod;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidDocument;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.EllipticCurvePublicKey;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.Service;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.VerificationMethod;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,10 +28,13 @@ class IonDidPublicKeyResolverTest {
     void setUp() throws JOSEException {
         ionClient = niceMock(IonClient.class);
         resolver = new IonDidPublicKeyResolver(ionClient);
-        var publicKey = ECKey.parseFromPEMEncodedObjects(readFile("testkey.pub.pem"));
+        var eckey = (ECKey) ECKey.parseFromPEMEncodedObjects(readFile("testkey.pub.pem"));
+
+        var publicKey = new EllipticCurvePublicKey(eckey.getCurve().getName(), eckey.getKeyType().getValue(), eckey.getX().toString(), eckey.getY().toString());
+
 
         didDocument = DidDocument.Builder.newInstance()
-                .verificationMethod("#my-key1", "EcdsaSecp256k1VerificationKey2019", (ECKey) publicKey)
+                .verificationMethod("#my-key1", "EcdsaSecp256k1VerificationKey2019", publicKey)
                 .service(Collections.singletonList(new Service("#my-service1", "IdentityHubUrl", "http://doesnotexi.st")))
                 .build();
     }
