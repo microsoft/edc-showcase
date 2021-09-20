@@ -42,6 +42,7 @@ The following sequence has to be performed during reception of every request:
 - "(additional) object data" refers to an arbitrary set of properties or a JSON structure that are stored in a connector's Hub
 - Hub and Identity Hub are the same thing
 - DID and DID Document are the same thing
+- VerifiableAssertion = hub data object
 
 ## General notes and restrictions
 - The Verifier (or Attestator) in this demo is just another Key Pair

@@ -1,11 +1,6 @@
 package org.eclipse.dataspaceconnector.verifiable_credential;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.Curve;
-import com.nimbusds.jose.jwk.ECKey;
-import com.nimbusds.jose.jwk.KeyOperation;
-import com.nimbusds.jose.jwk.KeyUse;
-import com.nimbusds.jose.util.Base64URL;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.VerificationMethod;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
@@ -13,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.security.PublicKey;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class IonDidPublicKeyResolver implements DidPublicKeyResolver {
@@ -41,15 +35,7 @@ public class IonDidPublicKeyResolver implements DidPublicKeyResolver {
         VerificationMethod verificationMethod = didDocument.getVerificationMethod().get(0);
         var jwk = verificationMethod.getPublicKeyJwk();
         try {
-            ECKey key = new ECKey(Curve.parse(jwk.getCrv()),
-                    Base64URL.from(jwk.getX()),
-                    Base64URL.from(jwk.getY()),
-                    KeyUse.SIGNATURE,
-                    Set.of(KeyOperation.VERIFY),
-                    null,
-                    verificationMethod.getId(),
-                    null, null, null, null, null
-            );
+            var key = ECKeyConverter.toECKey(jwk, verificationMethod.getId());
 
             return key.toPublicKey();
         } catch (IllegalArgumentException e) {

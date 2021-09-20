@@ -7,3 +7,5 @@ include(":extensions:identity-hub-verifier")
 include(":identity-common-test")
 include(":extensions:ion-client-mock")
 include(":extensions:verifiable-credentials")
+include(":extensions:distributed-identity-service")
+

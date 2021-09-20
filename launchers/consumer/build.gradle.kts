@@ -16,6 +16,7 @@ dependencies {
     implementation(project(":extensions:identity-hub-verifier"))
     implementation(project(":extensions:ion-client-mock"))
     implementation(project(":extensions:verifiable-credentials"))
+    implementation(project(":extensions:distributed-identity-service"))
 
     implementation("${group}:core:${edcversion}")
     implementation("${group}:in-mem.process-store:${edcversion}")
