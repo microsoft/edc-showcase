@@ -11,11 +11,6 @@ import java.util.Map;
 public class TestServiceExtensionContext extends DefaultServiceExtensionContext {
     private final Map<String, String> overriddenSettings;
 
-    public TestServiceExtensionContext(TypeManager typeManager, Monitor monitor) {
-        super(typeManager, monitor);
-        this.overriddenSettings = new HashMap<>();
-    }
-
     public TestServiceExtensionContext(TypeManager typeManager, Monitor monitor, ServiceLocator serviceLocator) {
         super(typeManager, monitor, serviceLocator);
         this.overriddenSettings = new HashMap<>();

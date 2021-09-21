@@ -21,6 +21,7 @@ import org.eclipse.dataspaceconnector.iam.did.credentials.IonClientMock;
 import org.eclipse.dataspaceconnector.iam.did.credentials.IonCredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolver;
 import org.eclipse.dataspaceconnector.identity.DistributedIdentityService;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
@@ -49,7 +50,7 @@ public class TestExtensions {
 
             @Override
             public Set<String> requires() {
-                return Set.of(VerifiableCredentialProvider.FEATURE, IonClient.FEATURE, IdentityHubClient.FEATURE);
+                return Set.of(VerifiableCredentialProvider.FEATURE, IonClient.FEATURE, IdentityHubClient.FEATURE, DidPublicKeyResolver.FEATURE);
             }
 
             @Override
@@ -57,14 +58,15 @@ public class TestExtensions {
                 var verifiableCredentialProvider = context.getService(VerifiableCredentialProvider.class);
                 var ionClient = context.getService(IonClient.class);
                 var idHubclient = context.getService(IdentityHubClient.class);
-                var identityService = new DistributedIdentityService(verifiableCredentialProvider, ionClient, new IonDidPublicKeyResolver(ionClient), new IonCredentialsVerifier(idHubclient), new Monitor() {
+                DidPublicKeyResolver publicKeyResolver = context.getService(DidPublicKeyResolver.class);
+                var identityService = new DistributedIdentityService(verifiableCredentialProvider, ionClient, publicKeyResolver, new IonCredentialsVerifier(idHubclient), new Monitor() {
                 });
                 context.registerService(IdentityService.class, identityService);
             }
         };
     }
 
-    public static ServiceExtension ionCredentialsVerifierExtension(IdentityHubClient hubclient) {
+    public static ServiceExtension identityHubExtension(IdentityHubClient hubclient) {
         return new ServiceExtension() {
             @Override
             public Set<String> provides() {
@@ -73,8 +75,7 @@ public class TestExtensions {
 
             @Override
             public void initialize(ServiceExtensionContext context) {
-                var credentialsVerifier = new IonCredentialsVerifier(hubclient);
-                context.registerService(CredentialsVerifier.class, credentialsVerifier);
+                context.registerService(CredentialsVerifier.class, new IonCredentialsVerifier(hubclient));
                 context.registerService(IdentityHubClient.class, hubclient);
             }
         };
@@ -100,12 +101,19 @@ public class TestExtensions {
         return new ServiceExtension() {
             @Override
             public Set<String> provides() {
-                return Set.of(PrivateKeyResolver.FEATURE);
+                return Set.of(PrivateKeyResolver.FEATURE, DidPublicKeyResolver.FEATURE);
+            }
+
+            @Override
+            public Set<String> requires() {
+                return Set.of(IonClient.FEATURE);
             }
 
             @Override
             public void initialize(ServiceExtensionContext context) {
+                var ionClient = context.getService(IonClient.class);
                 context.registerService(PrivateKeyResolver.class, privateKeyResolver);
+                context.registerService(DidPublicKeyResolver.class, new IonDidPublicKeyResolver(ionClient));
             }
         };
     }
