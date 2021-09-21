@@ -1,4 +1,4 @@
-package org.eclipse.dataspaceconnector.verifiable_credential.spi;
+package org.eclipse.dataspaceconnector.verifiablecredential.spi;
 
 import com.nimbusds.jwt.SignedJWT;
 

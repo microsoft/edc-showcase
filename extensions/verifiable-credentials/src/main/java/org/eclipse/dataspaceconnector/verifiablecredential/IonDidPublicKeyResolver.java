@@ -1,4 +1,4 @@
-package org.eclipse.dataspaceconnector.verifiable_credential;
+package org.eclipse.dataspaceconnector.verifiablecredential;
 
 import com.nimbusds.jose.JOSEException;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;

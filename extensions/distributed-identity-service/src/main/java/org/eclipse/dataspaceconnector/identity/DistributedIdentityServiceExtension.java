@@ -6,7 +6,7 @@ import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolver;
 import org.eclipse.dataspaceconnector.spi.iam.IdentityService;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
-import org.eclipse.dataspaceconnector.verifiable_credential.spi.VerifiableCredentialProvider;
+import org.eclipse.dataspaceconnector.verifiablecredential.spi.VerifiableCredentialProvider;
 
 import java.util.Set;
 

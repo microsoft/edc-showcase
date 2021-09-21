@@ -1,11 +1,11 @@
-package org.eclipse.dataspaceconnector.verifiable_credential;
+package org.eclipse.dataspaceconnector.verifiablecredential;
 
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.security.PrivateKeyResolver;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
-import org.eclipse.dataspaceconnector.verifiable_credential.spi.VerifiableCredentialProvider;
+import org.eclipse.dataspaceconnector.verifiablecredential.spi.VerifiableCredentialProvider;
 import org.junit.jupiter.api.Test;
 
 import static org.easymock.EasyMock.*;

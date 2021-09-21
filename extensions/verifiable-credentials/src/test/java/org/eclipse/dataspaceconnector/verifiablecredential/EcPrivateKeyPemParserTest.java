@@ -1,4 +1,4 @@
-package org.eclipse.dataspaceconnector.verifiable_credential;
+package org.eclipse.dataspaceconnector.verifiablecredential;
 
 import com.nimbusds.jose.jwk.ECKey;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +9,7 @@ import java.security.interfaces.RSAPrivateKey;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.eclipse.dataspaceconnector.verifiable_credential.TestHelper.readFile;
+import static org.eclipse.dataspaceconnector.verifiablecredential.TestHelper.readFile;
 
 class EcPrivateKeyPemParserTest {
 

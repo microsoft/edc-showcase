@@ -1,4 +1,4 @@
-package org.eclipse.dataspaceconnector.verifiable_credential;
+package org.eclipse.dataspaceconnector.verifiablecredential;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.ECKey;
@@ -15,7 +15,7 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.easymock.EasyMock.*;
-import static org.eclipse.dataspaceconnector.verifiable_credential.TestHelper.readFile;
+import static org.eclipse.dataspaceconnector.verifiablecredential.TestHelper.readFile;
 
 class IonDidPublicKeyResolverTest {
 

@@ -7,7 +7,7 @@ val group = "org.eclipse.dataspaceconnector"
 
 dependencies {
 
-    implementation(project(":extensions:verifiable-credentials"))
+    api(project(":extensions:verifiable-credentials"))
 
     implementation("${group}:spi:${edcversion}")
     implementation("${group}:data-protocols.ion.core:${edcversion}")

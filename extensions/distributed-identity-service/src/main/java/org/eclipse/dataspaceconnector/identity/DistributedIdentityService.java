@@ -12,9 +12,9 @@ import org.eclipse.dataspaceconnector.spi.iam.IdentityService;
 import org.eclipse.dataspaceconnector.spi.iam.TokenResult;
 import org.eclipse.dataspaceconnector.spi.iam.VerificationResult;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
-import org.eclipse.dataspaceconnector.verifiable_credential.ECKeyConverter;
-import org.eclipse.dataspaceconnector.verifiable_credential.VerifiableCredential;
-import org.eclipse.dataspaceconnector.verifiable_credential.spi.VerifiableCredentialProvider;
+import org.eclipse.dataspaceconnector.verifiablecredential.ECKeyConverter;
+import org.eclipse.dataspaceconnector.verifiablecredential.VerifiableCredential;
+import org.eclipse.dataspaceconnector.verifiablecredential.spi.VerifiableCredentialProvider;
 
 import java.text.ParseException;
 import java.util.Date;

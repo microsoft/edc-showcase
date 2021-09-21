@@ -1,4 +1,4 @@
-package org.eclipse.dataspaceconnector.verifiable_credential;
+package org.eclipse.dataspaceconnector.verifiablecredential;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.ECKey;
@@ -8,7 +8,7 @@ import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.security.PrivateKeyResolver;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
-import org.eclipse.dataspaceconnector.verifiable_credential.spi.VerifiableCredentialProvider;
+import org.eclipse.dataspaceconnector.verifiablecredential.spi.VerifiableCredentialProvider;
 
 import java.util.Map;
 import java.util.Set;
