@@ -46,8 +46,8 @@ public class VerifiableCredentialLoaderExtension implements ServiceExtension {
         VerifiableCredentialProvider verifiableCredentialSupplier = () -> {
             // we'll use the connector name to restore the Private Key
             var connectorName = context.getConnectorId();
-            var vault = context.getService(PrivateKeyResolver.class);
-            var privateKeyString = vault.resolvePrivateKey(connectorName, ECKey.class); //to get the private key
+            var resolver = context.getService(PrivateKeyResolver.class);
+            var privateKeyString = resolver.resolvePrivateKey(connectorName, ECKey.class); //to get the private key
 
             // we cannot store the VerifiableCredential in the Vault, because it has an expiry date
             return VerifiableCredential.create(privateKeyString, Map.of(DID_URL_SETTING, didUrl), connectorName);
