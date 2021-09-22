@@ -2,6 +2,7 @@ package org.eclipse.dataspaceconnector.verifiablecredential;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.ECKey;
+import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.eclipse.dataspaceconnector.spi.EdcException;
@@ -66,6 +67,14 @@ public class VerifiableCredentialLoaderExtension implements ServiceExtension {
         resolver.addParser(ECKey.class, (encoded) -> {
             try {
                 return (ECKey) ECKey.parseFromPEMEncodedObjects(encoded);
+            } catch (JOSEException e) {
+                throw new CryptoException(e);
+            }
+        });
+        resolver.addParser(PrivateKeyWrapper.class, (encoded) -> {
+            try {
+                var ecKey = (ECKey) ECKey.parseFromPEMEncodedObjects(encoded);
+                return new EcPrivateKeyWrapper(ecKey);
             } catch (JOSEException e) {
                 throw new CryptoException(e);
             }

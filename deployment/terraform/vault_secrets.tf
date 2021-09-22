@@ -40,9 +40,9 @@ resource "azurerm_key_vault_secret" "blobstorekey" {
 
 resource "azurerm_key_vault_secret" "consumer_private_key" {
   name         = var.consumer-name
-  value        = file("../../keys/consumer-priv.pem")
+  value        = file("../../keys2/private.pem")
   key_vault_id = azurerm_key_vault.main-vault.id
-  depends_on = [
+  depends_on   = [
     azurerm_role_assignment.current-user-secretsofficer
   ]
 }

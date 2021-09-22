@@ -28,13 +28,23 @@ class EcPrivateKeyPemParserTest {
     }
 
     @Test
-    void parse() {
-        var pemContent = readFile("testkey.pem");
+    void parse_secp256k1() {
+        var pemContent = readFile("private_secp256k1.pem");
         var key = keyParser.parse(pemContent);
         assertThat(key).isInstanceOf(ECKey.class);
 
         assertThat(key.isPrivate()).isTrue();
         assertThat(key.getCurve().getName()).isEqualTo("secp256k1");
+    }
+
+    @Test
+    void parse_p256() {
+        var pemContent2 = readFile("private_p256.pem");
+        var key2 = keyParser.parse(pemContent2);
+        assertThat(key2).isInstanceOf(ECKey.class);
+
+        assertThat(key2.isPrivate()).isTrue();
+        assertThat(key2.getCurve().getName()).isEqualTo("P-256");
     }
 
     @Test

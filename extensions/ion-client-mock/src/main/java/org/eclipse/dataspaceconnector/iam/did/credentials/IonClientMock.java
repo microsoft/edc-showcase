@@ -43,7 +43,7 @@ public class IonClientMock implements IonClient {
     }
 
     private DidDocument getDocumentForUrl(String didUrl) {
-        var service = new Service("#hub1", "IdentityHub", "https://test.service.com");
+        var service = new Service("#hub1", "IdentityHub", "http://localhost:9191/api/identity-hub/");
 
         var eckey = getPublicKey(didUrl);
         var publicKey = new EllipticCurvePublicKey(eckey.getCurve().getName(), eckey.getKeyType().getValue(), eckey.getX().toString(), eckey.getY().toString());
@@ -59,7 +59,7 @@ public class IonClientMock implements IonClient {
 
     private ECKey getPublicKey(String didUrl) {
         try {
-            var pemContent = Files.readString(Path.of("/home/paul/dev/ion-demo/keys/consumer-pub.pem"));
+            var pemContent = Files.readString(Path.of("/home/paul/dev/ion-demo/keys2/public.pem"));
             return (ECKey) ECKey.parseFromPEMEncodedObjects(pemContent);
         } catch (IOException | JOSEException e) {
             throw new EdcException(e);

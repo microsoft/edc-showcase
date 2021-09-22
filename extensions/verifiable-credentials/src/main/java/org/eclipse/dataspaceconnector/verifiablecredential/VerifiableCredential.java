@@ -52,7 +52,7 @@ public class VerifiableCredential {
                 .jwtID(UUID.randomUUID().toString())
                 .build();
 
-        var header = new JWSHeader(JWSAlgorithm.ES256K);
+        var header = new JWSHeader(JWSAlgorithm.ES256);
 
         var vc = new SignedJWT(header, claimsSet);
         try {

@@ -28,14 +28,14 @@ class IonDidPublicKeyResolverTest {
     void setUp() throws JOSEException {
         ionClient = niceMock(IonClient.class);
         resolver = new IonDidPublicKeyResolver(ionClient);
-        var eckey = (ECKey) ECKey.parseFromPEMEncodedObjects(readFile("testkey.pub.pem"));
+        var eckey = (ECKey) ECKey.parseFromPEMEncodedObjects(readFile("public_secp256k1.pem"));
 
         var publicKey = new EllipticCurvePublicKey(eckey.getCurve().getName(), eckey.getKeyType().getValue(), eckey.getX().toString(), eckey.getY().toString());
 
 
         didDocument = DidDocument.Builder.newInstance()
                 .verificationMethod("#my-key1", "EcdsaSecp256k1VerificationKey2019", publicKey)
-                .service(Collections.singletonList(new Service("#my-service1", "IdentityHubUrl", "http://doesnotexi.st")))
+                .service(Collections.singletonList(new Service("#my-service1", "IdentityHub", "http://doesnotexi.st")))
                 .build();
     }
 
@@ -68,7 +68,7 @@ class IonDidPublicKeyResolverTest {
 
     @Test
     void resolve_didContainsMultipleKeys() throws JOSEException {
-        var publicKey = (ECKey) ECKey.parseFromPEMEncodedObjects(readFile("testkey.pub.pem"));
+        var publicKey = (ECKey) ECKey.parseFromPEMEncodedObjects(readFile("public_secp256k1.pem"));
         var vm = VerificationMethod.Builder.create().id("second-key").type("EcdsaSecp256k1VerificationKey2019").controller("")
                 .publicKeyJwk(new EllipticCurvePublicKey(publicKey.getCurve().getName(), publicKey.getKeyType().getValue(), publicKey.getX().toString(), publicKey.getY().toString()))
                 .build();

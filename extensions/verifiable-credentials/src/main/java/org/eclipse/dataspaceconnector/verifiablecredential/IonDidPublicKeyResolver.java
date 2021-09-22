@@ -1,12 +1,11 @@
 package org.eclipse.dataspaceconnector.verifiablecredential;
 
-import com.nimbusds.jose.JOSEException;
+import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.VerificationMethod;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.jetbrains.annotations.Nullable;
 
-import java.security.PublicKey;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +17,7 @@ public class IonDidPublicKeyResolver implements DidPublicKeyResolver {
     }
 
     @Override
-    public @Nullable PublicKey resolvePublicKey(String s) {
+    public @Nullable PublicKeyWrapper resolvePublicKey(String s) {
         var didDocument = ionClient.resolve(s);
         if (didDocument == null) {
             return null;
@@ -37,11 +36,9 @@ public class IonDidPublicKeyResolver implements DidPublicKeyResolver {
         try {
             var key = ECKeyConverter.toECKey(jwk, verificationMethod.getId());
 
-            return key.toPublicKey();
+            return new EcPublicKeyWrapper(key);
         } catch (IllegalArgumentException e) {
             throw new PublicKeyResolutionException("Public Key was not a valid EC Key!  Details: " + e.getMessage());
-        } catch (JOSEException e) {
-            throw new PublicKeyResolutionException(e);
         }
     }
 

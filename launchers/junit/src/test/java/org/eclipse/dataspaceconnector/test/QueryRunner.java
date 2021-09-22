@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.ECKey;
 import org.eclipse.dataspaceconnector.iam.did.credentials.IonClientMock;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.ClientResponse;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
+import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQueryRequest;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.security.PrivateKeyResolver;
@@ -18,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.security.PublicKey;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -56,14 +56,14 @@ public class QueryRunner {
     @BeforeEach
     void before(EdcExtension extension) throws IOException, JOSEException {
 
-        String privateKeyString = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream("consumer-priv.pem").readAllBytes(), Charset.defaultCharset());
+        String privateKeyString = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream("private.pem").readAllBytes(), Charset.defaultCharset());
 
         var ecKey = ECKey.parseFromPEMEncodedObjects(privateKeyString);
 
         IonClientMock ionClient = new IonClientMock();
         var idHubclient = new IdentityHubClient() {
             @Override
-            public ClientResponse<Map<String, Object>> queryCredentials(ObjectQueryRequest objectQueryRequest, String s, PublicKey publicKey) {
+            public ClientResponse<Map<String, Object>> queryCredentials(ObjectQueryRequest objectQueryRequest, String s, PublicKeyWrapper publicKey) {
                 return null;
             }
         };

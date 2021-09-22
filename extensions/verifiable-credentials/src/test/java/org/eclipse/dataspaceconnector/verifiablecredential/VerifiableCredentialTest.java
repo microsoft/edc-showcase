@@ -20,7 +20,7 @@ class VerifiableCredentialTest {
 
     @BeforeEach
     void setup() throws JOSEException {
-        String contents = readFile("testkey.pem");
+        String contents = readFile("private_p256.pem");
 
         privateKey = (ECKey) ECKey.parseFromPEMEncodedObjects(contents);
     }
@@ -61,7 +61,7 @@ class VerifiableCredentialTest {
 
         //deserialize
         var jwt = VerifiableCredential.parse(jwtString);
-        var pubKey = readFile("testkey.pub.pem");
+        var pubKey = readFile("public_p256.pem");
 
         assertThat(VerifiableCredential.verify(jwt, (ECKey) ECKey.parseFromPEMEncodedObjects(pubKey))).isTrue();
 

@@ -41,6 +41,6 @@ public class IonCredentialsVerifierExtension implements ServiceExtension {
         var credentialsVerifier = new IonCredentialsVerifier(hubClient);
         context.registerService(CredentialsVerifier.class, credentialsVerifier);
 
-        context.getMonitor().info("ION Credentials verifier extension");
+        context.getMonitor().info("Initialized ION Credentials verifier extension");
     }
 }

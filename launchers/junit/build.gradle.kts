@@ -20,7 +20,7 @@ dependencies {
     testImplementation("${group}:in-mem.policy-registry:${edcversion}")
     testImplementation("${group}:in-mem.metadata:${edcversion}")
     testImplementation("${group}:data-protocols.ion.core:${edcversion}")
-    testImplementation("${group}:data-protocols..ids-policy-mock:${edcversion}")
+    testImplementation("${group}:data-protocols.ids-policy-mock:${edcversion}")
     testImplementation("${group}:data-protocols.ids:${edcversion}")
     testImplementation("${group}:dataspaceconnector.junit.launcher:${edcversion}")
     testImplementation("${group}:dataspaceconnector.common.util:${edcversion}")
