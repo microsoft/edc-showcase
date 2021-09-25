@@ -1,0 +1,42 @@
+{
+  "@context": "https://w3id.org/did-resolution/v1",
+  "didDocument": {
+    "id": "did:ion:EiDfkaPHt8Yojnh15O7egrj5pA9tTefh_SYtbhF1-XyAeA",
+    "@context": [
+      "https://www.w3.org/ns/did/v1",
+      {
+        "@base": "did:ion:EiDfkaPHt8Yojnh15O7egrj5pA9tTefh_SYtbhF1-XyAeA"
+      }
+    ],
+    "service": [
+      {
+        "id": "local-hub-url",
+        "type": "IdentityHub",
+        "serviceEndpoint": "http://localhost:9191/api/identity-hub/"
+      }
+    ],
+    "verificationMethod": [
+      {
+        "id": "provider-key",
+        "type": "JsonWebKey2020",
+        "publicKeyJwk": {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "lEkUB1_3uss55ty_qpnq1TQ2oIdQcazfd66hT8719Hc",
+          "y": "kOq3-5FXUFeruRG2M-XA9ySBLuxi21e0FwguK1sE5e0"
+        }
+      }
+    ],
+    "authentication": [
+      "provider-key"
+    ]
+  },
+  "didDocumentMetadata": {
+    "method": {
+      "published": true,
+      "recoveryCommitment": "EiB19dfmCiAsFTbtm_uuBk-s5KQkL0XhzSMLXq0LYMz2rA",
+      "updateCommitment": "EiBtFv61ffGcoixejqAud1lp2lZR36BHyir7CxryASIaOQ"
+    },
+    "canonicalId": "did:ion:EiDfkaPHt8Yojnh15O7egrj5pA9tTefh_SYtbhF1-XyAeA"
+  }
+}

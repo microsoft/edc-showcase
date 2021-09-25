@@ -76,11 +76,11 @@ public class DistributedIdentityService implements IdentityService {
     }
 
     private String getHubUrl(DidDocument did) {
-        return did.getService().stream().filter(service -> service.getType().equals("IdentityHub")).map(Service::getServiceEndpoint).findFirst().orElseThrow();
+        return did.getService().stream().filter(service -> service.getType().equals(DidConstants.HUB_URL)).map(Service::getServiceEndpoint).findFirst().orElseThrow();
     }
 
     @NotNull
     private Optional<VerificationMethod> getPublicKey(DidDocument did) {
-        return did.getVerificationMethod().stream().filter(vm -> vm.getType().equals("EcdsaSecp256k1VerificationKey2019")).findFirst();
+        return did.getVerificationMethod().stream().filter(vm -> DidConstants.ALLOWED_VERIFICATION_TYPES.contains(vm.getType())).findFirst();
     }
 }

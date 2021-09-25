@@ -51,7 +51,8 @@ public class VerifiableCredentialLoaderExtension implements ServiceExtension {
             var privateKeyString = resolver.resolvePrivateKey(connectorName, ECKey.class); //to get the private key
 
             // we cannot store the VerifiableCredential in the Vault, because it has an expiry date
-            return VerifiableCredential.create(privateKeyString, Map.of(DID_URL_SETTING, didUrl), connectorName);
+            // the Issuer claim must contain the DID URL
+            return VerifiableCredential.create(privateKeyString, Map.of(VerifiableCredential.OWNER_CLAIM, connectorName), didUrl);
         };
 
         context.registerService(VerifiableCredentialProvider.class, verifiableCredentialSupplier);

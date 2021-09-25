@@ -13,20 +13,16 @@
  */
 package org.eclipse.dataspaceconnector.iam.did.credentials;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.ECKey;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidDocument;
-import org.eclipse.dataspaceconnector.iam.did.spi.resolution.EllipticCurvePublicKey;
-import org.eclipse.dataspaceconnector.iam.did.spi.resolution.Service;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolveResponse;
+import org.eclipse.dataspaceconnector.ion.IonException;
 import org.eclipse.dataspaceconnector.ion.model.IonRequest;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
-import org.eclipse.dataspaceconnector.spi.EdcException;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
+import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * Implements a mock IonClient, that can resolve three static DID documents
@@ -39,31 +35,26 @@ public class IonClientMock implements IonClient {
 
     @Override
     public DidDocument resolve(String didUrl) {
-        return getDocumentForUrl(didUrl);
-    }
-
-    private DidDocument getDocumentForUrl(String didUrl) {
-        var service = new Service("#hub1", "IdentityHub", "http://localhost:9191/api/identity-hub/");
-
-        var eckey = getPublicKey(didUrl);
-        var publicKey = new EllipticCurvePublicKey(eckey.getCurve().getName(), eckey.getKeyType().getValue(), eckey.getX().toString(), eckey.getY().toString());
-
-        return DidDocument.Builder.newInstance()
-                .id(didUrl)
-                .authentication(Collections.singletonList("#key-1"))
-                .service(List.of(service))
-                .verificationMethod("#key-1", "EcdsaSecp256k1VerificationKey2019", publicKey)
-                .build();
-
-    }
-
-    private ECKey getPublicKey(String didUrl) {
         try {
-            var pemContent = Files.readString(Path.of("/home/paul/dev/ion-demo/keys2/public.pem"));
-            return (ECKey) ECKey.parseFromPEMEncodedObjects(pemContent);
-        } catch (IOException | JOSEException e) {
-            throw new EdcException(e);
+            return getDocumentForUrl(didUrl);
+        } catch (IOException e) {
+            throw new IonException(e);
         }
+    }
 
+    private DidDocument getDocumentForUrl(String didUrl) throws IOException {
+        InputStream is;
+        if (didUrl.equals("did:ion:EiAnKD8-jfdd0MDcZUjAbRgaThBrMxPTFOxcnfJhI7Ukaw")) {
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream("consumer-did.json");
+        } else if (didUrl.equals("did:ion:EiDfkaPHt8Yojnh15O7egrj5pA9tTefh_SYtbhF1-XyAeA")) {
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream("provider-did.json");
+        } else {
+            throw new IllegalArgumentException(String.format("DID %s is not known to the system!", didUrl));
+        }
+        var response = new ObjectMapper().readValue(Objects.requireNonNull(is).readAllBytes(), DidResolveResponse.class);
+        DidDocument didDocument = response.getDidDocument();
+        didDocument.setId(didUrl);
+
+        return didDocument;
     }
 }

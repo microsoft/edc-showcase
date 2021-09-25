@@ -17,8 +17,8 @@ package org.eclipse.dataspaceconnector.test;/*
  * All rights reserved.
  */
 
+import org.eclipse.dataspaceconnector.iam.did.credentials.IdentityHubCredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.credentials.IonClientMock;
-import org.eclipse.dataspaceconnector.iam.did.credentials.IonCredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
@@ -59,7 +59,7 @@ public class TestExtensions {
                 var ionClient = context.getService(IonClient.class);
                 var idHubclient = context.getService(IdentityHubClient.class);
                 DidPublicKeyResolver publicKeyResolver = context.getService(DidPublicKeyResolver.class);
-                var identityService = new DistributedIdentityService(verifiableCredentialProvider, ionClient, publicKeyResolver, new IonCredentialsVerifier(idHubclient), new Monitor() {
+                var identityService = new DistributedIdentityService(verifiableCredentialProvider, ionClient, publicKeyResolver, new IdentityHubCredentialsVerifier(idHubclient), new Monitor() {
                 });
                 context.registerService(IdentityService.class, identityService);
             }
@@ -75,7 +75,7 @@ public class TestExtensions {
 
             @Override
             public void initialize(ServiceExtensionContext context) {
-                context.registerService(CredentialsVerifier.class, new IonCredentialsVerifier(hubclient));
+                context.registerService(CredentialsVerifier.class, new IdentityHubCredentialsVerifier(hubclient));
                 context.registerService(IdentityHubClient.class, hubclient);
             }
         };

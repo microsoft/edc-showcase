@@ -2,10 +2,7 @@ package org.eclipse.dataspaceconnector.verifiablecredential;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.ECKey;
-import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidDocument;
-import org.eclipse.dataspaceconnector.iam.did.spi.resolution.EllipticCurvePublicKey;
-import org.eclipse.dataspaceconnector.iam.did.spi.resolution.Service;
-import org.eclipse.dataspaceconnector.iam.did.spi.resolution.VerificationMethod;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.*;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,8 +31,8 @@ class IonDidPublicKeyResolverTest {
 
 
         didDocument = DidDocument.Builder.newInstance()
-                .verificationMethod("#my-key1", "EcdsaSecp256k1VerificationKey2019", publicKey)
-                .service(Collections.singletonList(new Service("#my-service1", "IdentityHub", "http://doesnotexi.st")))
+                .verificationMethod("#my-key1", DidConstants.ECDSA_SECP_256_K_1_VERIFICATION_KEY_2019, publicKey)
+                .service(Collections.singletonList(new Service("#my-service1", DidConstants.HUB_URL, "http://doesnotexi.st")))
                 .build();
     }
 
@@ -69,20 +66,20 @@ class IonDidPublicKeyResolverTest {
     @Test
     void resolve_didContainsMultipleKeys() throws JOSEException {
         var publicKey = (ECKey) ECKey.parseFromPEMEncodedObjects(readFile("public_secp256k1.pem"));
-        var vm = VerificationMethod.Builder.create().id("second-key").type("EcdsaSecp256k1VerificationKey2019").controller("")
+        var vm = VerificationMethod.Builder.create().id("second-key").type(DidConstants.JSON_WEB_KEY_2020).controller("")
                 .publicKeyJwk(new EllipticCurvePublicKey(publicKey.getCurve().getName(), publicKey.getKeyType().getValue(), publicKey.getX().toString(), publicKey.getY().toString()))
                 .build();
         didDocument.getVerificationMethod().add(vm);
         expect(ionClient.resolve(DID_URL)).andReturn(didDocument);
         replay(ionClient);
 
-        assertThatThrownBy(() -> resolver.resolvePublicKey(DID_URL)).isInstanceOf(PublicKeyResolutionException.class).hasMessage("DID contains more than one \"EcdsaSecp256k1VerificationKey2019\" public keys!");
+        assertThatThrownBy(() -> resolver.resolvePublicKey(DID_URL)).isInstanceOf(PublicKeyResolutionException.class).hasMessage("DID contains more than one \"Allowed Verification Type\"!");
     }
 
     @Test
     void resolve_publicKeyNotInPemFormat() {
         didDocument.getVerificationMethod().clear();
-        var vm = VerificationMethod.Builder.create().id("second-key").type("EcdsaSecp256k1VerificationKey2019").controller("")
+        var vm = VerificationMethod.Builder.create().id("second-key").type(DidConstants.ECDSA_SECP_256_K_1_VERIFICATION_KEY_2019).controller("")
                 .publicKeyJwk(new EllipticCurvePublicKey("invalidCurve", "EC", null, null))
                 .build();
         didDocument.getVerificationMethod().add(vm);

@@ -25,17 +25,17 @@ import java.util.HashMap;
 /**
  * Implements a sample credentials validator that checks for signed registration credentials.
  */
-public class IonCredentialsVerifier implements CredentialsVerifier {
+public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     private final IdentityHubClient hubClient;
 
-    public IonCredentialsVerifier(IdentityHubClient hubClient) {
+    public IdentityHubCredentialsVerifier(IdentityHubClient hubClient) {
         this.hubClient = hubClient;
     }
 
     @Override
     public CredentialsResult verifyCredentials(String hubBaseUrl, PublicKeyWrapper publicKey) {
         var query = ObjectQuery.Builder.newInstance().context("ION Demo").type("RegistrationCredentials").build();
-        var queryRequest = ObjectQueryRequest.Builder.newInstance().query(query).iss("123").aud("aud").sub("sub").build();
+        var queryRequest = ObjectQueryRequest.Builder.newInstance().query(query).iss("did:ion:EiDfkaPHt8Yojnh15O7egrj5pA9tTefh_SYtbhF1-XyAeA").aud("aud").sub("sub").build();
         var credentials = hubClient.queryCredentials(queryRequest, hubBaseUrl, publicKey);
         if (credentials.isError()) {
             return new CredentialsResult("Error resolving credentials");

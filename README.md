@@ -18,21 +18,25 @@ for each connector:
   + ??? a database for each hub to contain object data
 
 ## Data seeding
+
 - the hubs get their "additional data object" data seeded.
 - additional data objects are again JWEs signed with the Verifier's private key. Each data property is a claim, complex
   properties should just be JSON strings
 
 ## Verification process
+
 The following sequence has to be performed during reception of every request:
 
-1. A presents JWT to B (in message header, e.g. in the `_securityToken_` field of a IDS messages)
+A ... Consumer, B ... Provider
+
+1. A presents JWT to B (in message header, i.e. in the `_securityToken_` field of a IDS messages)
 1. B resolves the DID URL from the VC received from A
 1. B resolves A's DID Document from ION and from it retrieves A's public key and A's Hub URL
 1. B verifies A's VC using A's public key (from the DID Document)
 1. B obtains object data from A's Hub:
-   - B sends query to A's hub together with its public key
-   - A decrypts hub data object and re-encrypts with B's public key
-   - B receives and decrypts A's hub data object
+    - B sends query to A's hub together with its public key
+    - A decrypts hub data object and re-encrypts with B's public key
+    - B receives and decrypts A's hub data object
 1. B obtains the Verifier's DID document from ION (Verifier's DID URL must be contained in the hub data object)
 1. B uses Verifier's public key to verify A's object data
 
