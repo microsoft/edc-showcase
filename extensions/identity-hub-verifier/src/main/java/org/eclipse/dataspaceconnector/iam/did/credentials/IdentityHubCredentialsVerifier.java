@@ -19,6 +19,7 @@ import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQuery;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQueryRequest;
+import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 
 import java.util.HashMap;
 
@@ -27,16 +28,23 @@ import java.util.HashMap;
  */
 public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     private final IdentityHubClient hubClient;
+    private final Monitor monitor;
 
-    public IdentityHubCredentialsVerifier(IdentityHubClient hubClient) {
+    public IdentityHubCredentialsVerifier(IdentityHubClient hubClient, Monitor monitor) {
         this.hubClient = hubClient;
+        this.monitor = monitor;
     }
 
     @Override
     public CredentialsResult verifyCredentials(String hubBaseUrl, PublicKeyWrapper publicKey) {
+        monitor.info("Starting credential verification against hub URL " + hubBaseUrl);
+
         var query = ObjectQuery.Builder.newInstance().context("ION Demo").type("RegistrationCredentials").build();
+
+        monitor.severe("### CAUTION: still using hard coded \"own\" DID URL for the provider! ###");
         var queryRequest = ObjectQueryRequest.Builder.newInstance().query(query).iss("did:ion:EiDfkaPHt8Yojnh15O7egrj5pA9tTefh_SYtbhF1-XyAeA").aud("aud").sub("sub").build();
         var credentials = hubClient.queryCredentials(queryRequest, hubBaseUrl, publicKey);
+        monitor.info(credentials.getResponse().size() + " credentials obtained");
         if (credentials.isError()) {
             return new CredentialsResult("Error resolving credentials");
         }

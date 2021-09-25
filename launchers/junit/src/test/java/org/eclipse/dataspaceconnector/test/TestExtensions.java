@@ -39,6 +39,9 @@ import java.util.Set;
 
 public class TestExtensions {
 
+    private static final Monitor MONITOR = new Monitor() {
+    };
+
     public static ServiceExtension identityServiceExtension() {
 
 
@@ -59,8 +62,7 @@ public class TestExtensions {
                 var ionClient = context.getService(IonClient.class);
                 var idHubclient = context.getService(IdentityHubClient.class);
                 DidPublicKeyResolver publicKeyResolver = context.getService(DidPublicKeyResolver.class);
-                var identityService = new DistributedIdentityService(verifiableCredentialProvider, ionClient, publicKeyResolver, new IdentityHubCredentialsVerifier(idHubclient), new Monitor() {
-                });
+                var identityService = new DistributedIdentityService(verifiableCredentialProvider, ionClient, publicKeyResolver, new IdentityHubCredentialsVerifier(idHubclient, MONITOR), MONITOR);
                 context.registerService(IdentityService.class, identityService);
             }
         };
@@ -75,7 +77,7 @@ public class TestExtensions {
 
             @Override
             public void initialize(ServiceExtensionContext context) {
-                context.registerService(CredentialsVerifier.class, new IdentityHubCredentialsVerifier(hubclient));
+                context.registerService(CredentialsVerifier.class, new IdentityHubCredentialsVerifier(hubclient, MONITOR));
                 context.registerService(IdentityHubClient.class, hubclient);
             }
         };

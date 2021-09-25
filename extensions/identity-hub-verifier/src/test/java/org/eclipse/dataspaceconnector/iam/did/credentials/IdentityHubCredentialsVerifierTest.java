@@ -6,6 +6,7 @@ import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.RsaPublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQueryRequest;
+import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,8 @@ class IdentityHubCredentialsVerifierTest {
         KeyPair kp = kpg.generateKeyPair();
         publicKey = (RSAPublicKey) kp.getPublic();
         hubClient = EasyMock.createMock(IdentityHubClient.class);
-        credentialsVerifier = new IdentityHubCredentialsVerifier(hubClient);
+        credentialsVerifier = new IdentityHubCredentialsVerifier(hubClient, new Monitor() {
+        });
 
     }
 

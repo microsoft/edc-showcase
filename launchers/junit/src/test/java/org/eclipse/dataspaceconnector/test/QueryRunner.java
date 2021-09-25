@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.common.types.Cast.cast;
@@ -38,6 +37,7 @@ public class QueryRunner {
     @BeforeAll
     static void setProperties() {
         // the url is the example one from identity.foundation/ion/explorer
+        // this is the connector's own DID URL
         System.setProperty("edc.identity.did.url", "did:ion:EiAnKD8-jfdd0MDcZUjAbRgaThBrMxPTFOxcnfJhI7Ukaw");
         System.setProperty("dataspaceconnector.connector.name", "test-query-connector");
         System.setProperty("web.http.port", "7171");
@@ -46,10 +46,9 @@ public class QueryRunner {
     @Test
     void queryWithVerifiableCredentials(RemoteMessageDispatcherRegistry dispatcherRegistry) throws Exception {
 
-        var latch = new CountDownLatch(1);
         var query = QueryRequest.Builder.newInstance()
                 .connectorAddress(PROVIDER_CONNECTOR)
-                .connectorId("consumer")
+                .connectorId(System.getProperty("dataspaceconnector.connector.name"))
                 .queryLanguage("dataspaceconnector")
                 .query("select *")
                 .protocol("ids-rest").build();
@@ -57,8 +56,9 @@ public class QueryRunner {
         CompletableFuture<List<String>> future = cast(dispatcherRegistry.send(List.class, query, () -> null));
 
         var artifacts = future.get();
-//        latch.await(1, TimeUnit.of(ChronoUnit.DAYS));
         assertThat(artifacts).isNotNull().isNotEmpty();
+
+        //TODO: run data request
     }
 
     @BeforeEach
