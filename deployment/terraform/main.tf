@@ -15,11 +15,11 @@ terraform {
       source  = "hashicorp/azuread"
       version = "1.6.0"
     }
-    aws = {
+    aws     = {
       source  = "hashicorp/aws"
       version = "3.45.0"
     }
-    http = {
+    http    = {
       source  = "hashicorp/http"
       version = ">=2.1.0"
     }
@@ -63,7 +63,7 @@ resource "azuread_application_certificate" "demo-main-identity-cert" {
 resource "azuread_service_principal" "main-app-sp" {
   application_id               = azuread_application.demo-app-id.application_id
   app_role_assignment_required = false
-  tags = [
+  tags                         = [
     "terraform"
   ]
 }
@@ -201,50 +201,50 @@ resource "azurerm_container_group" "provider-connector" {
     }
   }
 }
-#
-## connector that acts as data consumer
-#resource "azurerm_container_group" "consumer-connector" {
-#  name                = "gaiax-consumer"
-#  location            = azurerm_resource_group.core-resourcegroup.location
-#  resource_group_name = azurerm_resource_group.core-resourcegroup.name
-#  os_type             = "Linux"
-#  ip_address_type     = "public"
-#  dns_name_label      = "${var.environment}-consumer"
-#  image_registry_credential {
-#    password = var.docker_repo_password
-#    server   = var.docker_repo_url
-#    username = var.docker_repo_username
-#  }
-#  container {
-#    cpu   = 2
-#    image = "${var.docker_repo_url}/beardyinc/dataspaceconnector/gx-consumer:latest"
-#    //    image  = "beardyinc/gx-consumer:latest"
-#    memory = "2"
-#    name   = "gx-consumer"
-#
-#    ports {
-#      port     = 8181
-#      protocol = "TCP"
-#    }
-#
-#    environment_variables = {
-#      CLIENTID       = azuread_application.demo-app-id.application_id,
-#      TENANTID       = data.azurerm_client_config.current.tenant_id,
-#      VAULTNAME      = azurerm_key_vault.main-vault.name,
-#      CONNECTOR_NAME = "gx-consumer"
-#      TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
-#      TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
-#    }
-#
-#    volume {
-#      mount_path           = "/cert"
-#      name                 = "certificates"
-#      share_name           = "certificates"
-#      storage_account_key  = var.backend_account_key
-#      storage_account_name = var.backend_account_name
-#      read_only            = true
-#    }
-#  }
-#}
+
+# connector that acts as data consumer
+resource "azurerm_container_group" "consumer-connector" {
+  name                = "${var.environment}-consumer"
+  location            = azurerm_resource_group.core-resourcegroup.location
+  resource_group_name = azurerm_resource_group.core-resourcegroup.name
+  os_type             = "Linux"
+  ip_address_type     = "public"
+  dns_name_label      = "${var.environment}-consumer"
+  image_registry_credential {
+    password = var.docker_repo_password
+    server   = var.docker_repo_url
+    username = var.docker_repo_username
+  }
+  container {
+    cpu    = 2
+    image  = "${var.docker_repo_url}/beardyinc/ion-demo/provider:latest"
+    memory = "2"
+    name   = "consumer"
+
+    ports {
+      port     = 8181
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      CLIENTID       = azuread_application.demo-app-id.application_id,
+      TENANTID       = data.azurerm_client_config.current.tenant_id,
+      VAULTNAME      = azurerm_key_vault.main-vault.name,
+      CONNECTOR_NAME = "consumer"
+      TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
+      TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
+      DID_URL        = "did:ion:EiAnKD8-jfdd0MDcZUjAbRgaThBrMxPTFOxcnfJhI7Ukaw"
+    }
+
+    volume {
+      mount_path           = "/cert"
+      name                 = "certificates"
+      share_name           = "certificates"
+      storage_account_key  = var.backend_account_key
+      storage_account_name = var.backend_account_name
+      read_only            = true
+    }
+  }
+}
 
 
