@@ -6,9 +6,9 @@ output "primary_id_certfile" {
   value = abspath("${path.root}/cert.pfx")
 }
 
-#output "provider-url" {
-#  value = "${azurerm_container_group.provider-connector.dns_name_label}.${var.location}azureconainer.io"
-#}
+output "provider-url" {
+  value = "${azurerm_container_group.provider-connector.dns_name_label}.${var.location}.azurecontainer.io"
+}
 #
 #output "consumer-url" {
 #  value = "${azurerm_container_group.consumer-connector.dns_name_label}.${var.location}azureconainer.io"

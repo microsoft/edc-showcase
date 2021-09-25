@@ -12,7 +12,7 @@
       {
         "id": "local-hub-url",
         "type": "IdentityHub",
-        "serviceEndpoint": "http://localhost:9191/api/identity-hub/"
+        "serviceEndpoint": "http://ion-demo-provider.westeurope.azurecontainer.io:8181/api/identity-hub/"
       }
     ],
     "verificationMethod": [
