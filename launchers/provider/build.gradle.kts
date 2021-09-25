@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":extensions:ion-client-mock"))
     implementation(project(":extensions:verifiable-credentials"))
     implementation(project(":extensions:distributed-identity-service"))
+    implementation(project(":extensions:public-rest-api"))
 
     implementation(project(":extensions:dataseeding:catalog"))
     implementation(project(":extensions:dataseeding:hub"))
