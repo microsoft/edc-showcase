@@ -52,9 +52,9 @@ public class DistributedIdentityService implements IdentityService {
             var jwt = SignedJWT.parse(token);
             monitor.debug("Starting verification...");
 
-            monitor.debug("  Resolving other party's DID Document");
+            monitor.debug("Resolving other party's DID Document");
             var did = didResolver.resolve(jwt.getJWTClaimsSet().getIssuer());
-            monitor.debug("  Extracting public key");
+            monitor.debug("Extracting public key");
             Optional<VerificationMethod> publicKey = getPublicKey(did);
             if (publicKey.isEmpty()) {
                 return new VerificationResult("Public Key not found in DID Document!");
@@ -62,13 +62,14 @@ public class DistributedIdentityService implements IdentityService {
             EllipticCurvePublicKey publicKeyJwk = publicKey.get().getPublicKeyJwk();
             ECKey publicKeyEC = ECKeyConverter.toECKey(publicKeyJwk, publicKey.get().getId());
 
-            monitor.debug("  Verifying JWT with public key...");
+            monitor.debug("Verifying JWT with public key...");
             if (!VerifiableCredential.verify(jwt, publicKeyEC)) {
                 return new VerificationResult("Token could not be verified!");
             }
-            monitor.debug("  verification successful! Fetching data from IdentityHub");
+            monitor.debug("verification successful! Fetching data from IdentityHub");
             var credentialsResult = credentialsVerifier.verifyCredentials(getHubUrl(did), new EcPublicKeyWrapper(publicKeyEC));
 
+            monitor.debug("Building ClaimToken");
             var tokenBuilder = ClaimToken.Builder.newInstance();
             var claimToken = tokenBuilder.claims(credentialsResult.getValidatedCredentials()).build();
 

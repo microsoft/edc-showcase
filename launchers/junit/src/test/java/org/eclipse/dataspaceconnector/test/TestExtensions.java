@@ -62,7 +62,7 @@ public class TestExtensions {
                 var ionClient = context.getService(IonClient.class);
                 var idHubclient = context.getService(IdentityHubClient.class);
                 DidPublicKeyResolver publicKeyResolver = context.getService(DidPublicKeyResolver.class);
-                var identityService = new DistributedIdentityService(verifiableCredentialProvider, ionClient, publicKeyResolver, new IdentityHubCredentialsVerifier(idHubclient, MONITOR), MONITOR);
+                var identityService = new DistributedIdentityService(verifiableCredentialProvider, ionClient, publicKeyResolver, new IdentityHubCredentialsVerifier(idHubclient, MONITOR, "did:ion:test"), MONITOR);
                 context.registerService(IdentityService.class, identityService);
             }
         };
@@ -77,7 +77,7 @@ public class TestExtensions {
 
             @Override
             public void initialize(ServiceExtensionContext context) {
-                context.registerService(CredentialsVerifier.class, new IdentityHubCredentialsVerifier(hubclient, MONITOR));
+                context.registerService(CredentialsVerifier.class, new IdentityHubCredentialsVerifier(hubclient, MONITOR, "did:ion:test"));
                 context.registerService(IdentityHubClient.class, hubclient);
             }
         };

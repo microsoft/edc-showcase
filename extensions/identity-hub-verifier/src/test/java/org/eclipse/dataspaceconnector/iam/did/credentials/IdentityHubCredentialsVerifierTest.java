@@ -42,7 +42,7 @@ class IdentityHubCredentialsVerifierTest {
         publicKey = (RSAPublicKey) kp.getPublic();
         hubClient = EasyMock.createMock(IdentityHubClient.class);
         credentialsVerifier = new IdentityHubCredentialsVerifier(hubClient, new Monitor() {
-        });
+        }, "did:ion:test");
 
     }
 

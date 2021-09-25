@@ -15,10 +15,10 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.lang.String.format;
+import static org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidConstants.DID_URL_SETTING;
 
 public class VerifiableCredentialLoaderExtension implements ServiceExtension {
 
-    private static final String DID_URL_SETTING = "edc.identity.did.url";
 
     @Override
     public Set<String> provides() {
