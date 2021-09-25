@@ -12,6 +12,11 @@ val edcversion: String by project
 val jupiterVersion : String by project
 
 dependencies {
+    testImplementation(project(":extensions:distributed-identity-service"))
+    testImplementation(project(":extensions:ion-client-mock"))
+    testImplementation(project(":extensions:identity-hub-verifier"))
+    implementation(project(":extensions:dataseeding:hub"))
+
     testImplementation("${group}:spi:${edcversion}")
     testImplementation("${group}:core.bootstrap:${edcversion}")
     testImplementation("${group}:core.transfer:${edcversion}")
@@ -19,15 +24,16 @@ dependencies {
     testImplementation("${group}:in-mem.process-store:${edcversion}")
     testImplementation("${group}:in-mem.policy-registry:${edcversion}")
     testImplementation("${group}:in-mem.metadata:${edcversion}")
+    testImplementation("${group}:in-mem.identity-hub:${edcversion}")
     testImplementation("${group}:data-protocols.ion.core:${edcversion}")
     testImplementation("${group}:data-protocols.ids-policy-mock:${edcversion}")
     testImplementation("${group}:data-protocols.ids:${edcversion}")
+    testImplementation("${group}:iam.identity-did-core:${edcversion}")
+
+
     testImplementation("${group}:dataspaceconnector.junit.launcher:${edcversion}")
     testImplementation("${group}:dataspaceconnector.common.util:${edcversion}")
 
-    testImplementation(project(":extensions:distributed-identity-service"))
-    testImplementation(project(":extensions:ion-client-mock"))
-    testImplementation(project(":extensions:identity-hub-verifier"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
 }

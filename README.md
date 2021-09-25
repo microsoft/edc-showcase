@@ -34,8 +34,8 @@ A ... Consumer, B ... Provider
 1. B resolves A's DID Document from ION and from it retrieves A's public key and A's Hub URL
 1. B verifies A's VC using A's public key (from the DID Document)
 1. B obtains object data from A's Hub:
-    - B sends query to A's hub together with its public key
-    - A decrypts hub data object and re-encrypts with B's public key
+    - B sends query to A's hub together with its DID url
+    - A decrypts hub data object and re-encrypts with B's public key (obtained from B's DID)
     - B receives and decrypts A's hub data object
 1. B obtains the Verifier's DID document from ION (Verifier's DID URL must be contained in the hub data object)
 1. B uses Verifier's public key to verify A's object data

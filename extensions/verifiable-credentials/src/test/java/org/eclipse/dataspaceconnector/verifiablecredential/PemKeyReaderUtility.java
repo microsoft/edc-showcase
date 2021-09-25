@@ -24,7 +24,7 @@ public class PemKeyReaderUtility {
         System.out.println("Public keys: ");
         System.out.printf("consumer: %s%n", jwk1);
         System.out.printf("verifier: %s%n", jwk2);
-        System.out.printf("provider: %s%n", jwk2);
+        System.out.printf("provider: %s%n", jwk3);
     }
 
 

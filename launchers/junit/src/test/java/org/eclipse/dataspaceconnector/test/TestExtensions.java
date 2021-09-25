@@ -17,6 +17,7 @@ package org.eclipse.dataspaceconnector.test;/*
  * All rights reserved.
  */
 
+import org.eclipse.dataspaceconnector.iam.did.IdentityDidCoreHubExtension;
 import org.eclipse.dataspaceconnector.iam.did.credentials.IdentityHubCredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.credentials.IonClientMock;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
@@ -30,7 +31,6 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.security.PrivateKeyResolver;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
-import org.eclipse.dataspaceconnector.spi.system.SystemExtension;
 import org.eclipse.dataspaceconnector.verifiablecredential.IonDidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.verifiablecredential.spi.VerifiableCredentialProvider;
 
@@ -66,7 +66,7 @@ public class TestExtensions {
         };
     }
 
-    public static ServiceExtension identityHubExtension(IdentityHubClient hubclient) {
+    public static ServiceExtension identityHubClientExtension(IdentityHubClient hubclient) {
         return new ServiceExtension() {
             @Override
             public Set<String> provides() {
@@ -97,7 +97,7 @@ public class TestExtensions {
         };
     }
 
-    public static SystemExtension keyResolvers(PrivateKeyResolver privateKeyResolver) {
+    public static ServiceExtension keyResolvers(PrivateKeyResolver privateKeyResolver) {
         return new ServiceExtension() {
             @Override
             public Set<String> provides() {
@@ -116,5 +116,9 @@ public class TestExtensions {
                 context.registerService(DidPublicKeyResolver.class, new IonDidPublicKeyResolver(ionClient));
             }
         };
+    }
+
+    public static ServiceExtension identityHubExtension() {
+        return new IdentityDidCoreHubExtension();
     }
 }

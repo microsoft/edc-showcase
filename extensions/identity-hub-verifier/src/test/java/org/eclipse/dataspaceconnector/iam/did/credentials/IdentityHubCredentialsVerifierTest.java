@@ -17,7 +17,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
 
 
-class IonCredentialsVerifierTest {
+class IdentityHubCredentialsVerifierTest {
     private IdentityHubClient hubClient;
     private IdentityHubCredentialsVerifier credentialsVerifier;
     private RSAPublicKey publicKey;

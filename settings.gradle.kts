@@ -1,7 +1,6 @@
 rootProject.name = "ion-demo"
 
-include(":launchers:consumer")
-include(":launchers:hub")
+include(":launchers:provider")
 include(":launchers:junit")
 
 include(":extensions:identity-hub-verifier")

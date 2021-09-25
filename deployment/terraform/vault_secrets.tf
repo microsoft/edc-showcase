@@ -40,7 +40,7 @@ resource "azurerm_key_vault_secret" "blobstorekey" {
 
 resource "azurerm_key_vault_secret" "consumer_private_key" {
   name         = var.consumer-name
-  value        = file("../../keys2/private.pem")
+  value        = file("../../keys2/consumer.pem")
   key_vault_id = azurerm_key_vault.main-vault.id
   depends_on   = [
     azurerm_role_assignment.current-user-secretsofficer
@@ -49,18 +49,18 @@ resource "azurerm_key_vault_secret" "consumer_private_key" {
 
 resource "azurerm_key_vault_secret" "provider_private_key" {
   name         = var.provider-name
-  value        = file("../../keys/provider-priv.pem") # todo: replace with variable
+  value        = file("../../keys2/provider.pem") # todo: replace with variable
   key_vault_id = azurerm_key_vault.main-vault.id
-  depends_on = [
+  depends_on   = [
     azurerm_role_assignment.current-user-secretsofficer
   ]
 }
 
 resource "azurerm_key_vault_secret" "verifier_private_key" {
   name         = "verifier"
-  value        = file("../../keys/verifier-priv.pem") # todo: replace with variable
+  value        = file("../../keys2/verifier.pem") # todo: replace with variable
   key_vault_id = azurerm_key_vault.main-vault.id
-  depends_on = [
+  depends_on   = [
     azurerm_role_assignment.current-user-secretsofficer
   ]
 }

@@ -12,7 +12,7 @@
  *
  */
 
-package com.microsoft.ion.consumer;
+package com.microsoft.ion.provider;
 
 import org.eclipse.dataspaceconnector.monitor.MonitorProvider;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -25,7 +25,7 @@ import java.util.ListIterator;
 
 import static org.eclipse.dataspaceconnector.system.ExtensionLoader.*;
 
-public class ConsumerRuntime {
+public class ProviderRuntime {
 
     public static void main(String[] args) {
         TypeManager typeManager = new TypeManager();
@@ -43,7 +43,7 @@ public class ConsumerRuntime {
             monitor.severe("Error booting runtime", e);
             System.exit(-1);  // stop the process
         }
-        monitor.info("Consumer Connector ready");
+        monitor.info("Provider Connector ready");
 
     }
 
@@ -52,7 +52,7 @@ public class ConsumerRuntime {
         while (iter.hasPrevious()) {
             iter.previous().shutdown();
         }
-        monitor.info("Consumer Connector shutdown complete");
+        monitor.info("Provider Connector shutdown complete");
     }
 
 }
