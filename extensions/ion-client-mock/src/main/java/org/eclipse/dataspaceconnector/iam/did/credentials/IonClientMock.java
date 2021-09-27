@@ -17,8 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidDocument;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolveResponse;
 import org.eclipse.dataspaceconnector.ion.IonException;
-import org.eclipse.dataspaceconnector.ion.model.IonRequest;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
+import org.eclipse.dataspaceconnector.ion.spi.request.IonRequest;
 
 import java.io.IOException;
 import java.io.InputStream;

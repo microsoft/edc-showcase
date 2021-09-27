@@ -15,7 +15,7 @@ val group = "org.eclipse.dataspaceconnector"
 dependencies {
     // dependencies from this project
     implementation(project(":extensions:identity-hub-verifier"))
-    implementation(project(":extensions:ion-client-mock"))
+//    implementation(project(":extensions:ion-client-mock"))
     implementation(project(":extensions:verifiable-credentials"))
     implementation(project(":extensions:distributed-identity-service"))
     implementation(project(":extensions:public-rest-api"))
@@ -44,7 +44,8 @@ dependencies {
     implementation("${group}:aws.s3.provision:${edcversion}")
 
     // distributed identity stuff
-    implementation("${group}:data-protocols.ion:${edcversion}")
+    implementation("${group}:data-protocols.ion-core:${edcversion}")
+    implementation("${group}:data-protocols.ion-client:${edcversion}")
     implementation("${group}:iam.identity-did-spi:${edcversion}")
     implementation("${group}:iam.identity-did-core:${edcversion}")
 
