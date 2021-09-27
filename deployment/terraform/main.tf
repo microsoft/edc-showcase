@@ -188,7 +188,7 @@ resource "azurerm_container_group" "provider-connector" {
       CONNECTOR_NAME = "provider"
       TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL        = "did:ion:EiDfkaPHt8Yojnh15O7egrj5pA9tTefh_SYtbhF1-XyAeA"
+      DID_URL        = "did:ion:EiBMres8-U-Gjtfa4CnFUm0URSfMTo1CN4_6Y5J7UeaTyg"
     }
 
     volume {
@@ -233,7 +233,7 @@ resource "azurerm_container_group" "consumer-connector" {
       CONNECTOR_NAME = "consumer"
       TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL        = "did:ion:EiAnKD8-jfdd0MDcZUjAbRgaThBrMxPTFOxcnfJhI7Ukaw"
+      DID_URL        = "did:ion:EiCmXDhpBoSRyuYTWTTvp1JdyTWpiXJiCnywM6PG87sxAA"
     }
 
     volume {

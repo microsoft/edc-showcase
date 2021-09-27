@@ -1,17 +1,21 @@
 package org.eclipse.dataspaceconnector.verifiablecredential;
 
+import com.nimbusds.jose.Algorithm;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.ECDSASigner;
+import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.ECDSAVerifier;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PrivateKeyWrapper;
+import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PublicKeyWrapper;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -19,7 +23,7 @@ import java.util.UUID;
 /**
  * Convenience/helper class to generate, verify and deserialize verifiable credentials, which are, in fact, Signed JSON Web Tokens (JWTs).
  */
-public class VerifiableCredential {
+public class VerifiableCredentialFactory {
 
     public static final String OWNER_CLAIM = "owner";
 
@@ -27,9 +31,9 @@ public class VerifiableCredential {
      * Creates a signed JWT {@link SignedJWT} that contains a set of claims and an issuer
      *
      * @param privateKeyPemContent The contents of a private key stored in PEM format. Although all private key types are possible, in the context of Distributed Identity and ION
-     *                             using an Elliptic Curve key ({@code secp256k1}) is advisable. This can be achieved using OpenSSL CLI:
+     *                             using an Elliptic Curve key ({@code prime256v1}) is advisable. This can be achieved using OpenSSL CLI:
      *                             <p>
-     *                             {@code openssl ecparam -name secp256k1 -genkey -noout -out secp256k1-key.pem}
+     *                             {@code openssl ecparam -name prime256v1 -genkey -noout -out prime256v1-key.pem}
      *                             </p>
      * @param claims               a list of key-value-pairs that contain claims
      * @param issuer               the "owner" of the VC, in most cases this will be the connector ID. The VC will store this in the "iss" claim
@@ -44,7 +48,29 @@ public class VerifiableCredential {
         }
     }
 
+    /**
+     * Creates a signed JWT {@link SignedJWT} that contains a set of claims and an issuer
+     *
+     * @param privateKey A Private Key represented as {@link ECKey}. Although all private key types are possible, in the context of Distributed Identity and ION
+     *                   using an Elliptic Curve key ({@code P-256}) is advisable.
+     * @param claims     a list of key-value-pairs that contain claims
+     * @param issuer     the "owner" of the VC, in most cases this will be the DID ID. The VC will store this in the "iss" claim
+     * @return a {@code SignedJWT} that is signed with the private key and contains all claims listed
+     */
     public static SignedJWT create(ECKey privateKey, Map<String, String> claims, String issuer) {
+        return create(new EcPrivateKeyWrapper(privateKey), claims, issuer);
+    }
+
+    /**
+     * Creates a signed JWT {@link SignedJWT} that contains a set of claims and an issuer
+     *
+     * @param privateKey A Private Key represented as {@link PrivateKeyWrapper}. Although all private key types are possible, in the context of Distributed Identity and ION
+     *                   using an Elliptic Curve key ({@code P-256}) is advisable.
+     * @param claims     a list of key-value-pairs that contain claims
+     * @param issuer     the "owner" of the VC, in most cases this will be the DID ID. The VC will store this in the "iss" claim
+     * @return a {@code SignedJWT} that is signed with the private key and contains all claims listed
+     */
+    public static SignedJWT create(PrivateKeyWrapper privateKey, Map<String, String> claims, String issuer) {
         var claimssetBuilder = new JWTClaimsSet.Builder();
 
         claims.forEach(claimssetBuilder::claim);
@@ -54,11 +80,17 @@ public class VerifiableCredential {
                 .jwtID(UUID.randomUUID().toString())
                 .build();
 
-        var header = new JWSHeader(JWSAlgorithm.ES256);
+        JWSSigner signer = privateKey.signer();
+        //prefer ES256 if available, otherwise use the "next best"
+        JWSAlgorithm algorithm = signer.supportedJWSAlgorithms().contains(JWSAlgorithm.ES256) ?
+                JWSAlgorithm.ES256 :
+                signer.supportedJWSAlgorithms().stream().min(Comparator.comparing(Algorithm::getRequirement))
+                        .orElseThrow(() -> new CryptoException("No recommended JWS Algorithms for Private Key Signer " + signer.getClass()));
+        var header = new JWSHeader(algorithm);
 
         var vc = new SignedJWT(header, claimsSet);
         try {
-            vc.sign(new ECDSASigner(privateKey));
+            vc.sign(signer);
             return vc;
         } catch (JOSEException e) {
             throw new CryptoException(e);
@@ -75,6 +107,21 @@ public class VerifiableCredential {
     public static boolean verify(SignedJWT verifiableCredential, ECKey publicKey) {
         try {
             return verifiableCredential.verify(new ECDSAVerifier(publicKey));
+        } catch (JOSEException e) {
+            throw new CryptoException(e);
+        }
+    }
+
+    /**
+     * Verifies a VerifiableCredential using the issuer's public key
+     *
+     * @param verifiableCredential a {@link SignedJWT} that was sent by the claiming party.
+     * @param publicKey            The claiming party's public key, passed as a {@link PublicKeyWrapper}
+     * @return true if verified, false otherwise
+     */
+    public static boolean verify(SignedJWT verifiableCredential, PublicKeyWrapper publicKey) {
+        try {
+            return verifiableCredential.verify(publicKey.verifier());
         } catch (JOSEException e) {
             throw new CryptoException(e);
         }

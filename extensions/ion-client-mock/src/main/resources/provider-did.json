@@ -1,23 +1,24 @@
 {
   "@context": "https://w3id.org/did-resolution/v1",
   "didDocument": {
-    "id": "did:ion:EiDfkaPHt8Yojnh15O7egrj5pA9tTefh_SYtbhF1-XyAeA",
+    "id": "did:ion:EiBMres8-U-Gjtfa4CnFUm0URSfMTo1CN4_6Y5J7UeaTyg",
     "@context": [
       "https://www.w3.org/ns/did/v1",
       {
-        "@base": "did:ion:EiDfkaPHt8Yojnh15O7egrj5pA9tTefh_SYtbhF1-XyAeA"
+        "@base": "did:ion:EiBMres8-U-Gjtfa4CnFUm0URSfMTo1CN4_6Y5J7UeaTyg"
       }
     ],
     "service": [
       {
-        "id": "local-hub-url",
+        "id": "#provider-identity-hub-url",
         "type": "IdentityHub",
         "serviceEndpoint": "http://ion-demo-provider.westeurope.azurecontainer.io:8181/api/identity-hub/"
       }
     ],
     "verificationMethod": [
       {
-        "id": "provider-key",
+        "id": "#provider-key-1",
+        "controller": "",
         "type": "JsonWebKey2020",
         "publicKeyJwk": {
           "kty": "EC",
@@ -28,15 +29,15 @@
       }
     ],
     "authentication": [
-      "provider-key"
+      "#provider-key-1"
     ]
   },
   "didDocumentMetadata": {
     "method": {
       "published": true,
-      "recoveryCommitment": "EiB19dfmCiAsFTbtm_uuBk-s5KQkL0XhzSMLXq0LYMz2rA",
-      "updateCommitment": "EiBtFv61ffGcoixejqAud1lp2lZR36BHyir7CxryASIaOQ"
+      "recoveryCommitment": "EiBQHv081PWr0HF6tcpkWWYJWpYgBzDBjaqt-VE62krijg",
+      "updateCommitment": "EiCdZ7tmacJj3UzJ3FEruBm9CawndSDn9zKUEnykxzwGrw"
     },
-    "canonicalId": "did:ion:EiDfkaPHt8Yojnh15O7egrj5pA9tTefh_SYtbhF1-XyAeA"
+    "canonicalId": "did:ion:EiBMres8-U-Gjtfa4CnFUm0URSfMTo1CN4_6Y5J7UeaTyg"
   }
 }

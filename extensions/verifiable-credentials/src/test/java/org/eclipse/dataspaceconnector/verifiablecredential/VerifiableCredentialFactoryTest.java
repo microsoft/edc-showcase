@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.verifiablecredential.TestHelper.readFile;
 
-class VerifiableCredentialTest {
+class VerifiableCredentialFactoryTest {
 
 
     private ECKey privateKey;
@@ -28,7 +28,7 @@ class VerifiableCredentialTest {
 
     @Test
     void createVerifiableCredential() throws ParseException {
-        var vc = VerifiableCredential.create(privateKey, Map.of("did-url", "someUrl"), "test-connector");
+        var vc = VerifiableCredentialFactory.create(privateKey, Map.of("did-url", "someUrl"), "test-connector");
 
         assertThat(vc).isNotNull();
         assertThat(vc.getJWTClaimsSet().getClaim("did-url")).isEqualTo("someUrl");
@@ -41,13 +41,13 @@ class VerifiableCredentialTest {
 
     @Test
     void ensureSerialization() throws ParseException {
-        var vc = VerifiableCredential.create(privateKey, Map.of("did-url", "someUrl"), "test-connector");
+        var vc = VerifiableCredentialFactory.create(privateKey, Map.of("did-url", "someUrl"), "test-connector");
 
         assertThat(vc).isNotNull();
         String jwtString = vc.serialize();
 
         //deserialize
-        var deserialized = VerifiableCredential.parse(jwtString);
+        var deserialized = VerifiableCredentialFactory.parse(jwtString);
 
         assertThat(deserialized.getJWTClaimsSet()).isEqualTo(vc.getJWTClaimsSet());
         assertThat(deserialized.getHeader().getAlgorithm()).isEqualTo(vc.getHeader().getAlgorithm());
@@ -56,14 +56,14 @@ class VerifiableCredentialTest {
 
     @Test
     void verifyJwt() throws JOSEException {
-        var vc = VerifiableCredential.create(privateKey, Map.of("did-url", "someUrl"), "test-connector");
+        var vc = VerifiableCredentialFactory.create(privateKey, Map.of("did-url", "someUrl"), "test-connector");
         String jwtString = vc.serialize();
 
         //deserialize
-        var jwt = VerifiableCredential.parse(jwtString);
+        var jwt = VerifiableCredentialFactory.parse(jwtString);
         var pubKey = readFile("public_p256.pem");
 
-        assertThat(VerifiableCredential.verify(jwt, (ECKey) ECKey.parseFromPEMEncodedObjects(pubKey))).isTrue();
+        assertThat(VerifiableCredentialFactory.verify(jwt, (ECKey) ECKey.parseFromPEMEncodedObjects(pubKey))).isTrue();
 
     }
 }

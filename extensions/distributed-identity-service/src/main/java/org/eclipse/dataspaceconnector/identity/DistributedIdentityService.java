@@ -1,17 +1,21 @@
 package org.eclipse.dataspaceconnector.identity;
 
-import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
-import org.eclipse.dataspaceconnector.iam.did.spi.resolution.*;
+import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PublicKeyWrapper;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidConstants;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidDocument;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolver;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.JwkPublicKey;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.Service;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.VerificationMethod;
 import org.eclipse.dataspaceconnector.spi.iam.ClaimToken;
 import org.eclipse.dataspaceconnector.spi.iam.IdentityService;
 import org.eclipse.dataspaceconnector.spi.iam.TokenResult;
 import org.eclipse.dataspaceconnector.spi.iam.VerificationResult;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
-import org.eclipse.dataspaceconnector.verifiablecredential.ECKeyConverter;
-import org.eclipse.dataspaceconnector.verifiablecredential.EcPublicKeyWrapper;
-import org.eclipse.dataspaceconnector.verifiablecredential.VerifiableCredential;
+import org.eclipse.dataspaceconnector.verifiablecredential.KeyConverter;
+import org.eclipse.dataspaceconnector.verifiablecredential.VerifiableCredentialFactory;
 import org.eclipse.dataspaceconnector.verifiablecredential.spi.VerifiableCredentialProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,14 +28,12 @@ public class DistributedIdentityService implements IdentityService {
 
     private final VerifiableCredentialProvider verifiableCredentialProvider;
     private final DidResolver didResolver;
-    private final DidPublicKeyResolver publicKeyResolver;
     private final CredentialsVerifier credentialsVerifier;
     private final Monitor monitor;
 
-    public DistributedIdentityService(VerifiableCredentialProvider vcProvider, DidResolver didResolver, DidPublicKeyResolver publicKeyResolver, CredentialsVerifier credentialsVerifier, Monitor monitor) {
+    public DistributedIdentityService(VerifiableCredentialProvider vcProvider, DidResolver didResolver, CredentialsVerifier credentialsVerifier, Monitor monitor) {
         this.verifiableCredentialProvider = vcProvider;
         this.didResolver = didResolver;
-        this.publicKeyResolver = publicKeyResolver;
         this.credentialsVerifier = credentialsVerifier;
         this.monitor = monitor;
     }
@@ -55,19 +57,24 @@ public class DistributedIdentityService implements IdentityService {
             monitor.debug("Resolving other party's DID Document");
             var did = didResolver.resolve(jwt.getJWTClaimsSet().getIssuer());
             monitor.debug("Extracting public key");
+
+            // this will return the _first_ public key entry
             Optional<VerificationMethod> publicKey = getPublicKey(did);
             if (publicKey.isEmpty()) {
                 return new VerificationResult("Public Key not found in DID Document!");
             }
-            EllipticCurvePublicKey publicKeyJwk = publicKey.get().getPublicKeyJwk();
-            ECKey publicKeyEC = ECKeyConverter.toECKey(publicKeyJwk, publicKey.get().getId());
+
+            //convert the POJO into a usable PK-wrapper:
+            JwkPublicKey publicKeyJwk = publicKey.get().getPublicKeyJwk();
+            PublicKeyWrapper publicKeyWRapper = KeyConverter.toPublicKeyWrapper(publicKeyJwk, publicKey.get().getId());
 
             monitor.debug("Verifying JWT with public key...");
-            if (!VerifiableCredential.verify(jwt, publicKeyEC)) {
+            if (!VerifiableCredentialFactory.verify(jwt, publicKeyWRapper)) {
                 return new VerificationResult("Token could not be verified!");
             }
             monitor.debug("verification successful! Fetching data from IdentityHub");
-            var credentialsResult = credentialsVerifier.verifyCredentials(getHubUrl(did), new EcPublicKeyWrapper(publicKeyEC));
+            String hubUrl = getHubUrl(did);
+            var credentialsResult = credentialsVerifier.verifyCredentials(hubUrl, publicKeyWRapper);
 
             monitor.debug("Building ClaimToken");
             var tokenBuilder = ClaimToken.Builder.newInstance();
@@ -80,7 +87,7 @@ public class DistributedIdentityService implements IdentityService {
         }
     }
 
-    private String getHubUrl(DidDocument did) {
+    String getHubUrl(DidDocument did) {
         return did.getService().stream().filter(service -> service.getType().equals(DidConstants.HUB_URL)).map(Service::getServiceEndpoint).findFirst().orElseThrow();
     }
 

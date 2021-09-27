@@ -9,7 +9,7 @@ val nimbusVersion: String by project
 dependencies {
 
     implementation("${group}:spi:${edcversion}")
-    implementation("${group}:data-protocols.ion.core:${edcversion}")
+    implementation("${group}:data-protocols.ion-core:${edcversion}")
     implementation("${group}:iam.identity-did-spi:${edcversion}")
 
     api("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")

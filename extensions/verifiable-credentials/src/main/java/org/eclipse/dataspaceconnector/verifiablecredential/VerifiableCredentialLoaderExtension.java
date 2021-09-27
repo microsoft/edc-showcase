@@ -52,7 +52,7 @@ public class VerifiableCredentialLoaderExtension implements ServiceExtension {
 
             // we cannot store the VerifiableCredential in the Vault, because it has an expiry date
             // the Issuer claim must contain the DID URL
-            return VerifiableCredential.create(privateKeyString, Map.of(VerifiableCredential.OWNER_CLAIM, connectorName), didUrl);
+            return VerifiableCredentialFactory.create(privateKeyString, Map.of(VerifiableCredentialFactory.OWNER_CLAIM, connectorName), didUrl);
         };
 
         context.registerService(VerifiableCredentialProvider.class, verifiableCredentialSupplier);
