@@ -14,12 +14,7 @@ val group = "org.eclipse.dataspaceconnector"
 
 dependencies {
     // dependencies from this project
-    implementation(project(":extensions:identity-hub-verifier"))
-//    implementation(project(":extensions:ion-client-mock"))
-    implementation(project(":extensions:verifiable-credentials"))
-    implementation(project(":extensions:distributed-identity-service"))
     implementation(project(":extensions:public-rest-api"))
-
     implementation(project(":extensions:dataseeding:catalog"))
     implementation(project(":extensions:dataseeding:hub"))
 
@@ -48,7 +43,9 @@ dependencies {
     implementation("${group}:data-protocols.ion-client:${edcversion}")
     implementation("${group}:iam.identity-did-spi:${edcversion}")
     implementation("${group}:iam.identity-did-core:${edcversion}")
-
+    implementation("${group}:iam.identity-did-service:${edcversion}")
+    implementation("${group}:iam.identity-hub-verifier:${edcversion}")
+    implementation("${group}:iam.verifiable-credentials:${edcversion}")
 
 }
 

@@ -19,7 +19,6 @@ package org.eclipse.dataspaceconnector.test;/*
 
 import org.eclipse.dataspaceconnector.iam.did.IdentityDidCoreHubExtension;
 import org.eclipse.dataspaceconnector.iam.did.credentials.IdentityHubCredentialsVerifier;
-import org.eclipse.dataspaceconnector.iam.did.credentials.IonClientMock;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
@@ -83,7 +82,7 @@ public class TestExtensions {
         };
     }
 
-    public static ServiceExtension ionClientMockExtension(IonClientMock ionClient) {
+    public static ServiceExtension ionClientMockExtension(IonClient ionClient) {
         return new ServiceExtension() {
             @Override
             public Set<String> provides() {

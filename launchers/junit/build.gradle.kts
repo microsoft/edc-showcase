@@ -12,9 +12,6 @@ val edcversion: String by project
 val jupiterVersion : String by project
 
 dependencies {
-    testImplementation(project(":extensions:distributed-identity-service"))
-    testImplementation(project(":extensions:ion-client-mock"))
-    testImplementation(project(":extensions:identity-hub-verifier"))
     implementation(project(":extensions:dataseeding:hub"))
 
     testImplementation("${group}:spi:${edcversion}")
@@ -26,9 +23,13 @@ dependencies {
     testImplementation("${group}:in-mem.metadata:${edcversion}")
     testImplementation("${group}:in-mem.identity-hub:${edcversion}")
     testImplementation("${group}:data-protocols.ion-core:${edcversion}")
+    testImplementation("${group}:data-protocols.ion-client:${edcversion}")
+
     testImplementation("${group}:data-protocols.ids-policy-mock:${edcversion}")
     testImplementation("${group}:data-protocols.ids:${edcversion}")
     testImplementation("${group}:iam.identity-did-core:${edcversion}")
+    testImplementation("${group}:iam.identity-did-service:${edcversion}")
+    testImplementation("${group}:iam.identity-hub-verifier:${edcversion}")
 
 
     testImplementation("${group}:dataspaceconnector.junit.launcher:${edcversion}")
