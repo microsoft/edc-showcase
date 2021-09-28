@@ -10,7 +10,7 @@ import org.eclipse.dataspaceconnector.spi.transfer.store.TransferProcessStore;
 import java.util.Set;
 
 
-public class DemoApiExtension implements ServiceExtension {
+public class IonDemoApiExtension implements ServiceExtension {
 
     @Override
     public Set<String> requires() {
@@ -27,7 +27,7 @@ public class DemoApiExtension implements ServiceExtension {
         var processStore = context.getService(TransferProcessStore.class);
 
         var dispatcherRegistry = context.getService(RemoteMessageDispatcherRegistry.class);
-        var controller = new DemoApiController(context.getConnectorId(), monitor, transferProcessManager, processStore, dispatcherRegistry);
+        var controller = new IonDemoApiController(context.getConnectorId(), monitor, transferProcessManager, processStore, dispatcherRegistry);
         webService.registerController(controller);
 
         monitor.info("Initialized REST API Extension");

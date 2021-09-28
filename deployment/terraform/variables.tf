@@ -17,7 +17,7 @@ variable "aws_user" {
 }
 
 variable "environment" {
-  description = "identifying string that is used in all azure resources"
+  description = "identifying string that is used as prefix in all azure resources"
 }
 
 
@@ -34,7 +34,7 @@ variable "backend_account_key" {
 
 variable "CERTIFICATE" {
   type        = string
-  description = "private key file for the primary azure app SP"
+  description = "PEM-encoded content of the private key file, that is used to secure the primary azure app SP"
 }
 
 variable "docker_repo_password" {

@@ -1,5 +1,6 @@
 # Configure the Azure provider
 terraform {
+  # comment out this object if you want to use local state only
   backend "azurerm" {
     resource_group_name  = "edc-infrastructure"
     storage_account_name = "edcstate"
@@ -159,12 +160,12 @@ resource "azurerm_role_assignment" "current-user-cryptoofficer" {
 #
 # connector that acts as data provider
 resource "azurerm_container_group" "provider-connector" {
-  name                = "${var.environment}-provider"
+  name                = "${var.environment}-${var.provider-name}"
   location            = azurerm_resource_group.core-resourcegroup.location
   resource_group_name = azurerm_resource_group.core-resourcegroup.name
   os_type             = "Linux"
   ip_address_type     = "public"
-  dns_name_label      = "${var.environment}-provider"
+  dns_name_label      = "${var.environment}-${var.provider-name}"
   image_registry_credential {
     password = var.docker_repo_password
     server   = var.docker_repo_url
@@ -174,7 +175,7 @@ resource "azurerm_container_group" "provider-connector" {
     cpu    = 2
     image  = "${var.docker_repo_url}/beardyinc/ion-demo/connector:latest"
     memory = "2"
-    name   = "provider"
+    name   = var.provider-name
 
     ports {
       port     = 8181
@@ -185,7 +186,7 @@ resource "azurerm_container_group" "provider-connector" {
       CLIENTID       = azuread_application.demo-app-id.application_id,
       TENANTID       = data.azurerm_client_config.current.tenant_id,
       VAULTNAME      = azurerm_key_vault.main-vault.name,
-      CONNECTOR_NAME = "provider"
+      CONNECTOR_NAME = var.provider-name
       TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
       DID_URL        = "did:ion:EiBMres8-U-Gjtfa4CnFUm0URSfMTo1CN4_6Y5J7UeaTyg"
@@ -204,12 +205,12 @@ resource "azurerm_container_group" "provider-connector" {
 
 # connector that acts as data consumer
 resource "azurerm_container_group" "consumer-connector" {
-  name                = "${var.environment}-consumer"
+  name                = "${var.environment}-${var.consumer-name}"
   location            = azurerm_resource_group.core-resourcegroup.location
   resource_group_name = azurerm_resource_group.core-resourcegroup.name
   os_type             = "Linux"
   ip_address_type     = "public"
-  dns_name_label      = "${var.environment}-consumer"
+  dns_name_label      = "${var.environment}-${var.consumer-name}"
   image_registry_credential {
     password = var.docker_repo_password
     server   = var.docker_repo_url
@@ -219,7 +220,7 @@ resource "azurerm_container_group" "consumer-connector" {
     cpu    = 2
     image  = "${var.docker_repo_url}/beardyinc/ion-demo/connector:latest"
     memory = "2"
-    name   = "consumer"
+    name   = "${var.consumer-name}"
 
     ports {
       port     = 8181
@@ -230,7 +231,7 @@ resource "azurerm_container_group" "consumer-connector" {
       CLIENTID       = azuread_application.demo-app-id.application_id,
       TENANTID       = data.azurerm_client_config.current.tenant_id,
       VAULTNAME      = azurerm_key_vault.main-vault.name,
-      CONNECTOR_NAME = "consumer"
+      CONNECTOR_NAME = var.consumer-name
       TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
       DID_URL        = "did:ion:EiCmXDhpBoSRyuYTWTTvp1JdyTWpiXJiCnywM6PG87sxAA"
