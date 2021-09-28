@@ -40,6 +40,6 @@ application {
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     exclude("**/pom.properties", "**/pom.xm")
     mergeServiceFiles()
-    archiveFileName.set("regsrv.jar")
+    archiveFileName.set("regsvc.jar")
 }
 

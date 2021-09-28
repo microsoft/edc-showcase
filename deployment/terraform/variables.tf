@@ -60,3 +60,9 @@ variable "provider-name" {
   type    = string
   default = "provider"
 }
+
+# unique name for the registration service
+variable "regsvc-name" {
+  type    = string
+  default = "regsvc"
+}

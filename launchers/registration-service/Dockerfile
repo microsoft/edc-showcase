@@ -1,7 +1,7 @@
 FROM openjdk:11-jre-slim
 
 WORKDIR /app
-COPY ./build/libs/reg-svc.jar /app
+COPY ./build/libs/regsvc.jar /app
 
 EXPOSE 8181
 
@@ -15,4 +15,4 @@ ENTRYPOINT java \
     -Dedc.events.topic.endpoint=${TOPIC_ENDPOINT} \
     -Dedc.ion.crawler.ion.url=${ION_URL} \
     -Dedc.ion.crawler.randomize=false \
-    -Djava.security.edg=file:/dev/.urandom -jar reg-svc.jar
+    -Djava.security.edg=file:/dev/.urandom -jar regsvc.jar
