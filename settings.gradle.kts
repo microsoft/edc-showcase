@@ -1,6 +1,6 @@
 rootProject.name = "ion-demo"
 
-include(":launchers:provider")
+include(":launchers:connector")
 include(":launchers:junit")
 
 include(":extensions:dataseeding:hub")

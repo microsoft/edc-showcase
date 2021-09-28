@@ -12,7 +12,7 @@
  *
  */
 
-package com.microsoft.ion.provider;
+package com.microsoft.ion.connector;
 
 import org.eclipse.dataspaceconnector.monitor.MonitorProvider;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -23,9 +23,11 @@ import org.eclipse.dataspaceconnector.system.DefaultServiceExtensionContext;
 import java.util.List;
 import java.util.ListIterator;
 
-import static org.eclipse.dataspaceconnector.system.ExtensionLoader.*;
+import static org.eclipse.dataspaceconnector.system.ExtensionLoader.bootServiceExtensions;
+import static org.eclipse.dataspaceconnector.system.ExtensionLoader.loadMonitor;
+import static org.eclipse.dataspaceconnector.system.ExtensionLoader.loadVault;
 
-public class ProviderRuntime {
+public class Runtime {
 
     public static void main(String[] args) {
         TypeManager typeManager = new TypeManager();
@@ -37,7 +39,7 @@ public class ProviderRuntime {
         try {
             loadVault(context);
             List<ServiceExtension> serviceExtensions = context.loadServiceExtensions();
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(serviceExtensions, monitor)));
+            java.lang.Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(serviceExtensions, monitor)));
             bootServiceExtensions(serviceExtensions, context);
         } catch (Exception e) {
             monitor.severe("Error booting runtime", e);

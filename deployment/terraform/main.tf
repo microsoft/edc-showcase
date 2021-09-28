@@ -172,7 +172,7 @@ resource "azurerm_container_group" "provider-connector" {
   }
   container {
     cpu    = 2
-    image  = "${var.docker_repo_url}/beardyinc/ion-demo/provider:latest"
+    image  = "${var.docker_repo_url}/beardyinc/ion-demo/connector:latest"
     memory = "2"
     name   = "provider"
 
@@ -217,7 +217,7 @@ resource "azurerm_container_group" "consumer-connector" {
   }
   container {
     cpu    = 2
-    image  = "${var.docker_repo_url}/beardyinc/ion-demo/provider:latest"
+    image  = "${var.docker_repo_url}/beardyinc/ion-demo/connector:latest"
     memory = "2"
     name   = "consumer"
 

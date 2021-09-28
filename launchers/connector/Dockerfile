@@ -1,7 +1,7 @@
 FROM openjdk:11-jre-slim
 
 WORKDIR /app
-COPY ./build/libs/provider.jar /app
+COPY ./build/libs/connector.jar /app
 
 EXPOSE 8181
 
@@ -14,4 +14,4 @@ ENTRYPOINT java \
     -Dedc.events.topic.name=${TOPIC_NAME} \
     -Dedc.events.topic.endpoint=${TOPIC_ENDPOINT} \
     -Dedc.identity.did.url=${DID_URL} \
-    -Djava.security.edg=file:/dev/.urandom -jar provider.jar
+    -Djava.security.edg=file:/dev/.urandom -jar connector.jar
