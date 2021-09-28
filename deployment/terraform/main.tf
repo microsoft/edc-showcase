@@ -9,19 +9,19 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 2.72.0"
+      version = ">= 2.78.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "1.6.0"
+      version = "2.4.0"
     }
     aws     = {
       source  = "hashicorp/aws"
-      version = "3.45.0"
+      version = "3.60.0"
     }
     http    = {
       source  = "hashicorp/http"
-      version = ">=2.1.0"
+      version = "2.1.0"
     }
   }
 }
@@ -49,8 +49,8 @@ resource "azurerm_resource_group" "core-resourcegroup" {
 
 # App registration for the primary identity
 resource "azuread_application" "demo-app-id" {
-  display_name               = "PrimaryIdentity-${var.environment}"
-  available_to_other_tenants = false
+  display_name     = "PrimaryIdentity-${var.environment}"
+  sign_in_audience = "AzureADMyOrg"
 }
 
 resource "azuread_application_certificate" "demo-main-identity-cert" {
