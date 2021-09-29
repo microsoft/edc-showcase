@@ -49,15 +49,21 @@ terraform apply
 
 ## Interact with the application
 
-Currently, the only way to interact with the application is via REST. Please take a look at
+Currently, the only way to interact with the application is via REST API. Please take a look at
 the [controller](extensions/public-rest-api/src/main/java/org/eclipse/dataspaceconnector/demo/api/rest/IonDemoApiController.java) (
-no Swagger yet). in order to verify that the application is running as intended, type
+no Swagger yet).
+
+### Get the catalog
+
+in order to see what data the provider connector has available, execute
 
 ```bash
 curl -X GET "http://ion-demo-consumer.westeurope.azurecontainer.io:8181/api/catalog?connectorAddress=http://ion-demo-provider.westeurope.azurecontainer.io:8181"
 ```
 
-and if that returns `["test-document"]` after a second or two, your fine.
+that should return `["test-document"]` after a second or two.
+
+### Start a data transfer
 
 ## General notes and restrictions
 

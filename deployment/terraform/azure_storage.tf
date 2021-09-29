@@ -15,3 +15,12 @@ resource "azurerm_storage_container" "main-blob-container" {
   name                 = "src-container"
   storage_account_name = azurerm_storage_account.main-blobstore.name
 }
+
+# put a file as blob to the storage container
+resource "azurerm_storage_blob" "testfile" {
+  name                   = "test-document.txt"
+  storage_account_name   = azurerm_storage_account.main-blobstore.name
+  storage_container_name = azurerm_storage_container.main-blob-container.name
+  type                   = "Block"
+  source                 = "test-document.txt"
+}

@@ -23,6 +23,7 @@ import org.eclipse.dataspaceconnector.system.DefaultServiceExtensionContext;
 import java.util.List;
 import java.util.ListIterator;
 
+import static java.lang.String.format;
 import static org.eclipse.dataspaceconnector.system.ExtensionLoader.bootServiceExtensions;
 import static org.eclipse.dataspaceconnector.system.ExtensionLoader.loadMonitor;
 import static org.eclipse.dataspaceconnector.system.ExtensionLoader.loadVault;
@@ -36,6 +37,7 @@ public class Runtime {
         DefaultServiceExtensionContext context = new DefaultServiceExtensionContext(typeManager, monitor);
         context.initialize();
 
+        var name = context.getConnectorId();
         try {
             loadVault(context);
             List<ServiceExtension> serviceExtensions = context.loadServiceExtensions();
@@ -45,7 +47,7 @@ public class Runtime {
             monitor.severe("Error booting runtime", e);
             System.exit(-1);  // stop the process
         }
-        monitor.info("Provider Connector ready");
+        monitor.info(format("%s ready", name));
 
     }
 
@@ -54,7 +56,7 @@ public class Runtime {
         while (iter.hasPrevious()) {
             iter.previous().shutdown();
         }
-        monitor.info("Provider Connector shutdown complete");
+        monitor.info("Connector shutdown complete");
     }
 
 }

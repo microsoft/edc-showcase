@@ -17,9 +17,11 @@ dependencies {
     implementation(project(":extensions:public-rest-api"))
     implementation(project(":extensions:dataseeding:catalog"))
     implementation(project(":extensions:dataseeding:hub"))
+    implementation(project(":extensions:transfer-azure-s3"))
 
     // EDC core dependencies
     implementation("${group}:core:${edcversion}")
+    implementation("${group}:core.schema:${edcversion}")
     implementation("${group}:in-mem.process-store:${edcversion}")
 
     // ids
@@ -35,7 +37,6 @@ dependencies {
 
     //cloud stuff
     implementation("${group}:azure.vault:${edcversion}")
-    implementation("${group}:aws.s3.provision:${edcversion}")
     implementation("${group}:aws.s3.provision:${edcversion}")
 
     // distributed identity stuff

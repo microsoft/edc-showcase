@@ -1,6 +1,10 @@
 package org.eclipse.dataspaceconnector.dataseeding.catalog;
 
-import org.eclipse.dataspaceconnector.policy.model.*;
+import org.eclipse.dataspaceconnector.policy.model.Action;
+import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
+import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
+import org.eclipse.dataspaceconnector.policy.model.Permission;
+import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.metadata.MetadataStore;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyRegistry;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
@@ -40,10 +44,17 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .property("filename", "test-document.txt")
                 .build();
 
-        DataEntry entry1 = DataEntry.Builder.newInstance().id("test-document").policyId(USE_EU_POLICY).catalogEntry(file1).build();
+        GenericDataCatalogEntry file2 = GenericDataCatalogEntry.Builder.newInstance()
+                .property("type", "AzureStorage")
+                .property("account", "iondemogpstorage")
+                .property("container", "src-container")
+                .property("blobname", "test-document.txt")
+                .build();
+
+        DataEntry entry1 = DataEntry.Builder.newInstance().id("test-document1").policyId(USE_EU_POLICY).catalogEntry(file1).build();
+        DataEntry entry2 = DataEntry.Builder.newInstance().id("test-document2").policyId(USE_EU_POLICY).catalogEntry(file2).build();
         metadataStore.save(entry1);
-
-
+        metadataStore.save(entry2);
     }
 
     private void savePolicies(ServiceExtensionContext context) {
@@ -56,3 +67,4 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         policyRegistry.registerPolicy(euPolicy);
     }
 }
+
