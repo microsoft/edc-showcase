@@ -19,12 +19,12 @@ package org.eclipse.dataspaceconnector.test;/*
 
 import org.eclipse.dataspaceconnector.iam.did.IdentityDidCoreHubExtension;
 import org.eclipse.dataspaceconnector.iam.did.credentials.IdentityHubCredentialsVerifier;
+import org.eclipse.dataspaceconnector.iam.did.resolver.DefaultDidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolver;
 import org.eclipse.dataspaceconnector.identity.DistributedIdentityService;
-import org.eclipse.dataspaceconnector.ion.crypto.IonDidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.eclipse.dataspaceconnector.spi.iam.IdentityService;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -114,7 +114,7 @@ public class TestExtensions {
             public void initialize(ServiceExtensionContext context) {
                 var ionClient = context.getService(IonClient.class);
                 context.registerService(PrivateKeyResolver.class, privateKeyResolver);
-                context.registerService(DidPublicKeyResolver.class, new IonDidPublicKeyResolver(ionClient));
+                context.registerService(DidPublicKeyResolver.class, new DefaultDidPublicKeyResolver(ionClient));
             }
         };
     }
