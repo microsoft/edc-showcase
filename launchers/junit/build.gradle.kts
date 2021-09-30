@@ -22,8 +22,8 @@ dependencies {
     testImplementation("${group}:in-mem.policy-registry:${edcversion}")
     testImplementation("${group}:in-mem.metadata:${edcversion}")
     testImplementation("${group}:in-mem.identity-hub:${edcversion}")
-    testImplementation("${group}:data-protocols.ion-core:${edcversion}")
-    testImplementation("${group}:data-protocols.ion-client:${edcversion}")
+    testImplementation("${group}:ion.ion-core:${edcversion}")
+    testImplementation("${group}:ion.ion-client:${edcversion}")
 
     testImplementation("${group}:data-protocols.ids-policy-mock:${edcversion}")
     testImplementation("${group}:data-protocols.ids:${edcversion}")

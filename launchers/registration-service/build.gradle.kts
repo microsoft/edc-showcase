@@ -19,7 +19,7 @@ dependencies {
 
     implementation("${group}:dataspaceconnector.common.util:${edcversion}")
     implementation("${group}:azure.events-config:${edcversion}")
-    implementation("${group}:data-protocols.ion-client:${edcversion}")
+    implementation("${group}:ion.ion-client:${edcversion}")
 
     implementation("${group}:core.bootstrap:${edcversion}")
     implementation("${group}:core.protocol-web:${edcversion}")
