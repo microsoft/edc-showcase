@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static java.lang.String.format;
 
@@ -53,10 +54,15 @@ public class BlobToS3DataFlowController implements DataFlowController {
 
         var reader = getReader(sourceType);
         var writer = getWriter(destinationType);
+        CompletableFuture.supplyAsync(() -> reader.read(dataRequest.getDataEntry().getCatalogEntry().getAddress()))
+                .thenAccept(byteArrayInputStream -> writer.write(dataRequest.getDataDestination(), dataRequest.getDataEntry().getId(), byteArrayInputStream, secret))
+                .whenComplete((unused, throwable) -> {
+                    if (throwable != null) {
+                        monitor.severe("Error during copy process: " + throwable.getMessage());
+                        //todo: move process to error
+                    }
+                });
 
-        var data = reader.read(dataRequest.getDataEntry().getCatalogEntry().getAddress());
-
-        writer.write(dataRequest.getDataDestination(), dataRequest.getDataEntry().getId(), data, secret);
 
         return DataFlowInitiateResponse.OK;
     }
@@ -87,3 +93,4 @@ public class BlobToS3DataFlowController implements DataFlowController {
         return ALLOWED_TYPES.contains(type);
     }
 }
+
