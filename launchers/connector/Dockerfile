@@ -10,7 +10,7 @@ ENTRYPOINT java \
     -Dedc.vault.tenantid=${TENANTID} \
     -Dedc.vault.certificate=/cert/cert.pfx \
     -Dedc.vault.name=${VAULTNAME} \
-    -Ddataspaceconnector.connector.name=${CONNECTOR_NAME} \
+    -Dedc.connector.name=${CONNECTOR_NAME} \
     -Dedc.events.topic.name=${TOPIC_NAME} \
     -Dedc.events.topic.endpoint=${TOPIC_ENDPOINT} \
     -Dedc.identity.did.url=${DID_URL} \

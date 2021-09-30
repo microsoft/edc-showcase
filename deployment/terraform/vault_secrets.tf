@@ -1,18 +1,18 @@
 # vault secrets
 resource "azurerm_key_vault_secret" "aws-keyid" {
-  name         = "dataspaceconnector-aws-access-key"
+  name         = "edc-aws-access-key"
   value        = aws_iam_access_key.gx_access_key.id
   key_vault_id = azurerm_key_vault.main-vault.id
-  depends_on = [
+  depends_on   = [
     azurerm_role_assignment.current-user-secretsofficer
   ]
 }
 
 resource "azurerm_key_vault_secret" "aws-secret" {
-  name         = "dataspaceconnector-aws-secret-access-key"
+  name         = "edc-aws-secret-access-key"
   value        = aws_iam_access_key.gx_access_key.secret
   key_vault_id = azurerm_key_vault.main-vault.id
-  depends_on = [
+  depends_on   = [
     azurerm_role_assignment.current-user-secretsofficer
   ]
 }
