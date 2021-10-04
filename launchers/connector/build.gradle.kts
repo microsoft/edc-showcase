@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":extensions:dataseeding:catalog"))
     implementation(project(":extensions:dataseeding:hub"))
     implementation(project(":extensions:transfer-azure-s3"))
+    implementation(project(":extensions:identity-hub-verifier"))
 
     // EDC core dependencies
     implementation("${group}:core:${edcversion}")
@@ -45,7 +46,6 @@ dependencies {
     implementation("${group}:iam.identity-did-spi:${edcversion}")
     implementation("${group}:iam.identity-did-core:${edcversion}")
     implementation("${group}:iam.identity-did-service:${edcversion}")
-    implementation("${group}:iam.identity-hub-verifier:${edcversion}")
     implementation("${group}:iam.verifiable-credentials:${edcversion}")
 
 }
