@@ -29,6 +29,7 @@ dependencies {
     testImplementation("${group}:data-protocols.ids:${edcversion}")
     testImplementation("${group}:iam.identity-did-core:${edcversion}")
     testImplementation("${group}:iam.identity-did-service:${edcversion}")
+    testImplementation("${group}:iam.verifiable-credentials:${edcversion}")
     testImplementation(project(":extensions:identity-hub-verifier"))
 
 

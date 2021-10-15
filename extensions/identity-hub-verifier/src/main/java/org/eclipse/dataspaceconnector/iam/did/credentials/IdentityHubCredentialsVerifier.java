@@ -22,6 +22,7 @@ import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQueryRequest
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * Implements a sample credentials validator that checks for signed registration credentials.
@@ -46,12 +47,16 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
     @Override
     public CredentialsResult verifyCredentials(String hubBaseUrl, PublicKeyWrapper othersPublicKey) {
-        monitor.debug("Starting credential verification against hub URL " + hubBaseUrl);
+        monitor.debug("Step 2: Starting credential verification against hub URL " + hubBaseUrl);
 
         var query = ObjectQuery.Builder.newInstance().context("ION Demo").type("RegistrationCredentials").build();
+        monitor.debug("Step 2: Generating request, encrypted with PublicKey");
+
         var queryRequest = ObjectQueryRequest.Builder.newInstance().query(query).iss(issuer).aud("aud").sub("credentials").build();
+        monitor.debug("Starting credential verification against hub URL " + hubBaseUrl);
         var credentials = hubClient.queryCredentials(queryRequest, hubBaseUrl, othersPublicKey);
-        monitor.info(credentials.getResponse().size() + " credentials obtained");
+        monitor.info(credentials.getResponse().size() + " credentials obtained from IdentityHub: ");
+        monitor.debug(credentials.getResponse().entrySet().stream().map(e -> e.getKey() + " -> " + e.getValue()).collect(Collectors.joining(", ")));
         if (credentials.isError()) {
             return new CredentialsResult("Error resolving credentials");
         }

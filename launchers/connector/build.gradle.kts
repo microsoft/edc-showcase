@@ -35,6 +35,7 @@ dependencies {
     implementation("${group}:in-memory.identity-hub:${edcversion}")
     implementation("${group}:in-memory.did-document-store:${edcversion}")
     implementation("${group}:filesystem.configuration:${edcversion}")
+    implementation("${group}:in-memory.asset-index:${edcversion}")
 
     //cloud stuff
     implementation("${group}:azure.vault:${edcversion}")

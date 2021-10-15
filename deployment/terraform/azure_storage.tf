@@ -24,3 +24,11 @@ resource "azurerm_storage_blob" "testfile" {
   type                   = "Block"
   source                 = "test-document.txt"
 }
+
+resource "azurerm_storage_blob" "testfile3" {
+  name                   = "complex_schematic_drawing.jpg"
+  storage_account_name   = azurerm_storage_account.main-blobstore.name
+  storage_container_name = azurerm_storage_container.main-blob-container.name
+  type                   = "Block"
+  source                 = "complex_schematic_drawing.jpg"
+}
