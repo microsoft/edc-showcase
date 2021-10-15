@@ -102,7 +102,7 @@ public class TestExtensions {
         return new ServiceExtension() {
             @Override
             public Set<String> provides() {
-                return Set.of(PrivateKeyResolver.FEATURE, DidPublicKeyResolver.FEATURE);
+                return Set.of(DidPublicKeyResolver.FEATURE);
             }
 
             @Override
