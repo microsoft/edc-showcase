@@ -23,17 +23,17 @@ dependencies {
     // EDC core dependencies
     implementation("${group}:core:${edcversion}")
     implementation("${group}:core.schema:${edcversion}")
-    implementation("${group}:in-mem.process-store:${edcversion}")
+    implementation("${group}:in-memory.process-store:${edcversion}")
 
     // ids
     implementation("${group}:data-protocols.ids-policy-mock:${edcversion}")
     implementation("${group}:data-protocols.ids:${edcversion}")
 
-    // simple in-memory and filesystem implementations
-    implementation("${group}:in-mem.policy-registry:${edcversion}")
-    implementation("${group}:in-mem.metadata:${edcversion}")
-    implementation("${group}:in-mem.identity-hub:${edcversion}")
-    implementation("${group}:in-mem.did-document-store:${edcversion}")
+    // simple in-memoryory and filesystem implementations
+    implementation("${group}:in-memory.policy-registry:${edcversion}")
+    implementation("${group}:in-memory.metadata:${edcversion}")
+    implementation("${group}:in-memory.identity-hub:${edcversion}")
+    implementation("${group}:in-memory.did-document-store:${edcversion}")
     implementation("${group}:filesystem.configuration:${edcversion}")
 
     //cloud stuff
