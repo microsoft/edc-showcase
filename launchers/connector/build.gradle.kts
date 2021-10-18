@@ -49,6 +49,14 @@ dependencies {
     implementation("${group}:iam.identity-did-service:${edcversion}")
     implementation("${group}:iam.verifiable-credentials:${edcversion}")
 
+    // federated cache stuff - embedded
+
+    // embed an FCC into the runtime
+//    implementation("${group}:catalog.cache:${edcversion}")
+//    implementation("${group}:in-memory.catalog.node-directory:${edcversion}")
+//    implementation("${group}:in-memory.catalog.cache.protocol-registry:${edcversion}")
+
+
 }
 
 application {
