@@ -52,10 +52,12 @@ dependencies {
     // federated cache stuff - embedded
 
     // embed an FCC into the runtime
-//    implementation("${group}:catalog.cache:${edcversion}")
-//    implementation("${group}:in-memory.catalog.node-directory:${edcversion}")
-//    implementation("${group}:in-memory.catalog.cache.protocol-registry:${edcversion}")
-
+    implementation("${group}:catalog.spi:${edcversion}")
+    implementation("${group}:catalog.cache:${edcversion}")
+    implementation("${group}:in-memory.catalog.node-directory:${edcversion}")
+    implementation("${group}:in-memory.catalog.cache.protocol-registry:${edcversion}")
+    implementation("${group}:in-memory.catalog.cache.store:${edcversion}")
+    implementation("${group}:in-memory.catalog.cache.query-adapter-registry:${edcversion}")
 
 }
 

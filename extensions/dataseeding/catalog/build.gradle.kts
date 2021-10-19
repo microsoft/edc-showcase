@@ -7,6 +7,8 @@ val group = "org.eclipse.dataspaceconnector"
 
 dependencies {
 
+    api("${group}:spi:${edcversion}")
+    implementation("${group}:dataspaceconnector.common.util:${edcversion}")
+    api("${group}:catalog.spi:${edcversion}")
     implementation("${group}:spi:${edcversion}")
-
 }

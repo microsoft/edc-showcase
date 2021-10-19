@@ -1,0 +1,16 @@
+[
+  {
+    "name": "consumer",
+    "url": "http://ion-demo-consumer.westeurope.azurecontainer.io:8181",
+    "supportedProtocols": [
+      "ids-rest"
+    ]
+  },
+  {
+    "name": "provider",
+    "url": "http://ion-demo-provider.westeurope.azurecontainer.io:8181",
+    "supportedProtocols": [
+      "ids-rest"
+    ]
+  }
+]
