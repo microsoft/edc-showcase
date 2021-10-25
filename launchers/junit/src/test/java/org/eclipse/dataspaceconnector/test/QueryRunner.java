@@ -3,13 +3,13 @@ package org.eclipse.dataspaceconnector.test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.ECKey;
+import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.ClientResponse;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
-import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PrivateKeyWrapper;
-import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQueryRequest;
+import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
+import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.ion.DefaultIonClient;
-import org.eclipse.dataspaceconnector.ion.crypto.EcPrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.ion.spi.IonClient;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.security.PrivateKeyResolver;
@@ -74,7 +74,7 @@ public class QueryRunner {
         IonClient ionClient = new DefaultIonClient(new ObjectMapper());
         var idHubclient = new IdentityHubClient() {
             @Override
-            public ClientResponse<Map<String, Object>> queryCredentials(ObjectQueryRequest objectQueryRequest, String s, PublicKeyWrapper publicKey) {
+            public ClientResponse<Map<String, Object>> queryCredentials(ObjectQueryRequest objectQueryRequest, String s, PublicKeyWrapper publicKeyWrapper) {
                 return null;
             }
         };

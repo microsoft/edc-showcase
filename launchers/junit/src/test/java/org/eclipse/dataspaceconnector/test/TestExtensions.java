@@ -17,9 +17,9 @@ package org.eclipse.dataspaceconnector.test;/*
  * All rights reserved.
  */
 
-import org.eclipse.dataspaceconnector.iam.did.IdentityDidCoreHubExtension;
 import org.eclipse.dataspaceconnector.iam.did.credentials.IdentityHubCredentialsVerifier;
-import org.eclipse.dataspaceconnector.iam.did.resolver.DefaultDidPublicKeyResolver;
+import org.eclipse.dataspaceconnector.iam.did.resolution.DefaultDidPublicKeyResolver;
+import org.eclipse.dataspaceconnector.iam.did.resolution.DidResolverRegistryImpl;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
@@ -61,6 +61,7 @@ public class TestExtensions {
                 var ionClient = context.getService(IonClient.class);
                 var idHubclient = context.getService(IdentityHubClient.class);
                 DidPublicKeyResolver publicKeyResolver = context.getService(DidPublicKeyResolver.class);
+                var resolverRegistry = new DidResolverRegistryImpl();
                 var identityService = new DistributedIdentityService(verifiableCredentialProvider, ionClient, new IdentityHubCredentialsVerifier(idHubclient, MONITOR, "did:ion:test"), MONITOR);
                 context.registerService(IdentityService.class, identityService);
             }

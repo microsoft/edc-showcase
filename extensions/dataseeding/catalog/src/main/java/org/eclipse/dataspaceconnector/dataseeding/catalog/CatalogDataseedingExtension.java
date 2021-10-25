@@ -3,10 +3,10 @@ package org.eclipse.dataspaceconnector.dataseeding.catalog;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.dataspaceconnector.catalog.spi.CatalogQueryAdapter;
+import org.eclipse.dataspaceconnector.catalog.spi.CatalogQueryAdapterRegistry;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
-import org.eclipse.dataspaceconnector.catalog.spi.ProtocolAdapter;
-import org.eclipse.dataspaceconnector.catalog.spi.ProtocolAdapterRegistry;
 import org.eclipse.dataspaceconnector.catalog.spi.model.UpdateRequest;
 import org.eclipse.dataspaceconnector.catalog.spi.model.UpdateResponse;
 import org.eclipse.dataspaceconnector.policy.model.Action;
@@ -37,7 +37,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
     @Override
     public Set<String> requires() {
-        return Set.of(MetadataStore.FEATURE, PolicyRegistry.FEATURE, FederatedCacheNodeDirectory.FEATURE, ProtocolAdapterRegistry.FEATURE);
+        return Set.of(MetadataStore.FEATURE, PolicyRegistry.FEATURE, FederatedCacheNodeDirectory.FEATURE, CatalogQueryAdapterRegistry.FEATURE);
     }
 
     @Override
@@ -54,8 +54,8 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
     private void createProtocolAdapter(ServiceExtensionContext context) {
         var dispatcherRegistry = context.getService(RemoteMessageDispatcherRegistry.class);
-        var protocolAdapterRegistry = context.getService(ProtocolAdapterRegistry.class);
-        var idsQueryAdapter = new ProtocolAdapter() {
+        var protocolAdapterRegistry = context.getService(CatalogQueryAdapterRegistry.class);
+        var idsQueryAdapter = new CatalogQueryAdapter() {
             @Override
             public CompletableFuture<UpdateResponse> sendRequest(UpdateRequest updateRequest) {
                 var query = QueryRequest.Builder.newInstance()

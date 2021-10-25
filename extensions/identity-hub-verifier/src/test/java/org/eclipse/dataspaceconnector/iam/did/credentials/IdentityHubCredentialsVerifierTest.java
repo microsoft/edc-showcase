@@ -1,11 +1,11 @@
 package org.eclipse.dataspaceconnector.iam.did.credentials;
 
 import org.easymock.EasyMock;
+import org.eclipse.dataspaceconnector.iam.did.crypto.key.RsaPublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.ClientResponse;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
-import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.PublicKeyWrapper;
-import org.eclipse.dataspaceconnector.iam.did.spi.hub.keys.RsaPublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQueryRequest;
+import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
