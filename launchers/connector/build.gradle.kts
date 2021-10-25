@@ -47,7 +47,6 @@ dependencies {
     implementation("${group}:iam.identity-did-spi:${edcversion}")
     implementation("${group}:iam.identity-did-core:${edcversion}")
     implementation("${group}:iam.identity-did-service:${edcversion}")
-    implementation("${group}:iam.verifiable-credentials:${edcversion}")
 
     // federated cache stuff - embedded
 
