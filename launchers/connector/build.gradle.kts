@@ -48,15 +48,17 @@ dependencies {
     implementation("${group}:iam.identity-did-core:${edcversion}")
     implementation("${group}:iam.identity-did-service:${edcversion}")
 
-    // federated cache stuff - embedded
-
     // embed an FCC into the runtime
     implementation("${group}:catalog.spi:${edcversion}")
     implementation("${group}:catalog.cache:${edcversion}")
     implementation("${group}:in-memory.catalog.node-directory:${edcversion}")
+
     implementation("${group}:in-memory.catalog.cache.protocol-registry:${edcversion}")
     implementation("${group}:in-memory.catalog.cache.store:${edcversion}")
     implementation("${group}:in-memory.catalog.cache.query-adapter-registry:${edcversion}")
+
+    // extension to enable client-pull mechanics
+    implementation("${group}:transfer-http-proxy:${edcversion}")
 
 }
 

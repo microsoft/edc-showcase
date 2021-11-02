@@ -9,19 +9,25 @@ import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
 import org.eclipse.dataspaceconnector.catalog.spi.model.UpdateRequest;
 import org.eclipse.dataspaceconnector.catalog.spi.model.UpdateResponse;
+import org.eclipse.dataspaceconnector.metadata.memory.InMemoryAssetIndex;
+import org.eclipse.dataspaceconnector.metadata.memory.InMemoryDataAddressResolver;
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
 import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.dataspaceconnector.spi.asset.AssetIndex;
+import org.eclipse.dataspaceconnector.spi.asset.DataAddressResolver;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.metadata.MetadataStore;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyRegistry;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
+import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.DataEntry;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.GenericDataCatalogEntry;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.QueryRequest;
+import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 
 import java.io.InputStream;
 import java.util.List;
@@ -34,18 +40,29 @@ import static org.eclipse.dataspaceconnector.policy.model.Operator.IN;
 public class CatalogDataseedingExtension implements ServiceExtension {
     public static final String USE_EU_POLICY = "use-eu";
     public static final String USE_US_POLICY = "use-us";
+    private MetadataStore metadataStore;
+    private InMemoryAssetIndex assetIndex;
+    private InMemoryDataAddressResolver dataAddressResolver;
 
     @Override
     public Set<String> requires() {
-        return Set.of(MetadataStore.FEATURE, PolicyRegistry.FEATURE, FederatedCacheNodeDirectory.FEATURE, CatalogQueryAdapterRegistry.FEATURE);
+        return Set.of(MetadataStore.FEATURE, PolicyRegistry.FEATURE,
+                FederatedCacheNodeDirectory.FEATURE,
+                DataAddressResolver.FEATURE,
+                AssetIndex.FEATURE,
+                CatalogQueryAdapterRegistry.FEATURE);
     }
 
     @Override
     public void initialize(ServiceExtensionContext context) {
         var monitor = context.getMonitor();
 
+        metadataStore = context.getService(MetadataStore.class);
+        assetIndex = (InMemoryAssetIndex) context.getService(AssetIndex.class);
+        dataAddressResolver = (InMemoryDataAddressResolver) context.getService(DataAddressResolver.class);
+
         savePolicies(context);
-        saveAssets(context);
+        saveAssets();
         saveNodeEntries(context);
         createProtocolAdapter(context);
 
@@ -95,15 +112,14 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         }
     }
 
-    private void saveAssets(ServiceExtensionContext context) {
+    private void saveAssets() {
         //todo this will change once the AssetIndex has replaced the MetadataStore
-        var metadataStore = context.getService(MetadataStore.class);
-
 
         GenericDataCatalogEntry file1 = GenericDataCatalogEntry.Builder.newInstance()
                 .property("type", "File")
                 .property("path", "/home/paul/Documents/")
                 .property("filename", "test-document.txt")
+                .property("targetUrl", "http://whatever.com")
                 .build();
 
         GenericDataCatalogEntry file2 = GenericDataCatalogEntry.Builder.newInstance()
@@ -111,6 +127,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .property("account", "iondemogpstorage")
                 .property("container", "src-container")
                 .property("blobname", "test-document.txt")
+                .property("targetUrl", "http://whatever.com")
                 .build();
 
         GenericDataCatalogEntry file3 = GenericDataCatalogEntry.Builder.newInstance()
@@ -118,6 +135,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .property("account", "iondemogpstorage")
                 .property("container", "src-container")
                 .property("blobname", "complex_schematic_drawing.png")
+                .property("targetUrl", "http://whatever.com")
                 .build();
 
         DataEntry entry1 = DataEntry.Builder.newInstance().id("test-document1").policyId(USE_US_POLICY).catalogEntry(file1).build();
@@ -127,6 +145,20 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         metadataStore.save(entry1);
         metadataStore.save(entry2);
         metadataStore.save(entry3);
+
+        add(toAsset(entry1), toDataAddress(entry1));
+        add(toAsset(entry1), toDataAddress(entry2));
+        add(toAsset(entry1), toDataAddress(entry3));
+
+    }
+
+    private void add(Asset asset, DataAddress address) {
+        assetIndex.add(asset, address);
+        dataAddressResolver.add(asset.getId(), address);
+    }
+
+    private DataAddress toDataAddress(DataEntry entry) {
+        return entry.getCatalogEntry().getAddress();
     }
 
     private void savePolicies(ServiceExtensionContext context) {
@@ -143,6 +175,12 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
         policyRegistry.registerPolicy(usPolicy);
         policyRegistry.registerPolicy(euPolicy);
+    }
+
+    private Asset toAsset(DataEntry entry) {
+        var builder = Asset.Builder.newInstance().id(entry.getId());
+        ((GenericDataCatalogEntry) entry.getCatalogEntry()).getProperties().forEach(builder::property);
+        return builder.build();
     }
 }
 
