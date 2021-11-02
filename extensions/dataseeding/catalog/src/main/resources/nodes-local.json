@@ -1,0 +1,16 @@
+[
+  {
+    "name": "consumer",
+    "url": "http://localhost:8181",
+    "supportedProtocols": [
+      "ids-rest"
+    ]
+  },
+  {
+    "name": "provider",
+    "url": "http://localhost:9191",
+    "supportedProtocols": [
+      "ids-rest"
+    ]
+  }
+]

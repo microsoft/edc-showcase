@@ -10,6 +10,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.dataspaceconnector.catalog.spi.QueryEngine;
+import org.eclipse.dataspaceconnector.catalog.spi.QueryResponse;
+import org.eclipse.dataspaceconnector.catalog.spi.model.CacheQuery;
 import org.eclipse.dataspaceconnector.common.collection.CollectionUtil;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static org.eclipse.dataspaceconnector.common.types.Cast.cast;
 
@@ -37,13 +41,16 @@ public class IonDemoApiController {
     private final TransferProcessManager transferProcessManager;
     private final TransferProcessStore processStore;
     private final String connectorName;
+    private final QueryEngine catalogQueryEngine;
     private final RemoteMessageDispatcherRegistry dispatcherRegistry;
 
-    public IonDemoApiController(String connectorName, Monitor monitor, TransferProcessManager transferProcessManager, TransferProcessStore processStore, RemoteMessageDispatcherRegistry dispatcherRegistry) {
+
+    public IonDemoApiController(String connectorName, Monitor monitor, TransferProcessManager transferProcessManager, TransferProcessStore processStore, QueryEngine catalogQueryEngine, RemoteMessageDispatcherRegistry dispatcherRegistry) {
         this.connectorName = connectorName;
         this.monitor = monitor;
         this.transferProcessManager = transferProcessManager;
         this.processStore = processStore;
+        this.catalogQueryEngine = catalogQueryEngine;
         this.dispatcherRegistry = dispatcherRegistry;
     }
 
@@ -56,6 +63,7 @@ public class IonDemoApiController {
     }
 
 
+    @Deprecated
     @GET
     @Path("catalog")
     public Response getCatalog(@QueryParam("connectorAddress") String connectorAddress) throws ExecutionException, InterruptedException {
@@ -70,6 +78,23 @@ public class IonDemoApiController {
         CompletableFuture<List<String>> future = cast(dispatcherRegistry.send(List.class, query, () -> null));
 
         return Response.ok(future.get()).build();
+    }
+
+    @GET
+    @Path("catalog/cached")
+    public Response getCatalogCached() {
+        CacheQuery query = CacheQuery.Builder.newInstance()
+                .build();
+
+        var queryResponse = catalogQueryEngine.getCatalog(query);
+        if (queryResponse.getStatus() == QueryResponse.Status.NO_ADAPTER_FOUND) {
+            return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+        }
+        if (!queryResponse.getErrors().isEmpty()) {
+            return Response.status(400, String.join(", ", queryResponse.getErrors())).build();
+        }
+
+        return Response.ok(queryResponse.getAssets().collect(Collectors.toList())).build();
     }
 
     @POST

@@ -24,6 +24,7 @@ dependencies {
     implementation("${group}:dataspaceconnector.common.util:${edcversion}")
     implementation("${group}:in-memory.metadata:${edcversion}")
     implementation("${group}:core.protocol-web:${edcversion}")
+    implementation("${group}:catalog.spi:${edcversion}")
 
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:${rsApi}")
 

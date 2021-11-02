@@ -1,5 +1,6 @@
 package org.eclipse.dataspaceconnector.demo.api.rest;
 
+import org.eclipse.dataspaceconnector.catalog.spi.QueryEngine;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.protocol.web.WebService;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
@@ -14,7 +15,7 @@ public class IonDemoApiExtension implements ServiceExtension {
 
     @Override
     public Set<String> requires() {
-        return Set.of("dataspaceconnector:transferprocessstore", "dataspaceconnector:dispatcher");
+        return Set.of("dataspaceconnector:transferprocessstore", "dataspaceconnector:dispatcher", QueryEngine.FEATURE);
     }
 
     @Override
@@ -26,8 +27,10 @@ public class IonDemoApiExtension implements ServiceExtension {
         var transferProcessManager = context.getService(TransferProcessManager.class);
         var processStore = context.getService(TransferProcessStore.class);
 
+        var catalogQueryEngine = context.getService(QueryEngine.class);
         var dispatcherRegistry = context.getService(RemoteMessageDispatcherRegistry.class);
-        var controller = new IonDemoApiController(context.getConnectorId(), monitor, transferProcessManager, processStore, dispatcherRegistry);
+
+        var controller = new IonDemoApiController(context.getConnectorId(), monitor, transferProcessManager, processStore, catalogQueryEngine, dispatcherRegistry);
         webService.registerController(controller);
 
         monitor.info("Initialized REST API Extension");
