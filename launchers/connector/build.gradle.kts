@@ -41,8 +41,9 @@ dependencies {
     implementation("${group}:aws.s3.provision:${edcversion}")
 
     // distributed identity stuff
-    implementation("${group}:ion.ion-core:${edcversion}")
+//    implementation("${group}:ion.ion-core:${edcversion}")
     implementation("${group}:ion.ion-client:${edcversion}")
+    implementation("${group}:iam.identity-did-web:${edcversion}")
     implementation("${group}:iam.identity-did-spi:${edcversion}")
     implementation("${group}:iam.identity-did-core:${edcversion}")
     implementation("${group}:iam.identity-did-service:${edcversion}")
