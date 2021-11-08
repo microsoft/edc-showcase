@@ -7,19 +7,16 @@ import org.eclipse.dataspaceconnector.catalog.spi.CatalogQueryAdapter;
 import org.eclipse.dataspaceconnector.catalog.spi.CatalogQueryAdapterRegistry;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
-import org.eclipse.dataspaceconnector.catalog.spi.model.UpdateRequest;
 import org.eclipse.dataspaceconnector.catalog.spi.model.UpdateResponse;
-import org.eclipse.dataspaceconnector.metadata.memory.InMemoryAssetIndex;
-import org.eclipse.dataspaceconnector.metadata.memory.InMemoryDataAddressResolver;
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
 import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.asset.AssetIndex;
+import org.eclipse.dataspaceconnector.spi.asset.AssetIndexLoader;
 import org.eclipse.dataspaceconnector.spi.asset.DataAddressResolver;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
-import org.eclipse.dataspaceconnector.spi.metadata.MetadataStore;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyRegistry;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
@@ -40,13 +37,11 @@ import static org.eclipse.dataspaceconnector.policy.model.Operator.IN;
 public class CatalogDataseedingExtension implements ServiceExtension {
     public static final String USE_EU_POLICY = "use-eu";
     public static final String USE_US_POLICY = "use-us";
-    private MetadataStore metadataStore;
-    private InMemoryAssetIndex assetIndex;
-    private InMemoryDataAddressResolver dataAddressResolver;
+    private AssetIndexLoader assetIndexLoader;
 
     @Override
     public Set<String> requires() {
-        return Set.of(MetadataStore.FEATURE, PolicyRegistry.FEATURE,
+        return Set.of(PolicyRegistry.FEATURE,
                 FederatedCacheNodeDirectory.FEATURE,
                 DataAddressResolver.FEATURE,
                 AssetIndex.FEATURE,
@@ -57,9 +52,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     public void initialize(ServiceExtensionContext context) {
         var monitor = context.getMonitor();
 
-        metadataStore = context.getService(MetadataStore.class);
-        assetIndex = (InMemoryAssetIndex) context.getService(AssetIndex.class);
-        dataAddressResolver = (InMemoryDataAddressResolver) context.getService(DataAddressResolver.class);
+        assetIndexLoader = context.getService(AssetIndexLoader.class);
 
         savePolicies(context);
         saveAssets();
@@ -72,21 +65,19 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     private void createProtocolAdapter(ServiceExtensionContext context) {
         var dispatcherRegistry = context.getService(RemoteMessageDispatcherRegistry.class);
         var protocolAdapterRegistry = context.getService(CatalogQueryAdapterRegistry.class);
-        var idsQueryAdapter = new CatalogQueryAdapter() {
-            @Override
-            public CompletableFuture<UpdateResponse> sendRequest(UpdateRequest updateRequest) {
-                var query = QueryRequest.Builder.newInstance()
-                        .connectorAddress(updateRequest.getNodeUrl())
-                        .connectorId(context.getConnectorId())
-                        .queryLanguage("edc")
-                        .query("select *")
-                        .protocol("ids-rest").build();
+        CatalogQueryAdapter idsQueryAdapter = updateRequest -> {
+            var query = QueryRequest.Builder.newInstance()
+                    .connectorAddress(updateRequest.getNodeUrl())
+                    .connectorId(context.getConnectorId())
+                    .queryLanguage("edc")
+                    .query("select *")
+                    .protocol("ids-rest").build();
 
-                CompletableFuture<List<String>> future = cast(dispatcherRegistry.send(List.class, query, () -> null));
+            CompletableFuture<List<String>> future = cast(dispatcherRegistry.send(List.class, query, () -> null));
 
-                return future.thenApply(assetNames -> new UpdateResponse(updateRequest.getNodeUrl(), assetNames));
-            }
+            return future.thenApply(assetNames -> new UpdateResponse(updateRequest.getNodeUrl(), assetNames));
         };
+
 
         protocolAdapterRegistry.register("ids-rest", idsQueryAdapter);
 
@@ -113,8 +104,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     }
 
     private void saveAssets() {
-        //todo this will change once the AssetIndex has replaced the MetadataStore
-
         GenericDataCatalogEntry file1 = GenericDataCatalogEntry.Builder.newInstance()
                 .property("type", "File")
                 .property("path", "/home/paul/Documents/")
@@ -142,10 +131,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         DataEntry entry2 = DataEntry.Builder.newInstance().id("test-document2").policyId(USE_EU_POLICY).catalogEntry(file2).build();
         DataEntry entry3 = DataEntry.Builder.newInstance().id("schematic-drawing").policyId(USE_EU_POLICY).catalogEntry(file3).build();
 
-        metadataStore.save(entry1);
-        metadataStore.save(entry2);
-        metadataStore.save(entry3);
-
         add(toAsset(entry1), toDataAddress(entry1));
         add(toAsset(entry1), toDataAddress(entry2));
         add(toAsset(entry1), toDataAddress(entry3));
@@ -153,8 +138,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     }
 
     private void add(Asset asset, DataAddress address) {
-        assetIndex.add(asset, address);
-        dataAddressResolver.add(asset.getId(), address);
+        assetIndexLoader.insert(asset, address);
     }
 
     private DataAddress toDataAddress(DataEntry entry) {

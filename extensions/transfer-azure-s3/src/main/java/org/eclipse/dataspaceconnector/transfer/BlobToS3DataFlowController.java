@@ -1,6 +1,7 @@
 package org.eclipse.dataspaceconnector.transfer;
 
 import org.eclipse.dataspaceconnector.common.azure.BlobStoreApiImpl;
+import org.eclipse.dataspaceconnector.spi.asset.DataAddressResolver;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.security.Vault;
 import org.eclipse.dataspaceconnector.spi.transfer.flow.DataFlowController;
@@ -21,18 +22,21 @@ public class BlobToS3DataFlowController implements DataFlowController {
     private final Vault vault;
     private final Monitor monitor;
     private final TypeManager typeManager;
+    private final DataAddressResolver dataAddressResolver;
 
-    public BlobToS3DataFlowController(Vault vault, Monitor monitor, TypeManager typeManager) {
+    public BlobToS3DataFlowController(Vault vault, Monitor monitor, TypeManager typeManager, DataAddressResolver dataAddressResolver) {
 
         this.vault = vault;
         this.monitor = monitor;
         this.typeManager = typeManager;
+        this.dataAddressResolver = dataAddressResolver;
     }
 
     @Override
     public boolean canHandle(DataRequest dataRequest) {
+        var source = dataAddressResolver.resolveForAsset(dataRequest.getAsset().getId());
+        String sourceType = source.getType();
 
-        String sourceType = dataRequest.getDataEntry().getCatalogEntry().getAddress().getType();
         String destinationType = dataRequest.getDestinationType();
 
         return verifyType(sourceType) && verifyType(destinationType);
@@ -40,7 +44,9 @@ public class BlobToS3DataFlowController implements DataFlowController {
 
     @Override
     public @NotNull DataFlowInitiateResponse initiateFlow(DataRequest dataRequest) {
-        String sourceType = dataRequest.getDataEntry().getCatalogEntry().getAddress().getType();
+        var source = dataAddressResolver.resolveForAsset(dataRequest.getAsset().getId());
+        var sourceType = source.getType();
+
         String destinationType = dataRequest.getDestinationType();
 
         var destSecretName = dataRequest.getDataDestination().getKeyName();
@@ -54,8 +60,8 @@ public class BlobToS3DataFlowController implements DataFlowController {
 
         var reader = getReader(sourceType);
         var writer = getWriter(destinationType);
-        CompletableFuture.supplyAsync(() -> reader.read(dataRequest.getDataEntry().getCatalogEntry().getAddress()))
-                .thenAccept(byteArrayInputStream -> writer.write(dataRequest.getDataDestination(), dataRequest.getDataEntry().getId(), byteArrayInputStream, secret))
+        CompletableFuture.supplyAsync(() -> reader.read(source))
+                .thenAccept(byteArrayInputStream -> writer.write(dataRequest.getDataDestination(), dataRequest.getAsset().getId(), byteArrayInputStream, secret))
                 .whenComplete((unused, throwable) -> {
                     if (throwable != null) {
                         monitor.severe("Error during copy process: " + throwable.getMessage());

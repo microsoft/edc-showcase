@@ -22,7 +22,6 @@ val group = "org.eclipse.dataspaceconnector"
 dependencies {
     implementation("${group}:spi:${edcversion}")
     implementation("${group}:dataspaceconnector.common.util:${edcversion}")
-    implementation("${group}:in-memory.metadata:${edcversion}")
     implementation("${group}:core.protocol-web:${edcversion}")
     implementation("${group}:catalog.spi:${edcversion}")
 

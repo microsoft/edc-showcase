@@ -97,6 +97,7 @@ public class IonDemoApiController {
         return Response.ok(queryResponse.getAssets().collect(Collectors.toList())).build();
     }
 
+    @Deprecated
     @POST
     @Path("datarequest")
     public Response initiateDataRequest(DataRequest request) {
@@ -105,7 +106,7 @@ public class IonDemoApiController {
         }
         request = request.copy(UUID.randomUUID().toString()); //assign random ID
         monitor.info("Received new data request, ID = " + request.getId());
-        var response = transferProcessManager.initiateConsumerRequest(request);
+        var response = transferProcessManager.initiateConsumerRequestSync(request);
         monitor.info("Created new transfer process, ID = " + response.getId());
 
         ResponseStatus status = response.getStatus();

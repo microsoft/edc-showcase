@@ -31,7 +31,6 @@ dependencies {
 
     // simple in-memoryory and filesystem implementations
     implementation("${group}:in-memory.policy-registry:${edcversion}")
-    implementation("${group}:in-memory.metadata:${edcversion}")
     implementation("${group}:in-memory.identity-hub:${edcversion}")
     implementation("${group}:in-memory.did-document-store:${edcversion}")
     implementation("${group}:filesystem.configuration:${edcversion}")

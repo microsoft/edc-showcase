@@ -12,7 +12,4 @@ dependencies {
     implementation("${group}:spi:${edcversion}")
     implementation("${group}:dataspaceconnector.common.util:${edcversion}")
 
-    implementation("${group}:in-memory.asset-index:${edcversion}")
-    implementation("${group}:in-memory.asset-resolver:${edcversion}")
-
 }
