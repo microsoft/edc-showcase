@@ -131,15 +131,12 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         DataEntry entry2 = DataEntry.Builder.newInstance().id("test-document2").policyId(USE_EU_POLICY).catalogEntry(file2).build();
         DataEntry entry3 = DataEntry.Builder.newInstance().id("schematic-drawing").policyId(USE_EU_POLICY).catalogEntry(file3).build();
 
-        add(toAsset(entry1), toDataAddress(entry1));
-        add(toAsset(entry1), toDataAddress(entry2));
-        add(toAsset(entry1), toDataAddress(entry3));
+        assetIndexLoader.insert(toAsset(entry1), toDataAddress(entry1));
+        assetIndexLoader.insert(toAsset(entry2), toDataAddress(entry2));
+        assetIndexLoader.insert(toAsset(entry3), toDataAddress(entry3));
 
     }
 
-    private void add(Asset asset, DataAddress address) {
-        assetIndexLoader.insert(asset, address);
-    }
 
     private DataAddress toDataAddress(DataEntry entry) {
         return entry.getCatalogEntry().getAddress();
