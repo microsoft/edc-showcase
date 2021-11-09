@@ -192,6 +192,7 @@ resource "azurerm_container_group" "provider-connector" {
       TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
       DID_URL           = "did:ion:EiBMres8-U-Gjtfa4CnFUm0URSfMTo1CN4_6Y5J7UeaTyg"
       LOADER_BATCH_SIZE = 2
+      DOH_SERVER        = "https://cloudflare-dns.com/dns-query"
     }
 
     volume {
@@ -237,6 +238,7 @@ resource "azurerm_container_group" "consumer-connector" {
       TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
       DID_URL           = "did:ion:EiCmXDhpBoSRyuYTWTTvp1JdyTWpiXJiCnywM6PG87sxAA"
+      DOH_SERVER        = "https://cloudflare-dns.com/dns-query"
       LOADER_BATCH_SIZE = 2
     }
 
@@ -283,6 +285,7 @@ resource "azurerm_container_group" "connector3" {
       TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
       DID_URL           = "did:web:iondemogpstorage.z6.web.core.windows.net"
+      DOH_SERVER        = "https://cloudflare-dns.com/dns-query"
       LOADER_BATCH_SIZE = 2
     }
 
