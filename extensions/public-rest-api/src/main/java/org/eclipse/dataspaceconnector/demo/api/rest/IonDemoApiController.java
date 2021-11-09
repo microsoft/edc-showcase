@@ -12,7 +12,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.dataspaceconnector.catalog.spi.QueryEngine;
 import org.eclipse.dataspaceconnector.catalog.spi.QueryResponse;
-import org.eclipse.dataspaceconnector.catalog.spi.model.CacheQuery;
+import org.eclipse.dataspaceconnector.catalog.spi.model.FederatedCatalogCacheQuery;
 import org.eclipse.dataspaceconnector.common.collection.CollectionUtil;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import static org.eclipse.dataspaceconnector.common.types.Cast.cast;
 
@@ -83,7 +82,7 @@ public class IonDemoApiController {
     @GET
     @Path("catalog/cached")
     public Response getCatalogCached() {
-        CacheQuery query = CacheQuery.Builder.newInstance()
+        FederatedCatalogCacheQuery query = FederatedCatalogCacheQuery.Builder.newInstance()
                 .build();
 
         var queryResponse = catalogQueryEngine.getCatalog(query);
@@ -94,7 +93,7 @@ public class IonDemoApiController {
             return Response.status(400, String.join(", ", queryResponse.getErrors())).build();
         }
 
-        return Response.ok(queryResponse.getAssets().collect(Collectors.toList())).build();
+        return Response.ok(queryResponse.getAssets()).build();
     }
 
     @Deprecated

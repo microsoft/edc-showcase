@@ -73,7 +73,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                     .query("select *")
                     .protocol("ids-rest").build();
 
-            CompletableFuture<List<String>> future = cast(dispatcherRegistry.send(List.class, query, () -> null));
+            CompletableFuture<List<Asset>> future = cast(dispatcherRegistry.send(List.class, query, () -> null));
 
             return future.thenApply(assetNames -> new UpdateResponse(updateRequest.getNodeUrl(), assetNames));
         };
