@@ -12,5 +12,12 @@
     "supportedProtocols": [
       "ids-rest"
     ]
+  },
+  {
+    "name": "connector3",
+    "url": "http://ion-demo-connector3.westeurope.azurecontainer.io:8181",
+    "supportedProtocols": [
+      "ids-rest"
+    ]
   }
 ]

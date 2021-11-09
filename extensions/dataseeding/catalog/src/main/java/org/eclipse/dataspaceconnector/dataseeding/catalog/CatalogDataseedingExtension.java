@@ -28,8 +28,10 @@ import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static org.eclipse.dataspaceconnector.common.types.Cast.cast;
 import static org.eclipse.dataspaceconnector.policy.model.Operator.IN;
@@ -55,7 +57,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         assetIndexLoader = context.getService(AssetIndexLoader.class);
 
         savePolicies(context);
-        saveAssets();
+        saveAssets(context.getConnectorId());
         saveNodeEntries(context);
         createProtocolAdapter(context);
 
@@ -73,9 +75,18 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                     .query("select *")
                     .protocol("ids-rest").build();
 
-            CompletableFuture<List<Asset>> future = cast(dispatcherRegistry.send(List.class, query, () -> null));
+            CompletableFuture<List<Map<String, Object>>> future = cast(dispatcherRegistry.send(List.class, query, () -> null));
 
-            return future.thenApply(assetNames -> new UpdateResponse(updateRequest.getNodeUrl(), assetNames));
+            return future.thenApply(assetNames -> {
+                // This is a dirty hack which is necessary because "assetNames" will get deserialized to
+                // a list of LinkedHashMaps, instead of Assets.
+                // so we need to serialize and manually deserialize again...
+                var tm = context.getTypeManager();
+                var assets = assetNames.stream().map(asset -> tm.readValue(tm.writeValueAsString(asset), Asset.class))
+                        .collect(Collectors.toList());
+
+                return new UpdateResponse(updateRequest.getNodeUrl(), assets);
+            });
         };
 
 
@@ -103,7 +114,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         }
     }
 
-    private void saveAssets() {
+    private void saveAssets(String connectorId) {
         GenericDataCatalogEntry file1 = GenericDataCatalogEntry.Builder.newInstance()
                 .property("type", "File")
                 .property("path", "/home/paul/Documents/")
@@ -131,9 +142,9 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         DataEntry entry2 = DataEntry.Builder.newInstance().id("test-document2").policyId(USE_EU_POLICY).catalogEntry(file2).build();
         DataEntry entry3 = DataEntry.Builder.newInstance().id("schematic-drawing").policyId(USE_EU_POLICY).catalogEntry(file3).build();
 
-        assetIndexLoader.insert(toAsset(entry1), toDataAddress(entry1));
-        assetIndexLoader.insert(toAsset(entry2), toDataAddress(entry2));
-        assetIndexLoader.insert(toAsset(entry3), toDataAddress(entry3));
+        assetIndexLoader.insert(toAsset(entry1, connectorId), toDataAddress(entry1));
+        assetIndexLoader.insert(toAsset(entry2, connectorId), toDataAddress(entry2));
+        assetIndexLoader.insert(toAsset(entry3, connectorId), toDataAddress(entry3));
 
     }
 
@@ -158,8 +169,8 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         policyRegistry.registerPolicy(euPolicy);
     }
 
-    private Asset toAsset(DataEntry entry) {
-        var builder = Asset.Builder.newInstance().id(entry.getId());
+    private Asset toAsset(DataEntry entry, String idPostfix) {
+        var builder = Asset.Builder.newInstance().id(entry.getId() + "_" + idPostfix);
         ((GenericDataCatalogEntry) entry.getCatalogEntry()).getProperties().forEach(builder::property);
         return builder.build();
     }

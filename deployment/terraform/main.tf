@@ -248,4 +248,47 @@ resource "azurerm_container_group" "consumer-connector" {
   }
 }
 
+# arbitrary third connector that hosts its did on a static site
+resource "azurerm_container_group" "connector3" {
+  name                = "${var.environment}-connector3"
+  location            = azurerm_resource_group.core-resourcegroup.location
+  resource_group_name = azurerm_resource_group.core-resourcegroup.name
+  os_type             = "Linux"
+  ip_address_type     = "public"
+  dns_name_label      = "${var.environment}-connector3"
+  image_registry_credential {
+    password = var.docker_repo_password
+    server   = var.docker_repo_url
+    username = var.docker_repo_username
+  }
+  container {
+    cpu    = 2
+    image  = "${var.docker_repo_url}/paullatzelsperger/ion-demo/connector:latest"
+    memory = "2"
+    name   = "connector3"
 
+    ports {
+      port     = 8181
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      CLIENTID       = azuread_application.demo-app-id.application_id,
+      TENANTID       = data.azurerm_client_config.current.tenant_id,
+      VAULTNAME      = azurerm_key_vault.main-vault.name,
+      CONNECTOR_NAME = "connector3"
+      TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
+      TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
+      DID_URL        = "did:web:iondemogpstorage.z6.web.core.windows.net"
+    }
+
+    volume {
+      mount_path           = "/cert"
+      name                 = "certificates"
+      share_name           = "certificates"
+      storage_account_key  = var.backend_account_key
+      storage_account_name = var.backend_account_name
+      read_only            = true
+    }
+  }
+}

@@ -12,5 +12,12 @@
     "supportedProtocols": [
       "ids-rest"
     ]
+  },
+  {
+    "name": "connector3",
+    "url": "http://localhost:7171",
+    "supportedProtocols": [
+      "ids-rest"
+    ]
   }
 ]
