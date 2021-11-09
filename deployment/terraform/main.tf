@@ -138,13 +138,14 @@ resource "azurerm_container_group" "registration-service" {
     }
 
     environment_variables = {
-      CLIENTID       = azuread_application.demo-app-id.application_id,
-      TENANTID       = data.azurerm_client_config.current.tenant_id,
-      VAULTNAME      = azurerm_key_vault.main-vault.name,
-      CONNECTOR_NAME = var.regsvc-name
-      TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
-      TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
-      ION_URL        = "http://gx-ion-node.westeurope.cloudapp.azure.com:3000/"
+      CLIENTID          = azuread_application.demo-app-id.application_id,
+      TENANTID          = data.azurerm_client_config.current.tenant_id,
+      VAULTNAME         = azurerm_key_vault.main-vault.name,
+      CONNECTOR_NAME    = var.regsvc-name
+      TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
+      TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
+      ION_URL           = "http://gx-ion-node.westeurope.cloudapp.azure.com:3000/"
+      LOADER_BATCH_SIZE = 2
     }
 
     volume {
@@ -183,13 +184,14 @@ resource "azurerm_container_group" "provider-connector" {
     }
 
     environment_variables = {
-      CLIENTID       = azuread_application.demo-app-id.application_id,
-      TENANTID       = data.azurerm_client_config.current.tenant_id,
-      VAULTNAME      = azurerm_key_vault.main-vault.name,
-      CONNECTOR_NAME = var.provider-name
-      TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
-      TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL        = "did:ion:EiBMres8-U-Gjtfa4CnFUm0URSfMTo1CN4_6Y5J7UeaTyg"
+      CLIENTID          = azuread_application.demo-app-id.application_id,
+      TENANTID          = data.azurerm_client_config.current.tenant_id,
+      VAULTNAME         = azurerm_key_vault.main-vault.name,
+      CONNECTOR_NAME    = var.provider-name
+      TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
+      TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
+      DID_URL           = "did:ion:EiBMres8-U-Gjtfa4CnFUm0URSfMTo1CN4_6Y5J7UeaTyg"
+      LOADER_BATCH_SIZE = 2
     }
 
     volume {
@@ -228,13 +230,14 @@ resource "azurerm_container_group" "consumer-connector" {
     }
 
     environment_variables = {
-      CLIENTID       = azuread_application.demo-app-id.application_id,
-      TENANTID       = data.azurerm_client_config.current.tenant_id,
-      VAULTNAME      = azurerm_key_vault.main-vault.name,
-      CONNECTOR_NAME = var.consumer-name
-      TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
-      TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL        = "did:ion:EiCmXDhpBoSRyuYTWTTvp1JdyTWpiXJiCnywM6PG87sxAA"
+      CLIENTID          = azuread_application.demo-app-id.application_id,
+      TENANTID          = data.azurerm_client_config.current.tenant_id,
+      VAULTNAME         = azurerm_key_vault.main-vault.name,
+      CONNECTOR_NAME    = var.consumer-name
+      TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
+      TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
+      DID_URL           = "did:ion:EiCmXDhpBoSRyuYTWTTvp1JdyTWpiXJiCnywM6PG87sxAA"
+      LOADER_BATCH_SIZE = 2
     }
 
     volume {
@@ -273,13 +276,14 @@ resource "azurerm_container_group" "connector3" {
     }
 
     environment_variables = {
-      CLIENTID       = azuread_application.demo-app-id.application_id,
-      TENANTID       = data.azurerm_client_config.current.tenant_id,
-      VAULTNAME      = azurerm_key_vault.main-vault.name,
-      CONNECTOR_NAME = "connector3"
-      TOPIC_NAME     = azurerm_eventgrid_topic.control-topic.name
-      TOPIC_ENDPOINT = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL        = "did:web:iondemogpstorage.z6.web.core.windows.net"
+      CLIENTID          = azuread_application.demo-app-id.application_id,
+      TENANTID          = data.azurerm_client_config.current.tenant_id,
+      VAULTNAME         = azurerm_key_vault.main-vault.name,
+      CONNECTOR_NAME    = "connector3"
+      TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
+      TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
+      DID_URL           = "did:web:iondemogpstorage.z6.web.core.windows.net"
+      LOADER_BATCH_SIZE = 2
     }
 
     volume {

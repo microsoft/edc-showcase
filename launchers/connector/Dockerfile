@@ -14,4 +14,5 @@ ENTRYPOINT java \
     -Dedc.events.topic.name=${TOPIC_NAME} \
     -Dedc.events.topic.endpoint=${TOPIC_ENDPOINT} \
     -Dedc.identity.did.url=${DID_URL} \
+    -Dedc.catalog.cache.loader.batch-size=${LOADER_BATCH_SIZE} \
     -Djava.security.edg=file:/dev/.urandom -jar connector.jar
