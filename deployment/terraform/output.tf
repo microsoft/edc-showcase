@@ -22,6 +22,10 @@ output "vault-name" {
   value = azurerm_key_vault.main-vault.name
 }
 
+output "static-web" {
+  value = azurerm_storage_account.main-blobstore.primary_web_endpoint
+}
+
 //output "URLs" {
 //  value = {
 //    provider    = "https://${module.provider-cluster-bmw.public-ip.fqdn}"

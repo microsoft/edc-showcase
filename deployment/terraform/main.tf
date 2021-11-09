@@ -16,11 +16,11 @@ terraform {
       source  = "hashicorp/azuread"
       version = "2.4.0"
     }
-    aws = {
+    aws     = {
       source  = "hashicorp/aws"
       version = "3.60.0"
     }
-    http = {
+    http    = {
       source  = "hashicorp/http"
       version = "2.1.0"
     }
@@ -64,7 +64,7 @@ resource "azuread_application_certificate" "demo-main-identity-cert" {
 resource "azuread_service_principal" "main-app-sp" {
   application_id               = azuread_application.demo-app-id.application_id
   app_role_assignment_required = false
-  tags = [
+  tags                         = [
     "terraform"
   ]
 }
@@ -126,8 +126,8 @@ resource "azurerm_container_group" "registration-service" {
     username = var.docker_repo_username
   }
   container {
-    cpu   = 2
-    image = "${var.docker_repo_url}/paullatzelsperger/ion-demo/regsvc:latest"
+    cpu    = 2
+    image  = "${var.docker_repo_url}/paullatzelsperger/ion-demo/regsvc:latest"
     //    image  = "paullatzelsperger/gx-reg-svc:latest"
     memory = "2"
     name   = var.regsvc-name

@@ -7,6 +7,9 @@ resource "azurerm_storage_account" "main-blobstore" {
   account_replication_type = "GRS"
   account_kind             = "StorageV2"
   //allows for blobs, queues, fileshares, etc.
+  static_website {
+    index_document = "index.html"
+  }
 }
 
 # storage container
@@ -31,4 +34,24 @@ resource "azurerm_storage_blob" "testfile3" {
   storage_container_name = azurerm_storage_container.main-blob-container.name
   type                   = "Block"
   source                 = "complex_schematic_drawing.jpg"
+}
+
+# the index file for static web content, i.e. the Web DID
+resource "azurerm_storage_blob" "index-html" {
+  name                   = "index.html"
+  storage_account_name   = azurerm_storage_account.main-blobstore.name
+  storage_container_name = "$web"
+  type                   = "Block"
+  source                 = "../did-web/index.html"
+  content_type           = "text/html"
+}
+
+# upload the DID document for the 3rd connector
+resource "azurerm_storage_blob" "connector3-json" {
+  name                   = ".well-known/did.json"
+  storage_account_name   = azurerm_storage_account.main-blobstore.name
+  storage_container_name = "$web"
+  type                   = "Block"
+  source                 = "../did-web/connector3.json"
+  content_type           = "applicaton/json"
 }
