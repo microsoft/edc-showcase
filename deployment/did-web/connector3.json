@@ -1,43 +1,32 @@
 {
-  "@context": "https://w3id.org/did-resolution/v1",
-  "didDocument": {
-    "id": "did:web:iondemogpstorage.z6.web.core.windows.net",
-    "@context": [
-      "https://www.w3.org/ns/did/v1",
-      {
-        "@base": "did:web:iondemogpstorage.z6.web.core.windows.net"
+  "id": "did:web:iondemogpstorage.z6.web.core.windows.net",
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    {
+      "@base": "did:web:iondemogpstorage.z6.web.core.windows.net"
+    }
+  ],
+  "service": [
+    {
+      "id": "#connector3-identity-hub-url",
+      "type": "IdentityHub",
+      "serviceEndpoint": "http://ion-demo-connector3.westeurope.azurecontainer.io:8181/api/identity-hub/"
+    }
+  ],
+  "verificationMethod": [
+    {
+      "id": "#connector3-key-1",
+      "controller": "",
+      "type": "JsonWebKey2020",
+      "publicKeyJwk": {
+        "crv": "P-256",
+        "kty": "EC",
+        "x": "7VwFiU6Fpu3GUYZNUROn4p9azCOgTFJhScQoq8xnJbw",
+        "y": "LhSPLMbtQ7NfaplmzDnDJBbCdm7QFcERwWQlrXClFoA"
       }
-    ],
-    "service": [
-      {
-        "id": "#connector3-identity-hub-url",
-        "type": "IdentityHub",
-        "serviceEndpoint": "http://ion-demo-connector3.westeurope.azurecontainer.io:8181/api/identity-hub/"
-      }
-    ],
-    "verificationMethod": [
-      {
-        "id": "#connector3-key-1",
-        "controller": "",
-        "type": "JsonWebKey2020",
-        "publicKeyJwk": {
-          "crv": "P-256",
-          "kty": "EC",
-          "x": "7VwFiU6Fpu3GUYZNUROn4p9azCOgTFJhScQoq8xnJbw",
-          "y": "LhSPLMbtQ7NfaplmzDnDJBbCdm7QFcERwWQlrXClFoA"
-        }
-      }
-    ],
-    "authentication": [
-      "#connector3-key-1"
-    ]
-  },
-  "didDocumentMetadata": {
-    "method": {
-      "published": true,
-      "recoveryCommitment": "EiA-4XG4sSkkhEeIG6UopPodKTrIMaZHtjMgK_WyVZYdiQ",
-      "updateCommitment": "EiBIe7GBOTGXflQkisUsogHUUul3E7lFBPuCU1fu8FIV1Q"
-    },
-    "canonicalId": "did:web:iondemogpstorage.z6.web.core.windows.net"
-  }
+    }
+  ],
+  "authentication": [
+    "#connector3-key-1"
+  ]
 }
