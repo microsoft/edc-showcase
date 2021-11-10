@@ -96,7 +96,6 @@ public class IonDemoApiController {
         return Response.ok(queryResponse.getAssets()).build();
     }
 
-    @Deprecated
     @POST
     @Path("datarequest")
     public Response initiateDataRequest(DataRequest request) {
@@ -105,12 +104,12 @@ public class IonDemoApiController {
         }
         request = request.copy(UUID.randomUUID().toString()); //assign random ID
         monitor.info("Received new data request, ID = " + request.getId());
-        var response = transferProcessManager.initiateConsumerRequestSync(request);
+        var response = transferProcessManager.initiateConsumerRequest(request);
         monitor.info("Created new transfer process, ID = " + response.getId());
 
         ResponseStatus status = response.getStatus();
         if (status == ResponseStatus.OK) {
-            return Response.ok(formatAsJson(response.getId())).build();
+            return Response.ok(response).build();
         } else {
             return Response.status(Response.Status.BAD_REQUEST).entity(response.getStatus().name()).build();
         }

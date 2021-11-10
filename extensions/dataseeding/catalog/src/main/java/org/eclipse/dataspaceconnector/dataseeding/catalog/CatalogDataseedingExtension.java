@@ -170,7 +170,9 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     }
 
     private Asset toAsset(DataEntry entry, String idPostfix) {
-        var builder = Asset.Builder.newInstance().id(entry.getId() + "_" + idPostfix);
+        var builder = Asset.Builder.newInstance()
+                .id(entry.getId() + "_" + idPostfix)
+                .property("policyId", entry.getPolicyId());
         ((GenericDataCatalogEntry) entry.getCatalogEntry()).getProperties().forEach(builder::property);
         return builder.build();
     }
