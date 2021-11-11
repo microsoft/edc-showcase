@@ -139,12 +139,12 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .build();
 
         GenericDataCatalogEntry file4 = GenericDataCatalogEntry.Builder.newInstance()
-                .property("type", "rest")
+                .property("type", "http")
                 .property("targetUrl", "https://jsonplaceholder.typicode.com/todos/1")
                 .build();
 
         GenericDataCatalogEntry file5 = GenericDataCatalogEntry.Builder.newInstance()
-                .property("type", "rest")
+                .property("type", "http")
                 .property("targetUrl", "https://jsonplaceholder.typicode.com/todos/2")
                 .build();
 
