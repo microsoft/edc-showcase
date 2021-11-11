@@ -138,13 +138,28 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .property("targetUrl", "http://whatever.com")
                 .build();
 
+        GenericDataCatalogEntry file4 = GenericDataCatalogEntry.Builder.newInstance()
+                .property("type", "rest")
+                .property("targetUrl", "https://jsonplaceholder.typicode.com/todos/1")
+                .build();
+
+        GenericDataCatalogEntry file5 = GenericDataCatalogEntry.Builder.newInstance()
+                .property("type", "rest")
+                .property("targetUrl", "https://jsonplaceholder.typicode.com/todos/2")
+                .build();
+
+
         DataEntry entry1 = DataEntry.Builder.newInstance().id("test-document1").policyId(USE_US_POLICY).catalogEntry(file1).build();
         DataEntry entry2 = DataEntry.Builder.newInstance().id("test-document2").policyId(USE_EU_POLICY).catalogEntry(file2).build();
         DataEntry entry3 = DataEntry.Builder.newInstance().id("schematic-drawing").policyId(USE_EU_POLICY).catalogEntry(file3).build();
+        DataEntry entry4 = DataEntry.Builder.newInstance().id("demo-todo").policyId(USE_EU_POLICY).catalogEntry(file4).build();
+        DataEntry entry5 = DataEntry.Builder.newInstance().id("trains").policyId(USE_EU_POLICY).catalogEntry(file5).build();
 
         assetIndexLoader.insert(toAsset(entry1, connectorId), toDataAddress(entry1));
         assetIndexLoader.insert(toAsset(entry2, connectorId), toDataAddress(entry2));
         assetIndexLoader.insert(toAsset(entry3, connectorId), toDataAddress(entry3));
+        assetIndexLoader.insert(toAsset(entry4, connectorId), toDataAddress(entry4));
+        assetIndexLoader.insert(toAsset(entry5, connectorId), toDataAddress(entry5));
 
     }
 
