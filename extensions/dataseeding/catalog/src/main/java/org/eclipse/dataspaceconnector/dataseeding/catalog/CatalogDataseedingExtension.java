@@ -115,52 +115,95 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     }
 
     private void saveAssets(String connectorId) {
-        GenericDataCatalogEntry file1 = GenericDataCatalogEntry.Builder.newInstance()
-                .property("type", "File")
-                .property("path", "/home/paul/Documents/")
-                .property("filename", "test-document.txt")
-                .property("targetUrl", "http://whatever.com")
+//        DataEntry entry1 = DataEntry.Builder.newInstance().id("test-document1").policyId(USE_US_POLICY).catalogEntry(file1).build();
+//        DataEntry entry2 = DataEntry.Builder.newInstance().id("test-document2").policyId(USE_EU_POLICY).catalogEntry(file2).build();
+//        DataEntry entry3 = DataEntry.Builder.newInstance().id("schematic-drawing").policyId(USE_EU_POLICY).catalogEntry(file3).build();
+//        DataEntry entry4 = DataEntry.Builder.newInstance().id("demo-todo").policyId(USE_EU_POLICY).catalogEntry(file4).build();
+//        DataEntry entry5 = DataEntry.Builder.newInstance().id("trains").policyId(USE_EU_POLICY).catalogEntry(file5).build();
+//
+//        assetIndexLoader.insert(toAsset(entry1, connectorId), toDataAddress(entry1));
+//        assetIndexLoader.insert(toAsset(entry2, connectorId), toDataAddress(entry2));
+//        assetIndexLoader.insert(toAsset(entry3, connectorId), toDataAddress(entry3));
+//        assetIndexLoader.insert(toAsset(entry4, connectorId), toDataAddress(entry4));
+//        assetIndexLoader.insert(toAsset(entry5, connectorId), toDataAddress(entry5));
+
+        var asset1 = Asset.Builder.newInstance()
+                .property("type", "file")
+                .name("test-document")
+                .id("test-document_" + connectorId)
+                .contentType("text/plain")
+                .property("policyId", USE_US_POLICY)
+                .version("1.0")
                 .build();
 
-        GenericDataCatalogEntry file2 = GenericDataCatalogEntry.Builder.newInstance()
+        var dataAddress1 = DataAddress.Builder.newInstance()
+                .type("file")
+                .property("path", "/home/paul/Documents/")
+                .property("filename", "test-document.txt")
+                .build();
+        assetIndexLoader.insert(asset1, dataAddress1);
+
+        var asset2 = Asset.Builder.newInstance()
                 .property("type", "AzureStorage")
+                .name("test-document-az")
+                .id("test-document-az_" + connectorId)
+                .contentType("text/plain")
+                .property("policyId", USE_EU_POLICY)
+                .version("1.0")
+                .build();
+
+        var dataAddress2 = DataAddress.Builder.newInstance()
+                .type("AzureStorage")
                 .property("account", "iondemogpstorage")
                 .property("container", "src-container")
                 .property("blobname", "test-document.txt")
-                .property("targetUrl", "http://whatever.com")
+                .build();
+        assetIndexLoader.insert(asset2, dataAddress2);
+
+        var asset3 = Asset.Builder.newInstance()
+                .property("type", "AzureStorage")
+                .name("schematic_drawing-az")
+                .id("schematic-drawing-az_" + connectorId)
+                .contentType("image/png")
+                .property("policyId", USE_EU_POLICY)
+                .version("1.0")
                 .build();
 
-        GenericDataCatalogEntry file3 = GenericDataCatalogEntry.Builder.newInstance()
-                .property("type", "AzureStorage")
+        var dataAddress3 = DataAddress.Builder.newInstance()
+                .type("AzureStorage")
                 .property("account", "iondemogpstorage")
                 .property("container", "src-container")
-                .property("blobname", "complex_schematic_drawing.png")
-                .property("targetUrl", "http://whatever.com")
+                .property("blobname", "complex_schematic_drawing")
+                .build();
+        assetIndexLoader.insert(asset3, dataAddress3);
+
+        var asset4 = Asset.Builder.newInstance()
+                .property("type", "http")
+                .name("demo-todos")
+                .id("demo-todos_" + connectorId)
+                .property("policyId", USE_EU_POLICY)
+                .version("1.0")
                 .build();
 
-        GenericDataCatalogEntry file4 = GenericDataCatalogEntry.Builder.newInstance()
-                .property("type", "http")
+        var dataAddress4 = DataAddress.Builder.newInstance()
+                .type("http")
                 .property("targetUrl", "https://jsonplaceholder.typicode.com/todos/1")
                 .build();
+        assetIndexLoader.insert(asset4, dataAddress4);
 
-        GenericDataCatalogEntry file5 = GenericDataCatalogEntry.Builder.newInstance()
+        var asset5 = Asset.Builder.newInstance()
                 .property("type", "http")
-                .property("targetUrl", "https://jsonplaceholder.typicode.com/todos/2")
+                .name("demo-train-data")
+                .id("demo-train-data_" + connectorId)
+                .property("policyId", USE_EU_POLICY)
+                .version("1.0")
                 .build();
 
-
-        DataEntry entry1 = DataEntry.Builder.newInstance().id("test-document1").policyId(USE_US_POLICY).catalogEntry(file1).build();
-        DataEntry entry2 = DataEntry.Builder.newInstance().id("test-document2").policyId(USE_EU_POLICY).catalogEntry(file2).build();
-        DataEntry entry3 = DataEntry.Builder.newInstance().id("schematic-drawing").policyId(USE_EU_POLICY).catalogEntry(file3).build();
-        DataEntry entry4 = DataEntry.Builder.newInstance().id("demo-todo").policyId(USE_EU_POLICY).catalogEntry(file4).build();
-        DataEntry entry5 = DataEntry.Builder.newInstance().id("trains").policyId(USE_EU_POLICY).catalogEntry(file5).build();
-
-        assetIndexLoader.insert(toAsset(entry1, connectorId), toDataAddress(entry1));
-        assetIndexLoader.insert(toAsset(entry2, connectorId), toDataAddress(entry2));
-        assetIndexLoader.insert(toAsset(entry3, connectorId), toDataAddress(entry3));
-        assetIndexLoader.insert(toAsset(entry4, connectorId), toDataAddress(entry4));
-        assetIndexLoader.insert(toAsset(entry5, connectorId), toDataAddress(entry5));
-
+        var dataAddress5 = DataAddress.Builder.newInstance()
+                .type("http")
+                .property("targetUrl", "https://jsonplaceholder.typicode.com/todos/2")
+                .build();
+        assetIndexLoader.insert(asset5, dataAddress5);
     }
 
 
