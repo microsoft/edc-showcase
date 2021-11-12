@@ -16,4 +16,8 @@ ENTRYPOINT java \
     -Dedc.identity.did.url=${DID_URL} \
     -Dedc.catalog.cache.loader.batch-size=${LOADER_BATCH_SIZE} \
     -Dedc.webdid.doh.url=${DOH_SERVER} \
+    -Dedc.assetindex.cosmos.account-name=${COSMOS_ACCOUNT}  \
+    -Dedc.assetindex.cosmos.database-name=${COSMOS_DB} \
+    -Dedc.cosmos.partition-key=${COSMOS_PARTKEY} \
+    -Dedc.assetindex.cosmos.container-name=${COSMOS_CONTAINER} \
     -Djava.security.edg=file:/dev/.urandom -jar connector.jar

@@ -73,3 +73,9 @@ resource "azurerm_key_vault_secret" "connector3_private_key" {
     azurerm_role_assignment.current-user-secretsofficer
   ]
 }
+
+resource "azurerm_key_vault_secret" "cosmos_account_key" {
+  key_vault_id = azurerm_key_vault.main-vault.id
+  name         = azurerm_cosmosdb_account.asset-index-account.name
+  value        = azurerm_cosmosdb_account.asset-index-account.primary_key
+}

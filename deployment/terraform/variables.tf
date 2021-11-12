@@ -66,3 +66,8 @@ variable "regsvc-name" {
   type    = string
   default = "regsvc"
 }
+
+# partition key for the asset index based on cosmosdb
+variable "asset-index-partkey" {
+  default = "assetIndexPartition"
+}

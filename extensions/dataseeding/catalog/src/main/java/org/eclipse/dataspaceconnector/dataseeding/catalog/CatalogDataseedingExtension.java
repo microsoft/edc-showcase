@@ -13,16 +13,14 @@ import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
 import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.asset.AssetIndex;
 import org.eclipse.dataspaceconnector.spi.asset.AssetIndexLoader;
-import org.eclipse.dataspaceconnector.spi.asset.DataAddressResolver;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyRegistry;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
-import org.eclipse.dataspaceconnector.spi.types.domain.metadata.DataEntry;
-import org.eclipse.dataspaceconnector.spi.types.domain.metadata.GenericDataCatalogEntry;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.QueryRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 
@@ -45,7 +43,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     public Set<String> requires() {
         return Set.of(PolicyRegistry.FEATURE,
                 FederatedCacheNodeDirectory.FEATURE,
-                DataAddressResolver.FEATURE,
                 AssetIndex.FEATURE,
                 CatalogQueryAdapterRegistry.FEATURE);
     }
@@ -115,17 +112,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     }
 
     private void saveAssets(String connectorId) {
-//        DataEntry entry1 = DataEntry.Builder.newInstance().id("test-document1").policyId(USE_US_POLICY).catalogEntry(file1).build();
-//        DataEntry entry2 = DataEntry.Builder.newInstance().id("test-document2").policyId(USE_EU_POLICY).catalogEntry(file2).build();
-//        DataEntry entry3 = DataEntry.Builder.newInstance().id("schematic-drawing").policyId(USE_EU_POLICY).catalogEntry(file3).build();
-//        DataEntry entry4 = DataEntry.Builder.newInstance().id("demo-todo").policyId(USE_EU_POLICY).catalogEntry(file4).build();
-//        DataEntry entry5 = DataEntry.Builder.newInstance().id("trains").policyId(USE_EU_POLICY).catalogEntry(file5).build();
-//
-//        assetIndexLoader.insert(toAsset(entry1, connectorId), toDataAddress(entry1));
-//        assetIndexLoader.insert(toAsset(entry2, connectorId), toDataAddress(entry2));
-//        assetIndexLoader.insert(toAsset(entry3, connectorId), toDataAddress(entry3));
-//        assetIndexLoader.insert(toAsset(entry4, connectorId), toDataAddress(entry4));
-//        assetIndexLoader.insert(toAsset(entry5, connectorId), toDataAddress(entry5));
 
         var asset1 = Asset.Builder.newInstance()
                 .property("type", "file")
@@ -141,7 +127,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .property("path", "/home/paul/Documents/")
                 .property("filename", "test-document.txt")
                 .build();
-        assetIndexLoader.insert(asset1, dataAddress1);
+
 
         var asset2 = Asset.Builder.newInstance()
                 .property("type", "AzureStorage")
@@ -158,7 +144,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .property("container", "src-container")
                 .property("blobname", "test-document.txt")
                 .build();
-        assetIndexLoader.insert(asset2, dataAddress2);
 
         var asset3 = Asset.Builder.newInstance()
                 .property("type", "AzureStorage")
@@ -175,7 +160,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .property("container", "src-container")
                 .property("blobname", "complex_schematic_drawing")
                 .build();
-        assetIndexLoader.insert(asset3, dataAddress3);
 
         var asset4 = Asset.Builder.newInstance()
                 .property("type", "http")
@@ -189,7 +173,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .type("http")
                 .property("targetUrl", "https://jsonplaceholder.typicode.com/todos/1")
                 .build();
-        assetIndexLoader.insert(asset4, dataAddress4);
 
         var asset5 = Asset.Builder.newInstance()
                 .property("type", "http")
@@ -203,13 +186,18 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .type("http")
                 .property("targetUrl", "https://jsonplaceholder.typicode.com/todos/2")
                 .build();
-        assetIndexLoader.insert(asset5, dataAddress5);
+
+        try {
+            assetIndexLoader.insert(asset1, dataAddress1);
+            assetIndexLoader.insert(asset2, dataAddress2);
+            assetIndexLoader.insert(asset3, dataAddress3);
+            assetIndexLoader.insert(asset4, dataAddress4);
+            assetIndexLoader.insert(asset5, dataAddress5);
+        } catch (EdcException ex) {
+            ex.printStackTrace();
+        }
     }
 
-
-    private DataAddress toDataAddress(DataEntry entry) {
-        return entry.getCatalogEntry().getAddress();
-    }
 
     private void savePolicies(ServiceExtensionContext context) {
         PolicyRegistry policyRegistry = context.getService(PolicyRegistry.class);
@@ -225,14 +213,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
         policyRegistry.registerPolicy(usPolicy);
         policyRegistry.registerPolicy(euPolicy);
-    }
-
-    private Asset toAsset(DataEntry entry, String idPostfix) {
-        var builder = Asset.Builder.newInstance()
-                .id(entry.getId() + "_" + idPostfix)
-                .property("policyId", entry.getPolicyId());
-        ((GenericDataCatalogEntry) entry.getCatalogEntry()).getProperties().forEach(builder::property);
-        return builder.build();
     }
 }
 

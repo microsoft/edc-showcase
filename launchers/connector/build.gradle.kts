@@ -34,14 +34,14 @@ dependencies {
     implementation("${group}:in-memory.identity-hub:${edcversion}")
     implementation("${group}:in-memory.did-document-store:${edcversion}")
     implementation("${group}:filesystem.configuration:${edcversion}")
-    implementation("${group}:in-memory.asset-index:${edcversion}")
+//    implementation("${group}:in-memory.asset-index:${edcversion}")
+    implementation("${group}:azure.cosmos.assetindex:${edcversion}")
 
     //cloud stuff
     implementation("${group}:azure.vault:${edcversion}")
     implementation("${group}:aws.s3.provision:${edcversion}")
 
     // distributed identity stuff
-//    implementation("${group}:ion.ion-core:${edcversion}")
     implementation("${group}:ion.ion-client:${edcversion}")
     implementation("${group}:iam.identity-did-web:${edcversion}")
     implementation("${group}:iam.identity-did-spi:${edcversion}")
