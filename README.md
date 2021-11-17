@@ -1,18 +1,17 @@
 # The `ion-demo` application
 
-Demo Application to show how the EDC and ION can be used together to implement distributed identities
+Demo Application to show how the EDC can be used to implement distributed identities and federated catalogs.
 
 _This document describes the working concept rather than the finished application._
 
 ## Setup
 
-- create 3 Keypairs, one for each connector, one for the Verifier
-- pre-define two Hub URLs (ideally they should look exactly how ACI URLs or AKS URLs are generated)
+- create 3 Keypairs, one for each connector
+- pre-define three Hub URLs (ideally they should look exactly how ACI URLs or AKS URLs are generated)
 - for each connector:
-    + generate a DID Document containing the Public Key and its Hub URL on ION
+    + generate a DID Document containing the Public Key and its Hub URL on ION or as Web DID
     + generate a JWT on every request (signed with connectors Private Key) containing the DID URL as claim (=payload)
       and an expiration date (t+5min)
-- for the Verifier (="accenture"): put a DID with it's public key on ION
 - create a certificate and a private key in `*.pem` format as well as the corresponding `*.pfx` file:
     - generate the files:
        ```bash 
@@ -26,17 +25,54 @@ _This document describes the working concept rather than the finished applicatio
       echo $TF_VAR_CERTIFICATE # should print the pem-encoded certificate
       ```
 
+## Build it
+
+At this time the [Eclipse Dataspace Connector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
+repository needs to be built and published to the local maven cache. Assuming you already have that checked out go into
+that directory and run
+
+```bash
+cd /path/to/eclipse-dataspace-connector-git-repo
+./gradlew clean publishToMavenLocal
+```
+
+Then, go back into this repository and build it:
+
+```bash
+cd /path/to/this/repo
+./gradlew clean shadowJar
+```
+
 ## Deployment
 
 We'll deploy the entire application to Microsoft Azure using Terraform, so that needs to be installed. We'll assume you
 have a working understanding of it and won't go into details. All the scripts used in this demo can be found in
-the  [deployments folder](deployment/terraform). Also, you'll need the Azure CLI installed and be logged.
+the  [deployments folder](deployment/terraform). Also, you'll need to have installed and be logged into Azure CLI and
+AWS CLI.
 
 On a command shell type the following to start deployment:
 
 ```bash
 cd deployment/terraform
+terraforn init # only required once
 terraform apply
+```
+
+## Run it locally
+
+In addition to deploy this demo to an Azure subscription, you can also run it locally, which is helpful if you want to
+debug something etc. In order to do that, edit the three `*.properties` files located at `launchers/connector` and
+insert your
+
+- client id: that should be printed by the `terraform` command
+- tenant id: also, comes from the `terraform` command
+- environment: whatever you entered during `terraform` deployment
+- DID id: the DID you want to use for your connector
+
+then, on a command line, run:
+
+```bash
+java -Dedc.fs.config=launchers/connector/[consumer|provider|connector3].properties -jar launchers/connector/build/libs/connector.jar
 ```
 
 ## Data seeding
@@ -44,24 +80,23 @@ terraform apply
 - the hubs get their "additional data object" data seeded by
   the [`IdentityHubDataseedingExtension`](extensions/dataseeding/hub/src/main/java/org/eclipse/dataspaceconnector/dataseeding/catalog/IdentityHubDataseedingExtension.java)
   .
-- additional data objects are again JWEs signed with the Verifier's private key. Each data property is a claim, complex
-  properties should just be JSON strings
+- Data objects are claims stored in the Identity Hub. Each data property is a claim, complex properties should just be
+  JSON strings
 
 ## Interact with the application
 
-Currently, the only way to interact with the application is via REST API. Please take a look at
-the [controller](extensions/public-rest-api/src/main/java/org/eclipse/dataspaceconnector/demo/api/rest/IonDemoApiController.java) (
-no Swagger yet).
+Checkout the [Postman collection](resources/MSFT_EDC_Demo.postman_collection.json). You'll need to define variables
+for `consumer_url`, `provider_url` and `connector3_url`. Those are used by the request collection.
 
 ### Get the catalog
 
-in order to see what data the provider connector has available, execute
+in order to see the data catalog that e.g. the consumer has available, execute
 
 ```bash
-curl -X GET "http://ion-demo-consumer.westeurope.azurecontainer.io:8181/api/catalog?connectorAddress=http://ion-demo-provider.westeurope.azurecontainer.io:8181"
+curl -X GET "http://ion-demo-consumer.westeurope.azurecontainer.io:8181/api/catalog/cached"
 ```
 
-that should return `["test-document"]` after a second or two.
+that should return an array of Asset objects.
 
 ### Start a data transfer
 
