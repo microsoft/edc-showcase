@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "5b174c43-f7a0-45f0-bd62-5a4e54a4aa9d",
+		"name": "MSFT EDC Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health check consumer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{consumer_url}}/api/health",
+					"host": [
+						"{{consumer_url}}"
+					],
+					"path": [
+						"api",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Provider's catalog (Deprecated)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{consumer_url}}/api/catalog?connectorAddress={{provider_url}}",
+					"host": [
+						"{{consumer_url}}"
+					],
+					"path": [
+						"api",
+						"catalog"
+					],
+					"query": [
+						{
+							"key": "connectorAddress",
+							"value": "{{provider_url}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Dataspace Catalog",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{consumer_url}}/api/catalog/cached",
+					"host": [
+						"{{consumer_url}}"
+					],
+					"path": [
+						"api",
+						"catalog",
+						"cached"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request Data (async)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let responseData=pm.response.text();",
+							"let json = JSON.parse(responseData);",
+							"pm.environment.set(\"processId\", json.response)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"{{provider_url}}\",\n    \"protocol\": \"ids-rest\",\n    \"connectorId\":\"consumer\",\n    \"dataEntry\":{\n        \"id\": \"schematic-drawing\",\n        \"policyId\": \"use-us\"\n    },\n    \"dataDestination\":{\n        \"type\": \"AmazonS3\"\n    },\n    \"managedResources\": true,\n    \"transferType\":{\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{consumer_url}}/api/datarequest",
+					"host": [
+						"{{consumer_url}}"
+					],
+					"path": [
+						"api",
+						"datarequest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request Data (sync)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let responseData=pm.response.text();",
+							"let json = JSON.parse(responseData);",
+							"pm.environment.set(\"processId\", json.response)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"http://localhost:9191\",\n    \"protocol\": \"ids-rest\",\n    \"connectorId\":\"consumer\",\n    \"asset\":{\n        \"id\": \"demo-train-data_provider\",\n        \"policyId\": \"use-us\"\n    },\n    \"dataDestination\":{\n        \"type\": \"http\"\n    },\n    \"isSyncRequest\": true,\n    \"managedResources\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8181/api/datarequest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8181",
+					"path": [
+						"api",
+						"datarequest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Status of Transfer Process",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{consumer_url}}/api/datarequest/{{processId}}/state",
+					"host": [
+						"{{consumer_url}}"
+					],
+					"path": [
+						"api",
+						"datarequest",
+						"{{processId}}",
+						"state"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deprovision Request",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{consumer_url}}/api/datarequest/{{processId}}",
+					"host": [
+						"{{consumer_url}}"
+					],
+					"path": [
+						"api",
+						"datarequest",
+						"{{processId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
