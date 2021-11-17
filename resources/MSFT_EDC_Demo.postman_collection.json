@@ -86,7 +86,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"{{provider_url}}\",\n    \"protocol\": \"ids-rest\",\n    \"connectorId\":\"consumer\",\n    \"dataEntry\":{\n        \"id\": \"schematic-drawing\",\n        \"policyId\": \"use-us\"\n    },\n    \"dataDestination\":{\n        \"type\": \"AmazonS3\"\n    },\n    \"managedResources\": true,\n    \"transferType\":{\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}",
+					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"{{provider_url}}\",\n    \"protocol\": \"ids-rest\",\n    \"connectorId\":\"consumer\",\n    \"asset\":{\n        \"id\": \"test-document-az_provider\",\n        \"policyId\": \"use-us\"\n    },\n    \"dataDestination\":{\n        \"type\": \"AmazonS3\"\n    },\n    \"managedResources\": true,\n    \"transferType\":{\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -126,7 +126,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"http://localhost:9191\",\n    \"protocol\": \"ids-rest\",\n    \"connectorId\":\"consumer\",\n    \"asset\":{\n        \"id\": \"demo-train-data_provider\",\n        \"policyId\": \"use-us\"\n    },\n    \"dataDestination\":{\n        \"type\": \"http\"\n    },\n    \"isSyncRequest\": true,\n    \"managedResources\": false\n}",
+					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"{{provider_url}}\",\n    \"protocol\": \"ids-rest\",\n    \"connectorId\":\"consumer\",\n    \"asset\":{\n        \"id\": \"demo-train-data_provider\",\n        \"policyId\": \"use-us\"\n    },\n    \"dataDestination\":{\n        \"type\": \"http\"\n    },\n    \"isSyncRequest\": true,\n    \"managedResources\": false\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -134,12 +134,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8181/api/datarequest",
-					"protocol": "http",
+					"raw": "{{consumer_url}}/api/datarequest",
 					"host": [
-						"localhost"
+						"{{consumer_url}}"
 					],
-					"port": "8181",
 					"path": [
 						"api",
 						"datarequest"
@@ -154,14 +152,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{consumer_url}}/api/datarequest/{{processId}}/state",
+					"raw": "{{consumer_url}}/api/datarequest/989771fe-f422-436f-bb80-e1761be9e160/state",
 					"host": [
 						"{{consumer_url}}"
 					],
 					"path": [
 						"api",
 						"datarequest",
-						"{{processId}}",
+						"989771fe-f422-436f-bb80-e1761be9e160",
 						"state"
 					]
 				}
