@@ -48,7 +48,7 @@ resource "azurerm_storage_blob" "index-html" {
 
 # upload the DID document for the consumer
 resource "azurerm_storage_blob" "consumer-webdid" {
-  name                   = "consumer/.well-known/did.json"
+  name                   = "consumer/did.json"
   storage_account_name   = azurerm_storage_account.main-blobstore.name
   storage_container_name = "$web"
   type                   = "Block"
@@ -58,7 +58,7 @@ resource "azurerm_storage_blob" "consumer-webdid" {
 
 # upload the DID document for the provider
 resource "azurerm_storage_blob" "provider-webdid" {
-  name                   = "provider/.well-known/did.json"
+  name                   = "provider/did.json"
   storage_account_name   = azurerm_storage_account.main-blobstore.name
   storage_container_name = "$web"
   type                   = "Block"
@@ -68,7 +68,7 @@ resource "azurerm_storage_blob" "provider-webdid" {
 
 # upload the DID document for the 3rd connector
 resource "azurerm_storage_blob" "connector3-webdid" {
-  name                   = "connector3/.well-known/did.json"
+  name                   = "connector3/did.json"
   storage_account_name   = azurerm_storage_account.main-blobstore.name
   storage_container_name = "$web"
   type                   = "Block"

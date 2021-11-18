@@ -10,7 +10,7 @@
     {
       "id": "#provider-identity-hub-url",
       "type": "IdentityHub",
-      "serviceEndpoint": "http://edc-showcase.westeurope.azurecontainer.io:8181/api/identity-hub/"
+      "serviceEndpoint": "http://edc-showcase-provider.westeurope.azurecontainer.io:8181/api/identity-hub/"
     }
   ],
   "verificationMethod": [

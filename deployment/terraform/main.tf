@@ -292,7 +292,7 @@ resource "azurerm_container_group" "connector3" {
       CONNECTOR_NAME    = "connector3"
       TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL           = "did:web:edcshowcasegpstorage.z6.web.core.windows.net"
+      DID_URL           = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:connector3"
       DOH_SERVER        = "https://cloudflare-dns.com/dns-query"
       LOADER_BATCH_SIZE = 2
       COSMOS_ACCOUNT    = azurerm_cosmosdb_account.asset-index-account.name
