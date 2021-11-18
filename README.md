@@ -1,5 +1,4 @@
-# IMPORTANT NOTICE: the name of this repository will change soon. While Github will redirect automatically, be sure that you 
-# update your git remotes and any URLs that might point to the demo deployment!
+# IMPORTANT NOTICE: the name of this repository will change soon. While Github will redirect automatically, be sure that you update your git remotes and any URLs that might point to the demo deployment!
 
 # The `ion-demo` application
 
