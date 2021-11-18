@@ -1,0 +1,32 @@
+{
+  "id": "did:web:edcshowcasegpstorage.z6.web.core.windows.net:provider",
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    {
+      "@base": "did:web:edcshowcasegpstorage.z6.web.core.windows.net:provider"
+    }
+  ],
+  "service": [
+    {
+      "id": "#provider-identity-hub-url",
+      "type": "IdentityHub",
+      "serviceEndpoint": "http://edc-showcase.westeurope.azurecontainer.io:8181/api/identity-hub/"
+    }
+  ],
+  "verificationMethod": [
+    {
+      "id": "#provider-key-1",
+      "controller": "",
+      "type": "JsonWebKey2020",
+      "publicKeyJwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "nesyr7cFTZAXvOJZKnF5vOb_oEaJOl5PMguCutetEao",
+        "y": "7Q9B5SENr8vSGS5e_DrSr-AsT28ojHeYXxfKa1vRWNQ"
+      }
+    }
+  ],
+  "authentication": [
+    "#provider-key-1"
+  ]
+}
