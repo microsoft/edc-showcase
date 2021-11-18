@@ -27,7 +27,7 @@ resource "aws_iam_user_policy_attachment" "gx-iamfullaccess" {
 
 
 resource "aws_s3_bucket" "src-bucket" {
-  bucket = "ion-demo-src-bucket"
+  bucket = "edc-showcase-src-bucket"
 }
 
 output "new_user" {

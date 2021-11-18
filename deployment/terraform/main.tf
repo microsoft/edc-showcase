@@ -4,7 +4,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "edc-infrastructure"
     storage_account_name = "edcstate"
-    container_name       = "terraform-state-ion-demo"
+    container_name       = "terraform-state-edc-showcase"
     key                  = "terraform.state"
   }
   required_providers {
@@ -127,7 +127,7 @@ resource "azurerm_container_group" "registration-service" {
   }
   container {
     cpu    = 2
-    image  = "${var.docker_repo_url}/paullatzelsperger/ion-demo/regsvc:latest"
+    image  = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/regsvc:latest"
     //    image  = "paullatzelsperger/gx-reg-svc:latest"
     memory = "2"
     name   = var.regsvc-name
@@ -174,7 +174,7 @@ resource "azurerm_container_group" "provider-connector" {
   }
   container {
     cpu    = 2
-    image  = "${var.docker_repo_url}/paullatzelsperger/ion-demo/connector:latest"
+    image  = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/connector:latest"
     memory = "2"
     name   = var.provider-name
 
@@ -225,7 +225,7 @@ resource "azurerm_container_group" "consumer-connector" {
   }
   container {
     cpu    = 2
-    image  = "${var.docker_repo_url}/paullatzelsperger/ion-demo/connector:latest"
+    image  = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/connector:latest"
     memory = "2"
     name   = var.consumer-name
 
@@ -276,7 +276,7 @@ resource "azurerm_container_group" "connector3" {
   }
   container {
     cpu    = 2
-    image  = "${var.docker_repo_url}/paullatzelsperger/ion-demo/connector:latest"
+    image  = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/connector:latest"
     memory = "2"
     name   = "connector3"
 

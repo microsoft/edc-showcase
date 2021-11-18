@@ -1,21 +1,21 @@
 [
   {
     "name": "consumer",
-    "url": "http://ion-demo-consumer.westeurope.azurecontainer.io:8181",
+    "url": "http://edc-showcase-consumer.westeurope.azurecontainer.io:8181",
     "supportedProtocols": [
       "ids-rest"
     ]
   },
   {
     "name": "provider",
-    "url": "http://ion-demo-provider.westeurope.azurecontainer.io:8181",
+    "url": "http://edc-showcase-provider.westeurope.azurecontainer.io:8181",
     "supportedProtocols": [
       "ids-rest"
     ]
   },
   {
     "name": "connector3",
-    "url": "http://ion-demo-connector3.westeurope.azurecontainer.io:8181",
+    "url": "http://edc-showcase-connector3.westeurope.azurecontainer.io:8181",
     "supportedProtocols": [
       "ids-rest"
     ]

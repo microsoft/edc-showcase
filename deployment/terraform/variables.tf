@@ -12,7 +12,7 @@ variable "aws_region" {
 
 variable "aws_user" {
   description = "name of the AWS user being created"
-  default     = "ion-demo-aws-user"
+  default     = "edc-showcase-aws-user"
   type        = string
 }
 

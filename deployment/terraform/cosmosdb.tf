@@ -6,7 +6,7 @@ resource "azurerm_cosmosdb_account" "asset-index-account" {
   kind                = "GlobalDocumentDB"
 
   enable_automatic_failover = false
-  enable_free_tier          = true
+  #  enable_free_tier          = true
 
   capabilities {
     name = "EnableAggregationPipeline"

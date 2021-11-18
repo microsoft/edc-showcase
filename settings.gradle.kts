@@ -1,4 +1,4 @@
-rootProject.name = "ion-demo"
+rootProject.name = "edc-showcase"
 
 include(":launchers:connector")
 //disabled temporarily due to compile errors

@@ -1,6 +1,6 @@
 # IMPORTANT NOTICE: the name of this repository will change soon. While Github will redirect automatically, be sure that you update your git remotes and any URLs that might point to the demo deployment!
 
-# The `ion-demo` application
+# The `edc-showcase` application
 
 Demo Application to show how the EDC can be used to implement distributed identities and federated catalogs.
 
@@ -95,7 +95,7 @@ for `consumer_url`, `provider_url` and `connector3_url`. Those are used by the r
 in order to see the data catalog that e.g. the consumer has available, execute
 
 ```bash
-curl -X GET "http://ion-demo-consumer.westeurope.azurecontainer.io:8181/api/catalog/cached"
+curl -X GET "http://edc-showcase-consumer.westeurope.azurecontainer.io:8181/api/catalog/cached"
 ```
 
 that should return an array of Asset objects.

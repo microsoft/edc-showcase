@@ -1,16 +1,16 @@
 {
-  "id": "did:web:iondemogpstorage.z6.web.core.windows.net",
+  "id": "did:web:edcshowcasegpstorage.z6.web.core.windows.net",
   "@context": [
     "https://www.w3.org/ns/did/v1",
     {
-      "@base": "did:web:iondemogpstorage.z6.web.core.windows.net"
+      "@base": "did:web:edcshowcasegpstorage.z6.web.core.windows.net"
     }
   ],
   "service": [
     {
       "id": "#connector3-identity-hub-url",
       "type": "IdentityHub",
-      "serviceEndpoint": "http://ion-demo-connector3.westeurope.azurecontainer.io:8181/api/identity-hub/"
+      "serviceEndpoint": "http://edc-showcase-connector3.westeurope.azurecontainer.io:8181/api/identity-hub/"
     }
   ],
   "verificationMethod": [
