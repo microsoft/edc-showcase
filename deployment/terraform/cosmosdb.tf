@@ -1,4 +1,4 @@
-resource "azurerm_cosmosdb_account" "asset-index-account" {
+resource "azurerm_cosmosdb_account" "showcase-cosmos-account" {
   name                = "${var.environment}-cosmos"
   location            = azurerm_resource_group.core-resourcegroup.location
   resource_group_name = azurerm_resource_group.core-resourcegroup.name
@@ -22,11 +22,19 @@ resource "azurerm_cosmosdb_account" "asset-index-account" {
   }
 }
 
+# create database that contains all the asset indexes
+resource "azurerm_cosmosdb_sql_database" "asset-index-db" {
+  name                = "asset-index"
+  resource_group_name = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name        = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  throughput          = 400
+}
+
 # Asset Index container for Consumer
 resource "azurerm_cosmosdb_sql_container" "consumer-assetindex-container" {
   name                  = var.consumer-name
-  resource_group_name   = azurerm_cosmosdb_account.asset-index-account.resource_group_name
-  account_name          = azurerm_cosmosdb_account.asset-index-account.name
+  resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
   database_name         = azurerm_cosmosdb_sql_database.asset-index-db.name
   partition_key_path    = "/partkey"
   partition_key_version = 1
@@ -53,8 +61,8 @@ resource "azurerm_cosmosdb_sql_container" "consumer-assetindex-container" {
 # Asset Index container for Provider
 resource "azurerm_cosmosdb_sql_container" "provider-assetindex-container" {
   name                  = var.provider-name
-  resource_group_name   = azurerm_cosmosdb_account.asset-index-account.resource_group_name
-  account_name          = azurerm_cosmosdb_account.asset-index-account.name
+  resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
   database_name         = azurerm_cosmosdb_sql_database.asset-index-db.name
   partition_key_path    = "/${var.asset-index-partkey}"
   partition_key_version = 1
@@ -80,8 +88,8 @@ resource "azurerm_cosmosdb_sql_container" "provider-assetindex-container" {
 # Asset Index container for Connector3
 resource "azurerm_cosmosdb_sql_container" "connector3-assetindex-container" {
   name                  = "connector3"
-  resource_group_name   = azurerm_cosmosdb_account.asset-index-account.resource_group_name
-  account_name          = azurerm_cosmosdb_account.asset-index-account.name
+  resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
   database_name         = azurerm_cosmosdb_sql_database.asset-index-db.name
   partition_key_path    = "/${var.asset-index-partkey}"
   partition_key_version = 1
@@ -105,10 +113,94 @@ resource "azurerm_cosmosdb_sql_container" "connector3-assetindex-container" {
 
 }
 
-# create database that contains all the asset indexes
-resource "azurerm_cosmosdb_sql_database" "asset-index-db" {
-  name                = "asset-index"
-  resource_group_name = azurerm_cosmosdb_account.asset-index-account.resource_group_name
-  account_name        = azurerm_cosmosdb_account.asset-index-account.name
+
+# create database that contains all the contract-definition indexes
+resource "azurerm_cosmosdb_sql_database" "contractdefinition-store-db" {
+  name                = "contract-definition-store"
+  resource_group_name = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name        = azurerm_cosmosdb_account.showcase-cosmos-account.name
   throughput          = 400
+}
+
+# ContractDefinition-Store container for Consumer
+resource "azurerm_cosmosdb_sql_container" "consumer-contractdefstore-container" {
+  name                  = var.consumer-name
+  resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  database_name         = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
+  partition_key_path    = "/partkey"
+  partition_key_version = 1
+  throughput            = 400
+
+  indexing_policy {
+    indexing_mode = "Consistent"
+
+    included_path {
+      path = "/*"
+    }
+
+    included_path {
+      path = "/included/?"
+    }
+
+    excluded_path {
+      path = "/excluded/?"
+    }
+  }
+
+}
+
+# ContractDefinition-Store container for Provider
+resource "azurerm_cosmosdb_sql_container" "provider-contractdefstore-container" {
+  name                  = var.provider-name
+  resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  database_name         = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
+  partition_key_path    = "/${var.asset-index-partkey}"
+  partition_key_version = 1
+  throughput            = 400
+
+  indexing_policy {
+    indexing_mode = "Consistent"
+
+    included_path {
+      path = "/*"
+    }
+
+    included_path {
+      path = "/included/?"
+    }
+
+    excluded_path {
+      path = "/excluded/?"
+    }
+  }
+}
+
+# ContractDefinition-Store container for Connector3
+resource "azurerm_cosmosdb_sql_container" "connector3-contractdefstore-container" {
+  name                  = "connector3"
+  resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  database_name         = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
+  partition_key_path    = "/${var.asset-index-partkey}"
+  partition_key_version = 1
+  throughput            = 400
+
+  indexing_policy {
+    indexing_mode = "Consistent"
+
+    included_path {
+      path = "/*"
+    }
+
+    included_path {
+      path = "/included/?"
+    }
+
+    excluded_path {
+      path = "/excluded/?"
+    }
+  }
+
 }

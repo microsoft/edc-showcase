@@ -193,7 +193,7 @@ resource "azurerm_container_group" "provider-connector" {
       DID_URL           = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:provider"
       LOADER_BATCH_SIZE = 2
       DOH_SERVER        = "https://cloudflare-dns.com/dns-query"
-      COSMOS_ACCOUNT    = azurerm_cosmosdb_account.asset-index-account.name
+      COSMOS_ACCOUNT    = azurerm_cosmosdb_account.showcase-cosmos-account.name
       COSMOS_DB         = azurerm_cosmosdb_sql_database.asset-index-db.name
       COSMOS_PARTKEY    = azurerm_cosmosdb_sql_container.provider-assetindex-container.partition_key_path
       COSMOS_CONTAINER  = azurerm_cosmosdb_sql_container.provider-assetindex-container.name
@@ -244,7 +244,7 @@ resource "azurerm_container_group" "consumer-connector" {
       DID_URL           = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:consumer"
       DOH_SERVER        = "https://cloudflare-dns.com/dns-query"
       LOADER_BATCH_SIZE = 2
-      COSMOS_ACCOUNT    = azurerm_cosmosdb_account.asset-index-account.name
+      COSMOS_ACCOUNT    = azurerm_cosmosdb_account.showcase-cosmos-account.name
       COSMOS_DB         = azurerm_cosmosdb_sql_database.asset-index-db.name
       COSMOS_PARTKEY    = azurerm_cosmosdb_sql_container.consumer-assetindex-container.partition_key_path
       COSMOS_CONTAINER  = azurerm_cosmosdb_sql_container.consumer-assetindex-container.name
@@ -295,7 +295,7 @@ resource "azurerm_container_group" "connector3" {
       DID_URL           = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:connector3"
       DOH_SERVER        = "https://cloudflare-dns.com/dns-query"
       LOADER_BATCH_SIZE = 2
-      COSMOS_ACCOUNT    = azurerm_cosmosdb_account.asset-index-account.name
+      COSMOS_ACCOUNT    = azurerm_cosmosdb_account.showcase-cosmos-account.name
       COSMOS_DB         = azurerm_cosmosdb_sql_database.asset-index-db.name
       COSMOS_PARTKEY    = azurerm_cosmosdb_sql_container.connector3-assetindex-container.partition_key_path
       COSMOS_CONTAINER  = azurerm_cosmosdb_sql_container.connector3-assetindex-container.name
