@@ -29,20 +29,19 @@ dependencies {
     implementation("${group}:data-protocols.ids-policy-mock:${edcversion}")
     implementation("${group}:data-protocols.ids:${edcversion}")
 
-    // simple in-memoryory and filesystem implementations
+    // simple in-memory and filesystem implementations
     implementation("${group}:in-memory.policy-registry:${edcversion}")
     implementation("${group}:in-memory.identity-hub:${edcversion}")
     implementation("${group}:in-memory.did-document-store:${edcversion}")
     implementation("${group}:filesystem.configuration:${edcversion}")
-//    implementation("${group}:in-memory.asset-index:${edcversion}")
     implementation("${group}:azure.cosmos.assetindex:${edcversion}")
+    implementation("${group}:azure.contract-definition-store:${edcversion}")
 
     //cloud stuff
     implementation("${group}:azure.vault:${edcversion}")
     implementation("${group}:aws.s3.provision:${edcversion}")
 
     // distributed identity stuff
-    implementation("${group}:ion.ion-client:${edcversion}")
     implementation("${group}:iam.identity-did-web:${edcversion}")
     implementation("${group}:iam.identity-did-spi:${edcversion}")
     implementation("${group}:iam.identity-did-core:${edcversion}")
@@ -52,13 +51,7 @@ dependencies {
     implementation("${group}:catalog.spi:${edcversion}")
     implementation("${group}:catalog.cache:${edcversion}")
     implementation("${group}:in-memory.catalog.node-directory:${edcversion}")
-
-    implementation("${group}:in-memory.catalog.cache.protocol-registry:${edcversion}")
     implementation("${group}:in-memory.catalog.cache.store:${edcversion}")
-    implementation("${group}:in-memory.catalog.cache.query-adapter-registry:${edcversion}")
-
-    // extension to enable client-pull mechanics
-    implementation("${group}:transfer-http-proxy:${edcversion}")
 
 }
 

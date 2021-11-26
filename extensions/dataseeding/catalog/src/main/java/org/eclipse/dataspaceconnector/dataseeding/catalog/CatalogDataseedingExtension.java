@@ -3,11 +3,12 @@ package org.eclipse.dataspaceconnector.dataseeding.catalog;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.dataspaceconnector.catalog.spi.CatalogQueryAdapter;
-import org.eclipse.dataspaceconnector.catalog.spi.CatalogQueryAdapterRegistry;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
+import org.eclipse.dataspaceconnector.catalog.spi.NodeQueryAdapter;
+import org.eclipse.dataspaceconnector.catalog.spi.NodeQueryAdapterRegistry;
 import org.eclipse.dataspaceconnector.catalog.spi.model.UpdateResponse;
+import org.eclipse.dataspaceconnector.dataloading.AssetLoader;
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
 import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
@@ -15,7 +16,6 @@ import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.asset.AssetIndex;
-import org.eclipse.dataspaceconnector.spi.asset.AssetIndexLoader;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyRegistry;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
@@ -37,21 +37,21 @@ import static org.eclipse.dataspaceconnector.policy.model.Operator.IN;
 public class CatalogDataseedingExtension implements ServiceExtension {
     public static final String USE_EU_POLICY = "use-eu";
     public static final String USE_US_POLICY = "use-us";
-    private AssetIndexLoader assetIndexLoader;
+    private AssetLoader assetIndexLoader;
 
     @Override
     public Set<String> requires() {
         return Set.of(PolicyRegistry.FEATURE,
                 FederatedCacheNodeDirectory.FEATURE,
                 AssetIndex.FEATURE,
-                CatalogQueryAdapterRegistry.FEATURE);
+                NodeQueryAdapterRegistry.FEATURE);
     }
 
     @Override
     public void initialize(ServiceExtensionContext context) {
         var monitor = context.getMonitor();
 
-        assetIndexLoader = context.getService(AssetIndexLoader.class);
+        assetIndexLoader = context.getService(AssetLoader.class);
 
         savePolicies(context);
         saveAssets(context.getConnectorId());
@@ -63,8 +63,8 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
     private void createProtocolAdapter(ServiceExtensionContext context) {
         var dispatcherRegistry = context.getService(RemoteMessageDispatcherRegistry.class);
-        var protocolAdapterRegistry = context.getService(CatalogQueryAdapterRegistry.class);
-        CatalogQueryAdapter idsQueryAdapter = updateRequest -> {
+        var protocolAdapterRegistry = context.getService(NodeQueryAdapterRegistry.class);
+        NodeQueryAdapter idsQueryAdapter = updateRequest -> {
             var query = QueryRequest.Builder.newInstance()
                     .connectorAddress(updateRequest.getNodeUrl())
                     .connectorId(context.getConnectorId())
@@ -188,11 +188,11 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .build();
 
         try {
-            assetIndexLoader.insert(asset1, dataAddress1);
-            assetIndexLoader.insert(asset2, dataAddress2);
-            assetIndexLoader.insert(asset3, dataAddress3);
-            assetIndexLoader.insert(asset4, dataAddress4);
-            assetIndexLoader.insert(asset5, dataAddress5);
+            assetIndexLoader.accept(asset1, dataAddress1);
+            assetIndexLoader.accept(asset2, dataAddress2);
+            assetIndexLoader.accept(asset3, dataAddress3);
+            assetIndexLoader.accept(asset4, dataAddress4);
+            assetIndexLoader.accept(asset5, dataAddress5);
         } catch (EdcException ex) {
             ex.printStackTrace();
         }

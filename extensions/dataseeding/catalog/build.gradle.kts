@@ -11,5 +11,6 @@ dependencies {
     api("${group}:catalog.spi:${edcversion}")
     implementation("${group}:spi:${edcversion}")
     implementation("${group}:dataspaceconnector.common.util:${edcversion}")
+    implementation("${group}:dataloading.asset:${edcversion}")
 
 }

@@ -34,7 +34,7 @@ public class BlobToS3DataFlowController implements DataFlowController {
 
     @Override
     public boolean canHandle(DataRequest dataRequest) {
-        var source = dataAddressResolver.resolveForAsset(dataRequest.getAsset().getId());
+        var source = dataAddressResolver.resolveForAsset(dataRequest.getAssetId());
         String sourceType = source.getType();
 
         String destinationType = dataRequest.getDestinationType();
@@ -44,7 +44,7 @@ public class BlobToS3DataFlowController implements DataFlowController {
 
     @Override
     public @NotNull DataFlowInitiateResponse initiateFlow(DataRequest dataRequest) {
-        var source = dataAddressResolver.resolveForAsset(dataRequest.getAsset().getId());
+        var source = dataAddressResolver.resolveForAsset(dataRequest.getAssetId());
         var sourceType = source.getType();
 
         String destinationType = dataRequest.getDestinationType();
@@ -61,7 +61,7 @@ public class BlobToS3DataFlowController implements DataFlowController {
         var reader = getReader(sourceType);
         var writer = getWriter(destinationType);
         CompletableFuture.supplyAsync(() -> reader.read(source))
-                .thenAccept(byteArrayInputStream -> writer.write(dataRequest.getDataDestination(), dataRequest.getAsset().getId(), byteArrayInputStream, secret))
+                .thenAccept(byteArrayInputStream -> writer.write(dataRequest.getDataDestination(), dataRequest.getAssetId(), byteArrayInputStream, secret))
                 .whenComplete((unused, throwable) -> {
                     if (throwable != null) {
                         monitor.severe("Error during copy process: " + throwable.getMessage());
