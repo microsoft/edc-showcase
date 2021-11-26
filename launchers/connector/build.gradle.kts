@@ -40,6 +40,7 @@ dependencies {
     //cloud stuff
     implementation("${group}:azure.vault:${edcversion}")
     implementation("${group}:aws.s3.provision:${edcversion}")
+    implementation("${group}:azure.blob.provision:${edcversion}")
 
     // distributed identity stuff
     implementation("${group}:iam.identity-did-web:${edcversion}")

@@ -6,6 +6,7 @@ resource "azurerm_storage_account" "main-blobstore" {
   account_tier             = "Standard"
   account_replication_type = "GRS"
   account_kind             = "StorageV2"
+  allow_blob_public_access = true // allows public access via SAS
   //allows for blobs, queues, fileshares, etc.
   static_website {
     index_document = "index.html"

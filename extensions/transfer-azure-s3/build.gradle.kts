@@ -19,11 +19,18 @@ plugins {
 val edcversion: String by project
 val rsApi: String by project
 val group = "org.eclipse.dataspaceconnector"
+val storageBlobVersion: String by project;
+
+
 dependencies {
     api("${group}:spi:${edcversion}")
     implementation("${group}:dataspaceconnector.common.util:${edcversion}")
+    // used for the BlobStoreWriter
+    implementation("com.azure:azure-storage-blob:${storageBlobVersion}")
+
 
     implementation("${group}:aws.s3.provision:${edcversion}")
+    implementation("${group}:azure.blob.provision:${edcversion}")
     implementation("${group}:azure.blob.api:${edcversion}")
 
 }

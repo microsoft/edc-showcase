@@ -10,17 +10,18 @@ import org.eclipse.dataspaceconnector.catalog.spi.NodeQueryAdapterRegistry;
 import org.eclipse.dataspaceconnector.catalog.spi.model.UpdateResponse;
 import org.eclipse.dataspaceconnector.dataloading.AssetLoader;
 import org.eclipse.dataspaceconnector.policy.model.Action;
-import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
-import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.asset.AssetIndex;
+import org.eclipse.dataspaceconnector.spi.asset.AssetSelectorExpression;
+import org.eclipse.dataspaceconnector.spi.contract.offer.store.ContractDefinitionStore;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyRegistry;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
+import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractDefinition;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.QueryRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 
@@ -32,18 +33,19 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static org.eclipse.dataspaceconnector.common.types.Cast.cast;
-import static org.eclipse.dataspaceconnector.policy.model.Operator.IN;
 
 public class CatalogDataseedingExtension implements ServiceExtension {
     public static final String USE_EU_POLICY = "use-eu";
     public static final String USE_US_POLICY = "use-us";
     private AssetLoader assetIndexLoader;
+    private ContractDefinitionStore contractDefinitionStore;
 
     @Override
     public Set<String> requires() {
         return Set.of(PolicyRegistry.FEATURE,
                 FederatedCacheNodeDirectory.FEATURE,
                 AssetIndex.FEATURE,
+                ContractDefinitionStore.FEATURE,
                 NodeQueryAdapterRegistry.FEATURE);
     }
 
@@ -52,13 +54,52 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         var monitor = context.getMonitor();
 
         assetIndexLoader = context.getService(AssetLoader.class);
+        contractDefinitionStore = context.getService(ContractDefinitionStore.class);
 
-        savePolicies(context);
+//        savePolicies(context);
+        setupContractOffers();
         saveAssets(context.getConnectorId());
         saveNodeEntries(context);
         createProtocolAdapter(context);
 
         monitor.info("Catalog Data seeding done");
+    }
+
+    public void setupContractOffers() {
+        Policy publicPolicy = Policy.Builder.newInstance()
+                .permission(Permission.Builder.newInstance()
+                        .target("1")
+                        .action(Action.Builder.newInstance()
+                                .type("USE")
+                                .build())
+                        .build())
+                .build();
+
+        Policy publicPolicy2 = Policy.Builder.newInstance()
+                .permission(Permission.Builder.newInstance()
+                        .target("2")
+                        .action(Action.Builder.newInstance()
+                                .type("USE")
+                                .build())
+                        .build())
+                .build();
+
+        ContractDefinition contractDefinition1 = ContractDefinition.Builder.newInstance()
+                .id("1")
+                .accessPolicy(publicPolicy)
+                .contractPolicy(publicPolicy)
+                .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals("id", "1").build())
+                .build();
+
+        ContractDefinition contractDefinition2 = ContractDefinition.Builder.newInstance()
+                .id("2")
+                .accessPolicy(publicPolicy2)
+                .contractPolicy(publicPolicy2)
+                .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals("id", "2").build())
+                .build();
+
+        contractDefinitionStore.save(contractDefinition1);
+        contractDefinitionStore.save(contractDefinition2);
     }
 
     private void createProtocolAdapter(ServiceExtensionContext context) {
@@ -196,23 +237,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         } catch (EdcException ex) {
             ex.printStackTrace();
         }
-    }
-
-
-    private void savePolicies(ServiceExtensionContext context) {
-        PolicyRegistry policyRegistry = context.getService(PolicyRegistry.class);
-
-        LiteralExpression spatialExpression = new LiteralExpression("ids:absoluteSpatialPosition");
-        var euConstraint = AtomicConstraint.Builder.newInstance().leftExpression(spatialExpression).operator(IN).rightExpression(new LiteralExpression("eu")).build();
-        var euUsePermission = Permission.Builder.newInstance().action(Action.Builder.newInstance().type("idsc:USE").build()).constraint(euConstraint).build();
-        var euPolicy = Policy.Builder.newInstance().id(USE_EU_POLICY).permission(euUsePermission).build();
-
-        var usConstraint = AtomicConstraint.Builder.newInstance().leftExpression(spatialExpression).operator(IN).rightExpression(new LiteralExpression("us")).build();
-        var usUsePermission = Permission.Builder.newInstance().action(Action.Builder.newInstance().type("idsc:USE").build()).constraint(usConstraint).build();
-        var usPolicy = Policy.Builder.newInstance().id(USE_US_POLICY).permission(usUsePermission).build();
-
-        policyRegistry.registerPolicy(usPolicy);
-        policyRegistry.registerPolicy(euPolicy);
     }
 }
 
