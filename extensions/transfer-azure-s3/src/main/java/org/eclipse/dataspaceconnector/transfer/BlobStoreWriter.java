@@ -42,7 +42,11 @@ class BlobStoreWriter implements DataWriter {
         } else {
             var endpoint = "https://" + accountName + ".blob.core.windows.net";
 
-            var sas = sasToken.getSas().substring(1);
+            var sas = sasToken.getSas();
+            if (sas.startsWith("?")) {
+                sas = sas.substring(1);
+            }
+
             BlobClient blobClient = new BlobClientBuilder()
                     .endpoint(endpoint)
                     .sasToken(sas)
