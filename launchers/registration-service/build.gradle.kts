@@ -15,18 +15,17 @@ val group = "org.eclipse.dataspaceconnector"
 dependencies {
     // EDC core dependencies
     implementation("${group}:core:${edcversion}")
-    implementation("${group}:in-memory.process-store:${edcversion}")
+    implementation("${group}:transfer-process-store-memory:${edcversion}")
 
-    implementation("${group}:dataspaceconnector.common.util:${edcversion}")
-    implementation("${group}:azure.events-config:${edcversion}")
-    implementation("${group}:ion.ion-client:${edcversion}")
+    implementation("${group}:common-util:${edcversion}")
+    implementation("${group}:azure-eventgrid-config:${edcversion}")
 
-    implementation("${group}:core.bootstrap:${edcversion}")
-    implementation("${group}:core.protocol-web:${edcversion}")
+    implementation("${group}:bootstrap:${edcversion}")
+    implementation("${group}:protocol-web:${edcversion}")
 
-    implementation("${group}:iam.registration-service:${edcversion}")
-    implementation("${group}:iam.registration-service-api:${edcversion}")
-    implementation("${group}:in-memory.did-document-store:${edcversion}")
+    implementation("${group}:registration-service:${edcversion}")
+    implementation("${group}:registration-service-api:${edcversion}")
+    implementation("${group}:did-document-store-memory:${edcversion}")
 }
 
 application {

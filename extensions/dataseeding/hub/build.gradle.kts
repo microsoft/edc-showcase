@@ -8,6 +8,6 @@ val group = "org.eclipse.dataspaceconnector"
 dependencies {
 
     implementation("${group}:spi:${edcversion}")
-    implementation("${group}:iam.identity-did-spi:${edcversion}")
+    implementation("${group}:identity-did-spi:${edcversion}")
 
 }

@@ -204,3 +204,124 @@ resource "azurerm_cosmosdb_sql_container" "connector3-contractdefstore-container
   }
 
 }
+
+
+# create database that contains all the contract-definition indexes
+resource "azurerm_cosmosdb_sql_database" "contractnegotiation-store-db" {
+  name                = "contract-negotiation-store"
+  resource_group_name = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name        = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  throughput          = 400
+}
+
+# ContractDefinition-Store container for Consumer
+resource "azurerm_cosmosdb_sql_container" "consumer-contractnegotiation-container" {
+  name                  = var.consumer-name
+  resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  database_name         = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
+  partition_key_path    = "/partkey"
+  partition_key_version = 1
+  throughput            = 400
+
+  indexing_policy {
+    indexing_mode = "Consistent"
+
+    included_path {
+      path = "/*"
+    }
+
+    included_path {
+      path = "/included/?"
+    }
+
+    excluded_path {
+      path = "/excluded/?"
+    }
+  }
+
+}
+
+# ContractDefinition-Store container for Provider
+resource "azurerm_cosmosdb_sql_container" "provider-contractnegotiation-container" {
+  name                  = var.provider-name
+  resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  database_name         = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
+  partition_key_path    = "/partkey"
+  partition_key_version = 1
+  throughput            = 400
+
+  indexing_policy {
+    indexing_mode = "Consistent"
+
+    included_path {
+      path = "/*"
+    }
+
+    included_path {
+      path = "/included/?"
+    }
+
+    excluded_path {
+      path = "/excluded/?"
+    }
+  }
+}
+
+# ContractDefinition-Store container for Connector3
+resource "azurerm_cosmosdb_sql_container" "connector3-contractnegotiation-container" {
+  name                  = "connector3"
+  resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  database_name         = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
+  partition_key_path    = "/partkey"
+  partition_key_version = 1
+  throughput            = 400
+
+  indexing_policy {
+    indexing_mode = "Consistent"
+
+    included_path {
+      path = "/*"
+    }
+
+    included_path {
+      path = "/included/?"
+    }
+
+    excluded_path {
+      path = "/excluded/?"
+    }
+  }
+
+}
+
+# Stored Procedures for Contract Negotiation Store
+resource "azurerm_cosmosdb_sql_stored_procedure" "nextForState-consumer" {
+  name                = "nextForState"
+  resource_group_name = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name        = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  database_name       = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
+  container_name      = azurerm_cosmosdb_sql_container.consumer-contractnegotiation-container.name
+  body                = file("nextForState.js")
+}
+
+resource "azurerm_cosmosdb_sql_stored_procedure" "nextForState-provider" {
+  name                = "nextForState"
+  resource_group_name = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name        = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  database_name       = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
+  container_name      = azurerm_cosmosdb_sql_container.provider-contractnegotiation-container.name
+
+  body = file("nextForState.js")
+}
+resource "azurerm_cosmosdb_sql_stored_procedure" "nextForState-connector3" {
+  name                = "nextForState"
+  resource_group_name = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
+  account_name        = azurerm_cosmosdb_account.showcase-cosmos-account.name
+  database_name       = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
+  container_name      = azurerm_cosmosdb_sql_container.connector3-contractnegotiation-container.name
+
+  body = file("nextForState.js")
+}

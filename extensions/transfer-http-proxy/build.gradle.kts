@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2020, 2021 Microsoft Corporation
+ *  Copyright (c) 2021 Microsoft Corporation
  *
  *  This program and the accompanying materials are made available under the
  *  terms of the Apache License, Version 2.0 which is available at
@@ -16,21 +16,16 @@ plugins {
     `java-library`
 }
 
-val edcversion: String by project
 val rsApi: String by project
+val nimbusVersion: String by project
+val edcversion: String by project
 val group = "org.eclipse.dataspaceconnector"
-val storageBlobVersion: String by project;
-
 
 dependencies {
     api("${group}:spi:${edcversion}")
-    implementation("${group}:common-util:${edcversion}")
-    // used for the BlobStoreWriter
-    implementation("com.azure:azure-storage-blob:${storageBlobVersion}")
 
-
-    implementation("${group}:s3-provision:${edcversion}")
-    implementation("${group}:blob-provision:${edcversion}")
-    implementation("${group}:blob-api:${edcversion}")
+    implementation("jakarta.ws.rs:jakarta.ws.rs-api:${rsApi}")
+    implementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
 
 }

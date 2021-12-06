@@ -12,7 +12,7 @@
  *
  */
 
-package com.microsoft.ion.connector;
+package com.microsoft.edc.showcase.connector;
 
 import org.eclipse.dataspaceconnector.monitor.MonitorProvider;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
