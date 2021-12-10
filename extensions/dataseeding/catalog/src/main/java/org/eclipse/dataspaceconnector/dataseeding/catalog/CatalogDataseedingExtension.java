@@ -10,6 +10,8 @@ import org.eclipse.dataspaceconnector.catalog.spi.NodeQueryAdapterRegistry;
 import org.eclipse.dataspaceconnector.catalog.spi.model.UpdateResponse;
 import org.eclipse.dataspaceconnector.dataloading.AssetLoader;
 import org.eclipse.dataspaceconnector.policy.model.Action;
+import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
+import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.EdcException;
@@ -33,6 +35,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static org.eclipse.dataspaceconnector.common.types.Cast.cast;
+import static org.eclipse.dataspaceconnector.policy.model.Operator.IN;
 
 public class CatalogDataseedingExtension implements ServiceExtension {
     public static final String USE_EU_POLICY = "use-eu";
@@ -56,7 +59,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         assetIndexLoader = context.getService(AssetLoader.class);
         contractDefinitionStore = context.getService(ContractDefinitionStore.class);
 
-//        savePolicies(context);
+        savePolicies(context);
         setupContractOffers();
         saveAssets(context.getConnectorId());
         saveNodeEntries(context);
@@ -237,6 +240,22 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         } catch (EdcException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void savePolicies(ServiceExtensionContext context) {
+        PolicyRegistry policyRegistry = context.getService(PolicyRegistry.class);
+
+        LiteralExpression spatialExpression = new LiteralExpression("ids:absoluteSpatialPosition");
+        var euConstraint = AtomicConstraint.Builder.newInstance().leftExpression(spatialExpression).operator(IN).rightExpression(new LiteralExpression("eu")).build();
+        var euUsePermission = Permission.Builder.newInstance().action(Action.Builder.newInstance().type("idsc:USE").build()).constraint(euConstraint).build();
+        var euPolicy = Policy.Builder.newInstance().id(USE_EU_POLICY).permission(euUsePermission).build();
+
+        var usConstraint = AtomicConstraint.Builder.newInstance().leftExpression(spatialExpression).operator(IN).rightExpression(new LiteralExpression("us")).build();
+        var usUsePermission = Permission.Builder.newInstance().action(Action.Builder.newInstance().type("idsc:USE").build()).constraint(usConstraint).build();
+        var usPolicy = Policy.Builder.newInstance().id(USE_US_POLICY).permission(usUsePermission).build();
+
+        policyRegistry.registerPolicy(usPolicy);
+        policyRegistry.registerPolicy(euPolicy);
     }
 }
 

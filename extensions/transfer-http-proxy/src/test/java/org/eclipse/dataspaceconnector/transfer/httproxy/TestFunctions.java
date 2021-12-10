@@ -17,7 +17,7 @@ public class TestFunctions {
                 .assetId("asset1")
                 .connectorAddress(connectorAddress)
                 .id("test-request-id")
-                .isSyncRequest(true)
+                .isSync(true)
                 .build();
     }
 
