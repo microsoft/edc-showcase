@@ -13,15 +13,16 @@
  */
 package org.eclipse.dataspaceconnector.iam.did.credentials;
 
-import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsResult;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQuery;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQueryRequest;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -46,7 +47,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     }
 
     @Override
-    public CredentialsResult verifyCredentials(String hubBaseUrl, PublicKeyWrapper othersPublicKey) {
+    public Result<Map<String, String>> verifyCredentials(String hubBaseUrl, PublicKeyWrapper othersPublicKey) {
         monitor.debug("Step 2: Starting credential verification against hub URL " + hubBaseUrl);
 
         var query = ObjectQuery.Builder.newInstance().context("ION Demo").type("RegistrationCredentials").build();
@@ -55,15 +56,15 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
         var queryRequest = ObjectQueryRequest.Builder.newInstance().query(query).iss(issuer).aud("aud").sub("credentials").build();
         monitor.debug("Starting credential verification against hub URL " + hubBaseUrl);
         var credentials = hubClient.queryCredentials(queryRequest, hubBaseUrl, othersPublicKey);
-        monitor.info(credentials.getResponse().size() + " credentials obtained from IdentityHub: ");
-        monitor.debug(credentials.getResponse().entrySet().stream().map(e -> e.getKey() + " -> " + e.getValue()).collect(Collectors.joining(", ")));
-        if (credentials.isError()) {
-            return new CredentialsResult("Error resolving credentials");
+        monitor.info(credentials.getContent().size() + " credentials obtained from IdentityHub: ");
+        monitor.debug(credentials.getContent().entrySet().stream().map(e -> e.getKey() + " -> " + e.getValue()).collect(Collectors.joining(", ")));
+        if (credentials.failed()) {
+            return Result.failure("Error resolving credentials");
         }
 
         // only support String credentials; filter out others
         var map = new HashMap<String, String>();
-        credentials.getResponse().entrySet().stream().filter(entry -> entry.getValue() instanceof String).forEach(entry -> map.put(entry.getKey(), (String) entry.getValue()));
-        return new CredentialsResult(map);
+        credentials.getContent().entrySet().stream().filter(entry -> entry.getValue() instanceof String).forEach(entry -> map.put(entry.getKey(), (String) entry.getValue()));
+        return Result.success(map);
     }
 }

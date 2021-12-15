@@ -17,7 +17,6 @@ import org.eclipse.dataspaceconnector.common.collection.CollectionUtil;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.transfer.TransferProcessManager;
-import org.eclipse.dataspaceconnector.spi.transfer.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.transfer.store.TransferProcessStore;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.QueryRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
@@ -54,7 +53,7 @@ public class IonDemoApiController {
     }
 
     @GET
-    @Path("health")
+    @Path("hello")
     public Response hello() {
         monitor.info("Controller says hello!");
         HashMap<String, String> m = formatAsJson("up and running");
@@ -105,13 +104,12 @@ public class IonDemoApiController {
         request = request.copy(UUID.randomUUID().toString()); //assign random ID
         monitor.info("Received new data request, ID = " + request.getId());
         var response = transferProcessManager.initiateConsumerRequest(request);
-        monitor.info("Created new transfer process, ID = " + response.getId());
+        monitor.info("Created new transfer process, ID = " + response.getContent());
 
-        ResponseStatus status = response.getStatus();
-        if (status == ResponseStatus.OK) {
+        if (response.succeeded()) {
             return Response.ok(response).build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity(response.getStatus().name()).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(response.getFailureMessages()).build();
         }
     }
 

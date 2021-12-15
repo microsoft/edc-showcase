@@ -2,11 +2,11 @@ package org.eclipse.dataspaceconnector.iam.did.credentials;
 
 import org.easymock.EasyMock;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.RsaPublicKeyWrapper;
-import org.eclipse.dataspaceconnector.iam.did.spi.hub.ClientResponse;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.message.ObjectQueryRequest;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.eclipse.dataspaceconnector.spi.result.Result;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,12 +25,12 @@ class IdentityHubCredentialsVerifierTest {
 
     @Test
     void verifyCredentials() {
-        EasyMock.expect(hubClient.queryCredentials(EasyMock.isA(ObjectQueryRequest.class), EasyMock.isA(String.class), EasyMock.isA(PublicKeyWrapper.class))).andReturn(new ClientResponse<>(Map.of("region", "EU")));
+        EasyMock.expect(hubClient.queryCredentials(EasyMock.isA(ObjectQueryRequest.class), EasyMock.isA(String.class), EasyMock.isA(PublicKeyWrapper.class))).andReturn(Result.success(Map.of("region", "EU")));
         EasyMock.replay(hubClient);
 
         var result = credentialsVerifier.verifyCredentials("https://foo.com", new RsaPublicKeyWrapper(publicKey));
-        Assertions.assertTrue(result.success());
-        Assertions.assertEquals("EU", result.getValidatedCredentials().get("region"));
+        Assertions.assertTrue(result.succeeded());
+        Assertions.assertEquals("EU", result.getContent().get("region"));
         EasyMock.verify(hubClient);
     }
 
