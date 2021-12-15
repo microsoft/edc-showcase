@@ -197,6 +197,12 @@ resource "azurerm_container_group" "provider-connector" {
       COSMOS_DB         = azurerm_cosmosdb_sql_database.asset-index-db.name
       COSMOS_PARTKEY    = azurerm_cosmosdb_sql_container.provider-assetindex-container.partition_key_path
       COSMOS_CONTAINER  = azurerm_cosmosdb_sql_container.provider-assetindex-container.name
+
+      CDS_DATABASE  = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
+      CDS_CONTAINER = azurerm_cosmosdb_sql_container.provider-contractdefstore-container.name
+
+      CNS_DATABASE  = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
+      CNS_CONTAINER = azurerm_cosmosdb_sql_container.provider-contractnegotiation-container.name
     }
 
     volume {
@@ -248,6 +254,12 @@ resource "azurerm_container_group" "consumer-connector" {
       COSMOS_DB         = azurerm_cosmosdb_sql_database.asset-index-db.name
       COSMOS_PARTKEY    = azurerm_cosmosdb_sql_container.consumer-assetindex-container.partition_key_path
       COSMOS_CONTAINER  = azurerm_cosmosdb_sql_container.consumer-assetindex-container.name
+
+      CDS_DATABASE  = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
+      CDS_CONTAINER = azurerm_cosmosdb_sql_container.consumer-contractdefstore-container.name
+
+      CNS_DATABASE  = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
+      CNS_CONTAINER = azurerm_cosmosdb_sql_container.consumer-contractnegotiation-container.name
     }
 
     volume {
@@ -299,6 +311,12 @@ resource "azurerm_container_group" "connector3" {
       COSMOS_DB         = azurerm_cosmosdb_sql_database.asset-index-db.name
       COSMOS_PARTKEY    = azurerm_cosmosdb_sql_container.connector3-assetindex-container.partition_key_path
       COSMOS_CONTAINER  = azurerm_cosmosdb_sql_container.connector3-assetindex-container.name
+
+      CDS_DATABASE  = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
+      CDS_CONTAINER = azurerm_cosmosdb_sql_container.connector3-contractdefstore-container.name
+
+      CNS_DATABASE  = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
+      CNS_CONTAINER = azurerm_cosmosdb_sql_container.connector3-contractnegotiation-container.name
     }
 
     volume {
