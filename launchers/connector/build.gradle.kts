@@ -27,6 +27,8 @@ dependencies {
     implementation("${group}:transfer-process-store-memory:${edcversion}")
     implementation("${group}:contract-definition-store-cosmos:${edcversion}")
     implementation("${group}:contract-negotiation-store-cosmos:${edcversion}")
+    // uncomment this once the observability api is part of EDC mainline
+    // implementation("${group}:observability-api:${edcversion}")
 
     // ids
     implementation("${group}:ids-policy-mock:${edcversion}")
