@@ -3,10 +3,8 @@ package org.eclipse.dataspaceconnector.dataseeding.catalog;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.dataspaceconnector.catalog.cache.query.IdsMultipartNodeQueryAdapter;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
-import org.eclipse.dataspaceconnector.catalog.spi.NodeQueryAdapter;
 import org.eclipse.dataspaceconnector.catalog.spi.NodeQueryAdapterRegistry;
 import org.eclipse.dataspaceconnector.dataloading.AssetLoader;
 import org.eclipse.dataspaceconnector.policy.model.Action;
@@ -18,7 +16,6 @@ import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.asset.AssetIndex;
 import org.eclipse.dataspaceconnector.spi.asset.AssetSelectorExpression;
 import org.eclipse.dataspaceconnector.spi.contract.offer.store.ContractDefinitionStore;
-import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyRegistry;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
@@ -59,7 +56,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         var assets = saveAssets(context.getConnectorId());
         offerAssets(assets);
         saveNodeEntries(context);
-        createProtocolAdapter(context);
 
         monitor.info("Catalog Data seeding done");
     }
@@ -87,15 +83,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
     private String getId(Asset a) {
         return "'" + a.getId() + "'";
-    }
-
-    private void createProtocolAdapter(ServiceExtensionContext context) {
-        var dispatcherRegistry = context.getService(RemoteMessageDispatcherRegistry.class);
-        var protocolAdapterRegistry = context.getService(NodeQueryAdapterRegistry.class);
-        NodeQueryAdapter idsQueryAdapter = new IdsMultipartNodeQueryAdapter(context.getConnectorId(), dispatcherRegistry, context.getTypeManager());
-
-        protocolAdapterRegistry.register("ids-multipart", idsQueryAdapter);
-
     }
 
     private void saveNodeEntries(ServiceExtensionContext context) {
