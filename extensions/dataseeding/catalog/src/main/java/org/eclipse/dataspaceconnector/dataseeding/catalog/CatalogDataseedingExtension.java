@@ -3,11 +3,11 @@ package org.eclipse.dataspaceconnector.dataseeding.catalog;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.dataspaceconnector.catalog.cache.query.IdsMultipartNodeQueryAdapter;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
 import org.eclipse.dataspaceconnector.catalog.spi.NodeQueryAdapter;
 import org.eclipse.dataspaceconnector.catalog.spi.NodeQueryAdapterRegistry;
-import org.eclipse.dataspaceconnector.catalog.spi.model.UpdateResponse;
 import org.eclipse.dataspaceconnector.dataloading.AssetLoader;
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
@@ -24,17 +24,13 @@ import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractDefinition;
-import org.eclipse.dataspaceconnector.spi.types.domain.metadata.QueryRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
-import static org.eclipse.dataspaceconnector.common.types.Cast.cast;
 import static org.eclipse.dataspaceconnector.policy.model.Operator.IN;
 
 public class CatalogDataseedingExtension implements ServiceExtension {
@@ -60,15 +56,15 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         contractDefinitionStore = context.getService(ContractDefinitionStore.class);
 
         savePolicies(context);
-        setupContractOffers();
-        saveAssets(context.getConnectorId());
+        var assets = saveAssets(context.getConnectorId());
+        offerAssets(assets);
         saveNodeEntries(context);
         createProtocolAdapter(context);
 
         monitor.info("Catalog Data seeding done");
     }
 
-    public void setupContractOffers() {
+    public void offerAssets(List<Asset> assets) {
         Policy publicPolicy = Policy.Builder.newInstance()
                 .permission(Permission.Builder.newInstance()
                         .target("1")
@@ -78,67 +74,34 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                         .build())
                 .build();
 
-        Policy publicPolicy2 = Policy.Builder.newInstance()
-                .permission(Permission.Builder.newInstance()
-                        .target("2")
-                        .action(Action.Builder.newInstance()
-                                .type("USE")
-                                .build())
+        assets.stream().map(a -> ContractDefinition.Builder.newInstance()
+                        .id(a.getId())
+                        .accessPolicy(publicPolicy)
+                        .contractPolicy(publicPolicy)
+                        .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals(Asset.PROPERTY_ID, getId(a)).build())
                         .build())
-                .build();
+                .forEach(contractDefinitionStore::save);
 
-        ContractDefinition contractDefinition1 = ContractDefinition.Builder.newInstance()
-                .id("1")
-                .accessPolicy(publicPolicy)
-                .contractPolicy(publicPolicy)
-                .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals("id", "1").build())
-                .build();
 
-        ContractDefinition contractDefinition2 = ContractDefinition.Builder.newInstance()
-                .id("2")
-                .accessPolicy(publicPolicy2)
-                .contractPolicy(publicPolicy2)
-                .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals("id", "2").build())
-                .build();
+    }
 
-        contractDefinitionStore.save(contractDefinition1);
-        contractDefinitionStore.save(contractDefinition2);
+    private String getId(Asset a) {
+        return "'" + a.getId() + "'";
     }
 
     private void createProtocolAdapter(ServiceExtensionContext context) {
         var dispatcherRegistry = context.getService(RemoteMessageDispatcherRegistry.class);
         var protocolAdapterRegistry = context.getService(NodeQueryAdapterRegistry.class);
-        NodeQueryAdapter idsQueryAdapter = updateRequest -> {
-            var query = QueryRequest.Builder.newInstance()
-                    .connectorAddress(updateRequest.getNodeUrl())
-                    .connectorId(context.getConnectorId())
-                    .queryLanguage("edc")
-                    .query("select *")
-                    .protocol("ids-rest").build();
+        NodeQueryAdapter idsQueryAdapter = new IdsMultipartNodeQueryAdapter(context.getConnectorId(), dispatcherRegistry, context.getTypeManager());
 
-            CompletableFuture<List<Map<String, Object>>> future = cast(dispatcherRegistry.send(List.class, query, () -> null));
-
-            return future.thenApply(assetNames -> {
-                // This is a dirty hack which is necessary because "assetNames" will get deserialized to
-                // a list of LinkedHashMaps, instead of Assets.
-                // so we need to serialize and manually deserialize again...
-                var tm = context.getTypeManager();
-                var assets = assetNames.stream().map(asset -> tm.readValue(tm.writeValueAsString(asset), Asset.class))
-                        .collect(Collectors.toList());
-
-                return new UpdateResponse(updateRequest.getNodeUrl(), assets);
-            });
-        };
-
-
-        protocolAdapterRegistry.register("ids-rest", idsQueryAdapter);
+        protocolAdapterRegistry.register("ids-multipart", idsQueryAdapter);
 
     }
 
     private void saveNodeEntries(ServiceExtensionContext context) {
         var nodeDirectory = context.getService(FederatedCacheNodeDirectory.class);
 
-        var nodes = readNodesFromJson("nodes.json");
+        var nodes = readNodesFromJson("nodes-local.json");
         nodes.forEach(nodeDirectory::insert);
     }
 
@@ -155,7 +118,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         }
     }
 
-    private void saveAssets(String connectorId) {
+    private List<Asset> saveAssets(String connectorId) {
 
         var asset1 = Asset.Builder.newInstance()
                 .property("type", "file")
@@ -237,9 +200,11 @@ public class CatalogDataseedingExtension implements ServiceExtension {
             assetIndexLoader.accept(asset3, dataAddress3);
             assetIndexLoader.accept(asset4, dataAddress4);
             assetIndexLoader.accept(asset5, dataAddress5);
+            return List.of(asset1, asset2, asset3, asset4, asset5);
         } catch (EdcException ex) {
             ex.printStackTrace();
         }
+        return Collections.emptyList();
     }
 
     private void savePolicies(ServiceExtensionContext context) {

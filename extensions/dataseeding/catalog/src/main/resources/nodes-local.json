@@ -3,21 +3,21 @@
     "name": "consumer",
     "url": "http://localhost:8181",
     "supportedProtocols": [
-      "ids-rest"
+      "ids-multipart"
     ]
   },
   {
     "name": "provider",
     "url": "http://localhost:9191",
     "supportedProtocols": [
-      "ids-rest"
+      "ids-multipart"
     ]
   },
   {
     "name": "connector3",
     "url": "http://localhost:7171",
     "supportedProtocols": [
-      "ids-rest"
+      "ids-multipart"
     ]
   }
 ]

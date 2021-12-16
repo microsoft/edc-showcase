@@ -92,7 +92,7 @@ public class IonDemoApiController {
             return Response.status(400, String.join(", ", queryResponse.getErrors())).build();
         }
 
-        return Response.ok(queryResponse.getAssets()).build();
+        return Response.ok(queryResponse.getOffers()).build();
     }
 
     @POST
