@@ -14,10 +14,13 @@ import org.eclipse.dataspaceconnector.catalog.spi.QueryEngine;
 import org.eclipse.dataspaceconnector.catalog.spi.QueryResponse;
 import org.eclipse.dataspaceconnector.catalog.spi.model.FederatedCatalogCacheQuery;
 import org.eclipse.dataspaceconnector.common.collection.CollectionUtil;
+import org.eclipse.dataspaceconnector.spi.contract.negotiation.ConsumerContractNegotiationManager;
+import org.eclipse.dataspaceconnector.spi.contract.negotiation.response.NegotiationResult;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.transfer.TransferProcessManager;
 import org.eclipse.dataspaceconnector.spi.transfer.store.TransferProcessStore;
+import org.eclipse.dataspaceconnector.spi.types.domain.contract.negotiation.ContractOfferRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.QueryRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcessStates;
@@ -41,15 +44,17 @@ public class IonDemoApiController {
     private final String connectorName;
     private final QueryEngine catalogQueryEngine;
     private final RemoteMessageDispatcherRegistry dispatcherRegistry;
+    private final ConsumerContractNegotiationManager consumerNegotiationManager;
 
 
-    public IonDemoApiController(String connectorName, Monitor monitor, TransferProcessManager transferProcessManager, TransferProcessStore processStore, QueryEngine catalogQueryEngine, RemoteMessageDispatcherRegistry dispatcherRegistry) {
+    public IonDemoApiController(String connectorName, Monitor monitor, TransferProcessManager transferProcessManager, TransferProcessStore processStore, QueryEngine catalogQueryEngine, RemoteMessageDispatcherRegistry dispatcherRegistry, ConsumerContractNegotiationManager consumerNegotiationManager) {
         this.connectorName = connectorName;
         this.monitor = monitor;
         this.transferProcessManager = transferProcessManager;
         this.processStore = processStore;
         this.catalogQueryEngine = catalogQueryEngine;
         this.dispatcherRegistry = dispatcherRegistry;
+        this.consumerNegotiationManager = consumerNegotiationManager;
     }
 
     @GET
@@ -93,6 +98,36 @@ public class IonDemoApiController {
         }
 
         return Response.ok(queryResponse.getOffers()).build();
+    }
+
+    @POST
+    @Path("negotiation")
+    public Response initiateNegotiation(NegotiationDto dto) {
+
+        FederatedCatalogCacheQuery query = FederatedCatalogCacheQuery.Builder.newInstance()
+                .build();
+
+        var queryResponse = catalogQueryEngine.getCatalog(query);
+        var selectedOffer = queryResponse.getOffers().stream().filter(offer -> offer.getId().equals(dto.getOfferId())).findFirst();
+
+        if (selectedOffer.isEmpty()) {
+            return Response.status(404).entity("Contract offer with ID " + dto.getOfferId() + " was not found!").build();
+        }
+
+        var contractOfferRequest = ContractOfferRequest.Builder.newInstance()
+                .contractOffer(selectedOffer.get())
+                .protocol("ids-multipart")
+                .connectorId("consumer")
+                .connectorAddress(dto.getConnectorAddress())
+                .type(ContractOfferRequest.Type.INITIAL)
+                .build();
+
+        var result = consumerNegotiationManager.initiate(contractOfferRequest);
+        if (result.failed() && result.getFailure().getStatus() == NegotiationResult.Status.FATAL_ERROR) {
+            return Response.serverError().build();
+        }
+
+        return Response.ok(result.getContent().getId()).build();
     }
 
     @POST

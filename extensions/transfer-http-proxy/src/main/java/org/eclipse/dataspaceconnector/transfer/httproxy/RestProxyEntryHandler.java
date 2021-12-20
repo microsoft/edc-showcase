@@ -31,8 +31,11 @@ public class RestProxyEntryHandler implements ProxyEntryHandler {
 
         var segments = url.split("/");
 
-        var proxyUrlBuilder = HttpUrl.parse(originalRequest.getConnectorAddress())
-                .newBuilder()
+        var httpUrl = HttpUrl.parse(originalRequest.getConnectorAddress());
+        var proxyUrlBuilder = new HttpUrl.Builder()
+                .scheme(httpUrl.scheme())
+                .host(httpUrl.uri().getHost())
+                .port(httpUrl.port())
                 .addPathSegment("api");
 
         Arrays.stream(segments).forEach(proxyUrlBuilder::addPathSegment);

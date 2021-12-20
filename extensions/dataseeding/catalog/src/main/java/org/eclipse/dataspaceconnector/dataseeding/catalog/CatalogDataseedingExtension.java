@@ -61,24 +61,28 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     }
 
     public void offerAssets(List<Asset> assets) {
-        Policy publicPolicy = Policy.Builder.newInstance()
-                .permission(Permission.Builder.newInstance()
-                        .target("1")
-                        .action(Action.Builder.newInstance()
-                                .type("USE")
-                                .build())
-                        .build())
-                .build();
+
 
         assets.stream().map(a -> ContractDefinition.Builder.newInstance()
                         .id(a.getId())
-                        .accessPolicy(publicPolicy)
-                        .contractPolicy(publicPolicy)
+                        .accessPolicy(createPolicyFor(a.getId()))
+                        .contractPolicy(createPolicyFor(a.getId()))
                         .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals(Asset.PROPERTY_ID, getId(a)).build())
                         .build())
                 .forEach(contractDefinitionStore::save);
 
 
+    }
+
+    private Policy createPolicyFor(String assetId) {
+        return Policy.Builder.newInstance()
+                .permission(Permission.Builder.newInstance()
+                        .target(assetId)
+                        .action(Action.Builder.newInstance()
+                                .type("USE")
+                                .build())
+                        .build())
+                .build();
     }
 
     private String getId(Asset a) {
