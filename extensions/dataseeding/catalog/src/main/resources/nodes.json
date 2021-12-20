@@ -3,21 +3,21 @@
     "name": "consumer",
     "url": "http://edc-showcase-consumer.westeurope.azurecontainer.io:8181",
     "supportedProtocols": [
-      "ids-rest"
+      "ids-multipart"
     ]
   },
   {
     "name": "provider",
     "url": "http://edc-showcase-provider.westeurope.azurecontainer.io:8181",
     "supportedProtocols": [
-      "ids-rest"
+      "ids-multipart"
     ]
   },
   {
     "name": "connector3",
     "url": "http://edc-showcase-connector3.westeurope.azurecontainer.io:8181",
     "supportedProtocols": [
-      "ids-rest"
+      "ids-multipart"
     ]
   }
 ]
