@@ -10,9 +10,11 @@ COPY ./build/libs/connector.jar /app
 EXPOSE 8181
 
 # health status is determined by the availability of the /health endpoint
-HEALTHCHECK --interval=5s --timeout=5s --retries=10 CMD curl --fail -X GET http://localhost:8181/api/health || exit 1
+#HEALTHCHECK --interval=5s --timeout=5s --retries=10 CMD curl --fail -X GET http://localhost:8181/api/health || exit 1
 
 ENTRYPOINT java \
+    -Dids.webhook.address=${IDS_WEBHOOK_ADDRESS} \
+    -Dedc.api.control.auth.apikey.value=x-edc-showcase-x \
     -Dedc.vault.clientid=${CLIENTID} \
     -Dedc.vault.tenantid=${TENANTID} \
     -Dedc.vault.certificate=/cert/cert.pfx \

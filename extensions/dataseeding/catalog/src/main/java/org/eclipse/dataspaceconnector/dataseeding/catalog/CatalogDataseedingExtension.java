@@ -92,7 +92,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     private void saveNodeEntries(ServiceExtensionContext context) {
         var nodeDirectory = context.getService(FederatedCacheNodeDirectory.class);
 
-        var nodes = readNodesFromJson("nodes-local.json");
+        var nodes = readNodesFromJson("nodes.json");
         nodes.forEach(nodeDirectory::insert);
     }
 

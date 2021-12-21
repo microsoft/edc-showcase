@@ -24,30 +24,6 @@
 			"response": []
 		},
 		{
-			"name": "Query Provider's catalog (Deprecated)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{consumer_url}}/api/catalog?connectorAddress={{provider_url}}",
-					"host": [
-						"{{consumer_url}}"
-					],
-					"path": [
-						"api",
-						"catalog"
-					],
-					"query": [
-						{
-							"key": "connectorAddress",
-							"value": "{{provider_url}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Query Dataspace Catalog",
 			"request": {
 				"method": "GET",
@@ -67,15 +43,14 @@
 			"response": []
 		},
 		{
-			"name": "Request Data (async)",
+			"name": "Negotiate Contract (IDS Multipart)",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
 							"let responseData=pm.response.text();",
-							"let json = JSON.parse(responseData);",
-							"pm.environment.set(\"processId\", json.response)"
+							"pm.environment.set(\"negotiationId\", responseData)"
 						],
 						"type": "text/javascript"
 					}
@@ -86,7 +61,45 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"{{provider_url}}\",\n    \"protocol\": \"ids-rest\",\n    \"connectorId\":\"consumer\",\n    \"asset\":{\n        \"id\": \"test-document-az_provider\",\n        \"policyId\": \"use-us\"\n    },\n    \"dataDestination\":{\n        \"type\": \"AmazonS3\"\n    },\n    \"managedResources\": true,\n    \"transferType\":{\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}",
+					"raw": "{\n    \"connectorAddress\":\"{{provider_url}}/api/ids/multipart\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"offerId\": \"test-document-az_provider:d840137b-a3d6-48c4-bf9f-5854fd342884\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{consumer_url}}/api/negotiation",
+					"host": [
+						"{{consumer_url}}"
+					],
+					"path": [
+						"api",
+						"negotiation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request Data (sync, multipart) Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"{{provider_url}}/api/ids/multipart\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"contractId\": \"{{agreementId}}\",\n    \"assetId\": \"demo-train-data_provider\",\n    \"dataDestination\":{\n        \"type\": \"http\"\n    },\n    \"isSync\": true,\n    \"managedResources\": false,\n    \"properties\":{\n        \"foo\": \"bar\",\n        \"isSync\": true\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -107,7 +120,7 @@
 			"response": []
 		},
 		{
-			"name": "Request Data (sync)",
+			"name": "Request Data (async, multipart)",
 			"event": [
 				{
 					"listen": "test",
@@ -115,7 +128,7 @@
 						"exec": [
 							"let responseData=pm.response.text();",
 							"let json = JSON.parse(responseData);",
-							"pm.environment.set(\"processId\", json.response)"
+							"pm.environment.set(\"processId\", json.content)"
 						],
 						"type": "text/javascript"
 					}
@@ -126,7 +139,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"{{provider_url}}\",\n    \"protocol\": \"ids-rest\",\n    \"connectorId\":\"consumer\",\n    \"asset\":{\n        \"id\": \"demo-train-data_provider\",\n        \"policyId\": \"use-us\"\n    },\n    \"dataDestination\":{\n        \"type\": \"http\"\n    },\n    \"isSyncRequest\": true,\n    \"managedResources\": false\n}",
+					"raw": "{\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"id\": null,\n    \"processId\": null,\n    \"connectorAddress\": \"{{provider_url}}/api/ids/multipart\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\": \"consumer\",\n    \"assetId\": \"test-document-az_provider\",\n    \"contractId\": \"{{agreementId}}\",\n    \"dataDestination\": {\n        \"properties\": {\n            \"container\": \"dst-container\",\n            \"keyName\": \"edcshowcasegpstorage-key1\",\n            \"type\": \"AzureStorage\",\n            \"account\": \"edcshowcasegpstorage\",\n            \"blobname\": \"received.txt\"\n        },\n        \"keyName\": \"edcshowcasegpstorage-key1\",\n        \"type\": \"AzureStorage\"\n    },\n    \"managedResources\": true,\n    \"destinationType\": \"AzureStorage\",\n    \"transferType\": {\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -141,6 +154,58 @@
 					"path": [
 						"api",
 						"datarequest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Negotiation State",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let responseData=pm.response.text();",
+							"let json = JSON.parse(responseData);",
+							"if(json.contractAgreement !== null)",
+							"    pm.environment.set(\"agreementId\", json.contractAgreement.id)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"value": "x-edc-showcase-x",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{consumer_url}}/api/control/negotiation/{{negotiationId}}",
+					"host": [
+						"{{consumer_url}}"
+					],
+					"path": [
+						"api",
+						"control",
+						"negotiation",
+						"{{negotiationId}}"
 					]
 				}
 			},
@@ -152,14 +217,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{consumer_url}}/api/datarequest/989771fe-f422-436f-bb80-e1761be9e160/state",
+					"raw": "{{consumer_url}}/api/datarequest/{{processId}}/state",
 					"host": [
 						"{{consumer_url}}"
 					],
 					"path": [
 						"api",
 						"datarequest",
-						"989771fe-f422-436f-bb80-e1761be9e160",
+						"{{processId}}",
 						"state"
 					]
 				}
