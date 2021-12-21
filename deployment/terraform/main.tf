@@ -184,19 +184,20 @@ resource "azurerm_container_group" "provider-connector" {
     }
 
     environment_variables = {
-      CLIENTID          = azuread_application.demo-app-id.application_id,
-      TENANTID          = data.azurerm_client_config.current.tenant_id,
-      VAULTNAME         = azurerm_key_vault.main-vault.name,
-      CONNECTOR_NAME    = var.provider-name
-      TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
-      TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL           = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:provider"
-      LOADER_BATCH_SIZE = 2
-      DOH_SERVER        = "https://cloudflare-dns.com/dns-query"
-      COSMOS_ACCOUNT    = azurerm_cosmosdb_account.showcase-cosmos-account.name
-      COSMOS_DB         = azurerm_cosmosdb_sql_database.asset-index-db.name
-      COSMOS_PARTKEY    = azurerm_cosmosdb_sql_container.provider-assetindex-container.partition_key_path
-      COSMOS_CONTAINER  = azurerm_cosmosdb_sql_container.provider-assetindex-container.name
+      IDS_WEBHOOK_ADDRESS = "http://${var.environment}-${var.provider-name}.${var.location}.azurecontainer.io:8181"
+      CLIENTID            = azuread_application.demo-app-id.application_id,
+      TENANTID            = data.azurerm_client_config.current.tenant_id,
+      VAULTNAME           = azurerm_key_vault.main-vault.name,
+      CONNECTOR_NAME      = var.provider-name
+      TOPIC_NAME          = azurerm_eventgrid_topic.control-topic.name
+      TOPIC_ENDPOINT      = azurerm_eventgrid_topic.control-topic.endpoint
+      DID_URL             = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:provider"
+      LOADER_BATCH_SIZE   = 2
+      DOH_SERVER          = "https://cloudflare-dns.com/dns-query"
+      COSMOS_ACCOUNT      = azurerm_cosmosdb_account.showcase-cosmos-account.name
+      COSMOS_DB           = azurerm_cosmosdb_sql_database.asset-index-db.name
+      COSMOS_PARTKEY      = azurerm_cosmosdb_sql_container.provider-assetindex-container.partition_key_path
+      COSMOS_CONTAINER    = azurerm_cosmosdb_sql_container.provider-assetindex-container.name
 
       CDS_DATABASE  = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
       CDS_CONTAINER = azurerm_cosmosdb_sql_container.provider-contractdefstore-container.name
@@ -241,19 +242,20 @@ resource "azurerm_container_group" "consumer-connector" {
     }
 
     environment_variables = {
-      CLIENTID          = azuread_application.demo-app-id.application_id,
-      TENANTID          = data.azurerm_client_config.current.tenant_id,
-      VAULTNAME         = azurerm_key_vault.main-vault.name,
-      CONNECTOR_NAME    = var.consumer-name
-      TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
-      TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL           = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:consumer"
-      DOH_SERVER        = "https://cloudflare-dns.com/dns-query"
-      LOADER_BATCH_SIZE = 2
-      COSMOS_ACCOUNT    = azurerm_cosmosdb_account.showcase-cosmos-account.name
-      COSMOS_DB         = azurerm_cosmosdb_sql_database.asset-index-db.name
-      COSMOS_PARTKEY    = azurerm_cosmosdb_sql_container.consumer-assetindex-container.partition_key_path
-      COSMOS_CONTAINER  = azurerm_cosmosdb_sql_container.consumer-assetindex-container.name
+      IDS_WEBHOOK_ADDRESS = "http://${var.environment}-${var.consumer-name}.${var.location}.azurecontainer.io:8181"
+      CLIENTID            = azuread_application.demo-app-id.application_id,
+      TENANTID            = data.azurerm_client_config.current.tenant_id,
+      VAULTNAME           = azurerm_key_vault.main-vault.name,
+      CONNECTOR_NAME      = var.consumer-name
+      TOPIC_NAME          = azurerm_eventgrid_topic.control-topic.name
+      TOPIC_ENDPOINT      = azurerm_eventgrid_topic.control-topic.endpoint
+      DID_URL             = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:consumer"
+      DOH_SERVER          = "https://cloudflare-dns.com/dns-query"
+      LOADER_BATCH_SIZE   = 2
+      COSMOS_ACCOUNT      = azurerm_cosmosdb_account.showcase-cosmos-account.name
+      COSMOS_DB           = azurerm_cosmosdb_sql_database.asset-index-db.name
+      COSMOS_PARTKEY      = azurerm_cosmosdb_sql_container.consumer-assetindex-container.partition_key_path
+      COSMOS_CONTAINER    = azurerm_cosmosdb_sql_container.consumer-assetindex-container.name
 
       CDS_DATABASE  = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
       CDS_CONTAINER = azurerm_cosmosdb_sql_container.consumer-contractdefstore-container.name
@@ -298,19 +300,20 @@ resource "azurerm_container_group" "connector3" {
     }
 
     environment_variables = {
-      CLIENTID          = azuread_application.demo-app-id.application_id,
-      TENANTID          = data.azurerm_client_config.current.tenant_id,
-      VAULTNAME         = azurerm_key_vault.main-vault.name,
-      CONNECTOR_NAME    = "connector3"
-      TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
-      TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL           = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:connector3"
-      DOH_SERVER        = "https://cloudflare-dns.com/dns-query"
-      LOADER_BATCH_SIZE = 2
-      COSMOS_ACCOUNT    = azurerm_cosmosdb_account.showcase-cosmos-account.name
-      COSMOS_DB         = azurerm_cosmosdb_sql_database.asset-index-db.name
-      COSMOS_PARTKEY    = azurerm_cosmosdb_sql_container.connector3-assetindex-container.partition_key_path
-      COSMOS_CONTAINER  = azurerm_cosmosdb_sql_container.connector3-assetindex-container.name
+      IDS_WEBHOOK_ADDRESS = "http://${var.environment}-connector3.${var.location}.azurecontainer.io:8181"
+      CLIENTID            = azuread_application.demo-app-id.application_id,
+      TENANTID            = data.azurerm_client_config.current.tenant_id,
+      VAULTNAME           = azurerm_key_vault.main-vault.name,
+      CONNECTOR_NAME      = "connector3"
+      TOPIC_NAME          = azurerm_eventgrid_topic.control-topic.name
+      TOPIC_ENDPOINT      = azurerm_eventgrid_topic.control-topic.endpoint
+      DID_URL             = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:connector3"
+      DOH_SERVER          = "https://cloudflare-dns.com/dns-query"
+      LOADER_BATCH_SIZE   = 2
+      COSMOS_ACCOUNT      = azurerm_cosmosdb_account.showcase-cosmos-account.name
+      COSMOS_DB           = azurerm_cosmosdb_sql_database.asset-index-db.name
+      COSMOS_PARTKEY      = azurerm_cosmosdb_sql_container.connector3-assetindex-container.partition_key_path
+      COSMOS_CONTAINER    = azurerm_cosmosdb_sql_container.connector3-assetindex-container.name
 
       CDS_DATABASE  = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
       CDS_CONTAINER = azurerm_cosmosdb_sql_container.connector3-contractdefstore-container.name

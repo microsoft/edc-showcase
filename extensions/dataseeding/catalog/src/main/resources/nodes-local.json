@@ -12,12 +12,5 @@
     "supportedProtocols": [
       "ids-multipart"
     ]
-  },
-  {
-    "name": "connector3",
-    "url": "http://localhost:7171",
-    "supportedProtocols": [
-      "ids-multipart"
-    ]
   }
 ]

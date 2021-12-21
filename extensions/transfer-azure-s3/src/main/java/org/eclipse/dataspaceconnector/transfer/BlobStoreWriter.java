@@ -8,6 +8,7 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Objects;
 
@@ -47,14 +48,19 @@ class BlobStoreWriter implements DataWriter {
                 sas = sas.substring(1);
             }
 
-            BlobClient blobClient = new BlobClientBuilder()
-                    .endpoint(endpoint)
-                    .sasToken(sas)
-                    .containerName(container)
-                    .blobName(name)
-                    .buildClient();
-
-            blobClient.upload(BinaryData.fromStream(data), true);
+            uploadBlob(name, data, container, endpoint, sas);
+            uploadBlob(name + ".complete", new ByteArrayInputStream(new byte[0]), container, endpoint, sas);
         }
+    }
+
+    private void uploadBlob(String name, InputStream data, String container, String endpoint, String sas) {
+        BlobClient blobClient = new BlobClientBuilder()
+                .endpoint(endpoint)
+                .sasToken(sas)
+                .containerName(container)
+                .blobName(name)
+                .buildClient();
+
+        blobClient.upload(BinaryData.fromStream(data), true);
     }
 }

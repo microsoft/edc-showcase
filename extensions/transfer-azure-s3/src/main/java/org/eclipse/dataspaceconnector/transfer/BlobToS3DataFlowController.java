@@ -65,6 +65,8 @@ public class BlobToS3DataFlowController implements DataFlowController {
                     if (throwable != null) {
                         monitor.severe("Error during copy process: " + throwable.getMessage());
                         //todo: move process to error
+                    } else {
+                        monitor.info("Transfer complete");
                     }
                 });
 
