@@ -86,7 +86,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     }
 
     private String getId(Asset a) {
-        return "'" + a.getId() + "'";
+        return a.getId();
     }
 
     private void saveNodeEntries(ServiceExtensionContext context) {
