@@ -27,8 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-@Consumes({ MediaType.APPLICATION_JSON })
-@Produces({ MediaType.APPLICATION_JSON })
+@Consumes({MediaType.APPLICATION_JSON})
+@Produces({MediaType.APPLICATION_JSON})
 @Path("/artifacts")
 public class ForwardingController {
 
@@ -142,6 +142,5 @@ public class ForwardingController {
         var uriBuilder = UriBuilder.fromUri(uri);
         queryParameters.forEach((s, strings) -> uriBuilder.queryParam(s, strings.toArray()));
         return uriBuilder.build();
-
     }
 }

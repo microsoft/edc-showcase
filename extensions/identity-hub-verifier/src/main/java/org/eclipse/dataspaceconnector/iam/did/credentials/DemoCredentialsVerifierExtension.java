@@ -25,7 +25,7 @@ import static java.lang.String.format;
 import static org.eclipse.dataspaceconnector.iam.did.spi.document.DidConstants.DID_URL_SETTING;
 
 
-public class IonCredentialsVerifierExtension implements ServiceExtension {
+public class DemoCredentialsVerifierExtension implements ServiceExtension {
 
     @Override
     public Set<String> provides() {
@@ -49,6 +49,6 @@ public class IonCredentialsVerifierExtension implements ServiceExtension {
         var credentialsVerifier = new IdentityHubCredentialsVerifier(hubClient, context.getMonitor(), didUrl);
         context.registerService(CredentialsVerifier.class, credentialsVerifier);
 
-        context.getMonitor().info("Initialized ION Credentials verifier extension");
+        context.getMonitor().info("Initialized Demo Credentials Verifier extension");
     }
 }

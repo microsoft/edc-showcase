@@ -106,6 +106,6 @@ that should return an array of Asset objects.
 
 - The Verifier (or Attestator) in this demo is just another Key Pair
 - DIDs are generated and anchored once during initial setup, it does **not** happen during deployment
-- The will be one set of object data per hub and one hub per connector (so no filtering at this time)
+- There will be one set of object data per hub and one hub per connector (so no filtering at this time)
 - The hub runs in its separate runtime and exposes a simple GET API
 - connectors **must** have a unique and stable ID

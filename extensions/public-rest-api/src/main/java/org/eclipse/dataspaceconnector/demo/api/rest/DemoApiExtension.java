@@ -2,6 +2,7 @@ package org.eclipse.dataspaceconnector.demo.api.rest;
 
 import org.eclipse.dataspaceconnector.catalog.spi.QueryEngine;
 import org.eclipse.dataspaceconnector.spi.contract.negotiation.ConsumerContractNegotiationManager;
+import org.eclipse.dataspaceconnector.spi.contract.negotiation.ContractNegotiationManager;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.protocol.web.WebService;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
@@ -12,11 +13,11 @@ import org.eclipse.dataspaceconnector.spi.transfer.store.TransferProcessStore;
 import java.util.Set;
 
 
-public class IonDemoApiExtension implements ServiceExtension {
+public class DemoApiExtension implements ServiceExtension {
 
     @Override
     public Set<String> requires() {
-        return Set.of("dataspaceconnector:transferprocessstore", "dataspaceconnector:dispatcher", QueryEngine.FEATURE, ConsumerContractNegotiationManager.FEATURE);
+        return Set.of("dataspaceconnector:transferprocessstore", "dataspaceconnector:dispatcher", QueryEngine.FEATURE, ContractNegotiationManager.FEATURE);
     }
 
     @Override
@@ -33,10 +34,10 @@ public class IonDemoApiExtension implements ServiceExtension {
 
         var consumerNegotiationManager = context.getService(ConsumerContractNegotiationManager.class);
 
-        var controller = new IonDemoApiController(context.getConnectorId(), monitor, transferProcessManager, processStore, catalogQueryEngine, dispatcherRegistry, consumerNegotiationManager);
+        var controller = new DemoApiController(context.getConnectorId(), monitor, transferProcessManager, processStore, catalogQueryEngine, dispatcherRegistry, consumerNegotiationManager);
         webService.registerController(controller);
 
-        monitor.info("Initialized REST API Extension");
+        monitor.info("Initialized Demo API Extension");
     }
 
 }
