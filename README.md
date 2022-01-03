@@ -8,24 +8,24 @@ _This document describes the working concept rather than the finished applicatio
 
 ## Setup
 
-- create 3 Keypairs, one for each connector
+- create 3 private keys and the associated DID document containing the corresponding public key in JWK format. You will
+  find a utility script for that purpose in `scripts/did` (use the `-h` option for more details on how to use it).
 - pre-define three Hub URLs (ideally they should look exactly how ACI URLs or AKS URLs are generated)
-- for each connector:
-    + generate a DID Document containing the Public Key and its Hub URL on ION or as Web DID
-    + generate a JWT on every request (signed with connectors Private Key) containing the DID URL as claim (=payload)
-      and an expiration date (t+5min)
+- on every request, generate a JWT signed with the connector private key that you previously generated and containing:
+  + the DID URL as claim (payload)
+  + an expiration date (t+5min)
 - create a certificate and a private key in `*.pem` format as well as the corresponding `*.pfx` file:
-    - generate the files:
-       ```bash 
-       openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
-       openssl pkcs12 -inkey key.pem -in cert.cert -export -out cert.pfx
-       ```
-    - store the contents of `cert.pfx` in an environment variable named `TF_VAR_CERTIFICATE` (assuming `bash` syntax):
-      ```bash
-      export TF_VAR_CERTIFICATE=$(<PATH/TO/cert/cert.pem) # the "<" is important!
-      # to verify:
-      echo $TF_VAR_CERTIFICATE # should print the pem-encoded certificate
-      ```
+  - generate the files:
+     ```bash 
+     openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
+     openssl pkcs12 -inkey key.pem -in cert.cert -export -out cert.pfx
+     ```
+  - store the contents of `cert.pfx` in an environment variable named `TF_VAR_CERTIFICATE` (assuming `bash` syntax):
+    ```bash
+    export TF_VAR_CERTIFICATE=$(<PATH/TO/cert/cert.pem) # the "<" is important!
+    # to verify:
+    echo $TF_VAR_CERTIFICATE # should print the pem-encoded certificate
+    ```
 
 ## Build it
 
