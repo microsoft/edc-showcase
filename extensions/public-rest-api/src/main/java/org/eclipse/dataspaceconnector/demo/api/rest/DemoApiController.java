@@ -34,10 +34,10 @@ import java.util.concurrent.ExecutionException;
 
 import static org.eclipse.dataspaceconnector.common.types.Cast.cast;
 
-@Consumes({ MediaType.APPLICATION_JSON })
-@Produces({ MediaType.APPLICATION_JSON })
+@Consumes({MediaType.APPLICATION_JSON})
+@Produces({MediaType.APPLICATION_JSON})
 @Path("/")
-public class IonDemoApiController {
+public class DemoApiController {
     private final Monitor monitor;
     private final TransferProcessManager transferProcessManager;
     private final TransferProcessStore processStore;
@@ -47,7 +47,8 @@ public class IonDemoApiController {
     private final ConsumerContractNegotiationManager consumerNegotiationManager;
 
 
-    public IonDemoApiController(String connectorName, Monitor monitor, TransferProcessManager transferProcessManager, TransferProcessStore processStore, QueryEngine catalogQueryEngine, RemoteMessageDispatcherRegistry dispatcherRegistry, ConsumerContractNegotiationManager consumerNegotiationManager) {
+    public DemoApiController(String connectorName, Monitor monitor, TransferProcessManager transferProcessManager, TransferProcessStore processStore, QueryEngine catalogQueryEngine, RemoteMessageDispatcherRegistry dispatcherRegistry,
+                             ConsumerContractNegotiationManager consumerNegotiationManager) {
         this.connectorName = connectorName;
         this.monitor = monitor;
         this.transferProcessManager = transferProcessManager;
