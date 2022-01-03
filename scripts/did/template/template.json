@@ -1,0 +1,35 @@
+//*****************************
+//** DO NOT MODIFY THIS FILE **
+//*****************************
+{
+  "id": "did:web:{{SANITIZED_ENVIRONMENT}}gpstorage.z6.web.core.windows.net:{{NAME}}",
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    {
+      "@base": "did:web:{{SANITIZED_ENVIRONMENT}}gpstorage.z6.web.core.windows.net:{{NAME}}"
+    }
+  ],
+  "service": [
+    {
+      "id": "#{{NAME}}-identity-hub-url",
+      "type": "IdentityHub",
+      "serviceEndpoint": "http://{{ENVIRONMENT}}-{{NAME}}.{{REGION}}.azurecontainer.io:8181/api/identity-hub/"
+    }
+  ],
+  "verificationMethod": [
+    {
+      "id": "#{{NAME}}-key-1",
+      "controller": "",
+      "type": "JsonWebKey2020",
+      "publicKeyJwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "{{X}}",
+        "y": "{{Y}}"
+      }
+    }
+  ],
+  "authentication": [
+    "#{{NAME}}-key-1"
+  ]
+}
