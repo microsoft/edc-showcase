@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
-import org.eclipse.dataspaceconnector.catalog.spi.NodeQueryAdapterRegistry;
 import org.eclipse.dataspaceconnector.dataloading.AssetLoader;
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
@@ -13,10 +12,10 @@ import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.EdcException;
-import org.eclipse.dataspaceconnector.spi.asset.AssetIndex;
 import org.eclipse.dataspaceconnector.spi.asset.AssetSelectorExpression;
 import org.eclipse.dataspaceconnector.spi.contract.offer.store.ContractDefinitionStore;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyRegistry;
+import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
@@ -26,31 +25,25 @@ import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import static org.eclipse.dataspaceconnector.policy.model.Operator.IN;
 
 public class CatalogDataseedingExtension implements ServiceExtension {
     public static final String USE_EU_POLICY = "use-eu";
     public static final String USE_US_POLICY = "use-us";
+    @Inject
     private AssetLoader assetIndexLoader;
+    @Inject
     private ContractDefinitionStore contractDefinitionStore;
-
-    @Override
-    public Set<String> requires() {
-        return Set.of(PolicyRegistry.FEATURE,
-                FederatedCacheNodeDirectory.FEATURE,
-                AssetIndex.FEATURE,
-                ContractDefinitionStore.FEATURE,
-                NodeQueryAdapterRegistry.FEATURE);
-    }
+    @Inject
+    private FederatedCacheNodeDirectory nodeDirectory;
+    @Inject
+    private PolicyRegistry policyRegistry;
 
     @Override
     public void initialize(ServiceExtensionContext context) {
         var monitor = context.getMonitor();
 
-        assetIndexLoader = context.getService(AssetLoader.class);
-        contractDefinitionStore = context.getService(ContractDefinitionStore.class);
 
         savePolicies(context);
         var assets = saveAssets(context.getConnectorId());
@@ -90,9 +83,8 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     }
 
     private void saveNodeEntries(ServiceExtensionContext context) {
-        var nodeDirectory = context.getService(FederatedCacheNodeDirectory.class);
 
-        var nodes = readNodesFromJson("nodes.json");
+        var nodes = readNodesFromJson("nodes-local.json");
         nodes.forEach(nodeDirectory::insert);
     }
 
@@ -199,7 +191,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     }
 
     private void savePolicies(ServiceExtensionContext context) {
-        PolicyRegistry policyRegistry = context.getService(PolicyRegistry.class);
 
         LiteralExpression spatialExpression = new LiteralExpression("ids:absoluteSpatialPosition");
         var euConstraint = AtomicConstraint.Builder.newInstance().leftExpression(spatialExpression).operator(IN).rightExpression(new LiteralExpression("eu")).build();

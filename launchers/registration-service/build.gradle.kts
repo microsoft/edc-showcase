@@ -20,9 +20,6 @@ dependencies {
     implementation("${group}:common-util:${edcversion}")
     implementation("${group}:azure-eventgrid-config:${edcversion}")
 
-    implementation("${group}:bootstrap:${edcversion}")
-    implementation("${group}:protocol-web:${edcversion}")
-
     implementation("${group}:registration-service:${edcversion}")
     implementation("${group}:registration-service-api:${edcversion}")
     implementation("${group}:did-document-store-memory:${edcversion}")

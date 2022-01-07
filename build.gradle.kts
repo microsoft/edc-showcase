@@ -15,13 +15,13 @@ subprojects {
         maven {
             url = uri("https://maven.iais.fraunhofer.de/artifactory/eis-ids-public/")
         }
-        maven {
-            url = uri("https://maven.pkg.github.com/paullatzelsperger/dataspaceconnector")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
+//        maven {
+//            url = uri("https://maven.pkg.github.com/paullatzelsperger/dataspaceconnector")
+//            credentials {
+//                username = System.getenv("GITHUB_ACTOR")
+//                password = System.getenv("GITHUB_TOKEN")
+//            }
+//        }
     }
     tasks.register<DependencyReportTask>("allDeps") {}
 }

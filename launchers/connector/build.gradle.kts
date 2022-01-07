@@ -23,7 +23,6 @@ dependencies {
 
     // EDC core dependencies
     implementation("${group}:core:${edcversion}")
-    implementation("${group}:schema:${edcversion}")
     implementation("${group}:transfer-process-store-memory:${edcversion}")
     implementation("${group}:contract-definition-store-cosmos:${edcversion}")
 //    implementation("${group}:contract-negotiation-store-cosmos:${edcversion}")
@@ -64,7 +63,7 @@ dependencies {
 
 application {
     @Suppress("DEPRECATION")
-    mainClassName = "com.microsoft.edc.showcase.connector.Runtime"
+    mainClassName = "org.eclipse.dataspaceconnector.core.system.runtime.BaseRuntime"
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

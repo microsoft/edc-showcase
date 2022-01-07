@@ -14,47 +14,12 @@
 
 package com.microsoft.edc.showcase.demo;
 
-import org.eclipse.dataspaceconnector.monitor.MonitorProvider;
-import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
-import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
-import org.eclipse.dataspaceconnector.spi.types.TypeManager;
-import org.eclipse.dataspaceconnector.system.DefaultServiceExtensionContext;
+import org.eclipse.dataspaceconnector.core.system.runtime.BaseRuntime;
 
-import java.util.List;
-import java.util.ListIterator;
-
-import static org.eclipse.dataspaceconnector.system.ExtensionLoader.bootServiceExtensions;
-import static org.eclipse.dataspaceconnector.system.ExtensionLoader.loadMonitor;
-import static org.eclipse.dataspaceconnector.system.ExtensionLoader.loadVault;
-
-public class RegistrationServiceRuntime {
+public class RegistrationServiceRuntime extends BaseRuntime {
 
     public static void main(String[] args) {
-        TypeManager typeManager = new TypeManager();
-        var monitor = loadMonitor();
-        MonitorProvider.setInstance(monitor);
-        DefaultServiceExtensionContext context = new DefaultServiceExtensionContext(typeManager, monitor);
-        context.initialize();
-
-        try {
-            loadVault(context);
-            List<ServiceExtension> serviceExtensions = context.loadServiceExtensions();
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(serviceExtensions, monitor)));
-            bootServiceExtensions(serviceExtensions, context);
-        } catch (Exception e) {
-            monitor.severe("Error booting runtime", e);
-            System.exit(-1);  // stop the process
-        }
-        monitor.info("Registry Service App ready");
-
-    }
-
-    private static void shutdown(List<ServiceExtension> serviceExtensions, Monitor monitor) {
-        ListIterator<ServiceExtension> iter = serviceExtensions.listIterator(serviceExtensions.size());
-        while (iter.hasPrevious()) {
-            iter.previous().shutdown();
-        }
-        monitor.info("Registry Service App shutdown complete");
+        new RegistrationServiceRuntime().boot();
     }
 
 }
