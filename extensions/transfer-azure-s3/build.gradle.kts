@@ -25,12 +25,10 @@ val storageBlobVersion: String by project;
 dependencies {
     api("${group}:spi:${edcversion}")
     implementation("${group}:common-util:${edcversion}")
+    implementation("${group}:inline-data-transfer-core:${edcversion}")
+    implementation("${group}:blobstorage:${edcversion}")
+    implementation("${group}:aws-s3:${edcversion}")
     // used for the BlobStoreWriter
     implementation("com.azure:azure-storage-blob:${storageBlobVersion}")
-
-
-    implementation("${group}:s3-provision:${edcversion}")
-    implementation("${group}:blob-provision:${edcversion}")
-    implementation("${group}:blob-api:${edcversion}")
 
 }

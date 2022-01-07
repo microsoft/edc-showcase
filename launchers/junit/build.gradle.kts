@@ -15,9 +15,7 @@ dependencies {
     implementation(project(":extensions:dataseeding:hub"))
 
     testImplementation("${group}:spi:${edcversion}")
-    testImplementation("${group}:core.bootstrap:${edcversion}")
     testImplementation("${group}:core.transfer:${edcversion}")
-    testImplementation("${group}:core.protocol-web:${edcversion}")
     testImplementation("${group}:transfer-process-store-memory:${edcversion}")
     testImplementation("${group}:policy-registry-memory:${edcversion}")
     testImplementation("${group}:in-memory.metadata:${edcversion}")

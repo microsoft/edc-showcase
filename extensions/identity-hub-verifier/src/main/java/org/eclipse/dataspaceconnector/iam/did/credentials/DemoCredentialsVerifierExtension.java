@@ -16,30 +16,24 @@ package org.eclipse.dataspaceconnector.iam.did.credentials;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
 import org.eclipse.dataspaceconnector.spi.EdcException;
+import org.eclipse.dataspaceconnector.spi.system.Inject;
+import org.eclipse.dataspaceconnector.spi.system.Provides;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
-
-import java.util.Set;
 
 import static java.lang.String.format;
 import static org.eclipse.dataspaceconnector.iam.did.spi.document.DidConstants.DID_URL_SETTING;
 
 
+@Provides(CredentialsVerifier.class)
 public class DemoCredentialsVerifierExtension implements ServiceExtension {
 
-    @Override
-    public Set<String> provides() {
-        return Set.of(CredentialsVerifier.FEATURE);
-    }
 
-    @Override
-    public Set<String> requires() {
-        return Set.of(IdentityHubClient.FEATURE);
-    }
+    @Inject
+    private IdentityHubClient hubClient;
 
     @Override
     public void initialize(ServiceExtensionContext context) {
-        var hubClient = context.getService(IdentityHubClient.class);
 
         var didUrl = context.getSetting(DID_URL_SETTING, null);
         if (didUrl == null) {
