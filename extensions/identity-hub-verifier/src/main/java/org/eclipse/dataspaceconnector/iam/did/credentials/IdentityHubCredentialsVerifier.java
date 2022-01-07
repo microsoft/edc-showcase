@@ -49,7 +49,6 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     @Override
     public Result<Map<String, String>> verifyCredentials(String hubBaseUrl, PublicKeyWrapper othersPublicKey) {
 
-//        return Result.success(Map.of("region", "eu"));
         monitor.debug("Step 2: Starting credential verification against hub URL " + hubBaseUrl);
 
         var query = ObjectQuery.Builder.newInstance().context("ION Demo").type("RegistrationCredentials").build();
