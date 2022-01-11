@@ -23,6 +23,7 @@ val group = "org.eclipse.dataspaceconnector"
 
 dependencies {
     api("${group}:spi:${edcversion}")
+    api("${group}:core-base:${edcversion}")
 
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:${rsApi}")
     implementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")

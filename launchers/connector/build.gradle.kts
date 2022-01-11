@@ -35,7 +35,6 @@ dependencies {
     implementation("${group}:ids:${edcversion}")
 
     // simple in-memory and filesystem implementations
-    implementation("${group}:policy-registry-memory:${edcversion}")
     implementation("${group}:identity-hub-memory:${edcversion}")
     implementation("${group}:did-document-store-memory:${edcversion}")
     implementation("${group}:filesystem-configuration:${edcversion}")

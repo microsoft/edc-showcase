@@ -23,6 +23,7 @@ dependencies {
     implementation("${group}:spi:${edcversion}")
     implementation("${group}:common-util:${edcversion}")
     implementation("${group}:catalog-spi:${edcversion}")
+    implementation("${group}:federated-catalog-spi:${edcversion}")
 
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:${rsApi}")
 
