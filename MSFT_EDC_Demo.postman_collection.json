@@ -25,6 +25,26 @@
 		},
 		{
 			"name": "Query Dataspace Catalog",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let responseData=pm.response.text();",
+							"let catalogJson = JSON.parse(responseData);",
+							"for (var i = 0; i < catalogJson.length; i++){",
+							"",
+							"    let offer = catalogJson[i];",
+							"    if(offer.id.startsWith('test-document-az_provider') ){",
+							"        pm.environment.set(\"offerId\", offer.id)",
+							"    }",
+							"",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -61,7 +81,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"connectorAddress\":\"{{provider_url}}/api/ids/multipart\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"offerId\": \"test-document-az_provider:d840137b-a3d6-48c4-bf9f-5854fd342884\"\n}",
+					"raw": "{\n    \"connectorAddress\":\"{{provider_url}}/api/ids/multipart\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"offerId\": \"{{offerId}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -76,6 +96,60 @@
 					"path": [
 						"api",
 						"negotiation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Negotiation State",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let responseData=pm.response.text();",
+							"let json = JSON.parse(responseData);",
+							"pm.environment.set(\"agreementId\", null)",
+							"if(json.contractAgreement !== null)",
+							"    pm.environment.set(\"agreementId\", json.contractAgreement.id)",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"value": "x-edc-showcase-x",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{consumer_url}}/api/control/negotiation/{{negotiationId}}",
+					"host": [
+						"{{consumer_url}}"
+					],
+					"path": [
+						"api",
+						"control",
+						"negotiation",
+						"{{negotiationId}}"
 					]
 				}
 			},
@@ -154,58 +228,6 @@
 					"path": [
 						"api",
 						"datarequest"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Negotiation State",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"let responseData=pm.response.text();",
-							"let json = JSON.parse(responseData);",
-							"if(json.contractAgreement !== null)",
-							"    pm.environment.set(\"agreementId\", json.contractAgreement.id)"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-Api-Key",
-						"value": "x-edc-showcase-x",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{consumer_url}}/api/control/negotiation/{{negotiationId}}",
-					"host": [
-						"{{consumer_url}}"
-					],
-					"path": [
-						"api",
-						"control",
-						"negotiation",
-						"{{negotiationId}}"
 					]
 				}
 			},

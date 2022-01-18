@@ -20,6 +20,7 @@ dependencies {
     implementation(project(":extensions:transfer-azure-s3"))
     implementation(project(":extensions:identity-hub-verifier"))
     implementation(project(":extensions:transfer-http-proxy"))
+    implementation(project(":extensions:edc-demo-api"))
 
     // EDC core dependencies
     implementation("${group}:core:${edcversion}")
