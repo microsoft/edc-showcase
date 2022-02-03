@@ -1,9 +1,9 @@
 package org.eclipse.dataspaceconnector.demo.api.rest;
 
 import org.eclipse.dataspaceconnector.catalog.spi.QueryEngine;
+import org.eclipse.dataspaceconnector.spi.WebService;
 import org.eclipse.dataspaceconnector.spi.contract.negotiation.ConsumerContractNegotiationManager;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
-import org.eclipse.dataspaceconnector.spi.protocol.web.WebService;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;

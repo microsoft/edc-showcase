@@ -23,9 +23,8 @@ dependencies {
     implementation("${group}:spi:${edcversion}")
     implementation("${group}:ids-spi:${edcversion}")
     implementation("${group}:common-util:${edcversion}")
-    implementation("${group}:protocol-web:${edcversion}")
     implementation("${group}:federated-catalog-spi:${edcversion}")
-    implementation("${group}:blob-schema:${edcversion}")
+    implementation("${group}:blob-core:${edcversion}")
     implementation("${group}:dataloading-asset:${edcversion}")
 
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:${rsApi}")

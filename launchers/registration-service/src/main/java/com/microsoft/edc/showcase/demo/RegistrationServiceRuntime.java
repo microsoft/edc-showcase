@@ -14,7 +14,8 @@
 
 package com.microsoft.edc.showcase.demo;
 
-import org.eclipse.dataspaceconnector.core.system.runtime.BaseRuntime;
+
+import org.eclipse.dataspaceconnector.boot.system.runtime.BaseRuntime;
 
 public class RegistrationServiceRuntime extends BaseRuntime {
 
