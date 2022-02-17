@@ -75,7 +75,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
     private void saveNodeEntries(ServiceExtensionContext context) {
 
-        var nodes = readNodesFromJson("nodes.json");
+        var nodes = readNodesFromJson("nodes-local.json");
         nodes.forEach(nodeDirectory::insert);
     }
 
@@ -99,7 +99,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .name("test-document")
                 .id("test-document_" + connectorId)
                 .contentType("text/plain")
-                .property(Asset.PROPERTY_POLICY_ID, USE_US_POLICY)
+//                .property(Asset.PROPERTY_POLICY_ID, USE_US_POLICY)
                 .version("1.0")
                 .build();
 
@@ -115,7 +115,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .name("test-document-az")
                 .id("test-document-az_" + connectorId)
                 .contentType("text/plain")
-                .property(Asset.PROPERTY_POLICY_ID, USE_EU_POLICY)
+//                .property(Asset.PROPERTY_POLICY_ID, USE_EU_POLICY)
                 .version("1.0")
                 .build();
 
@@ -131,7 +131,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .name("schematic_drawing-az")
                 .id("schematic-drawing-az_" + connectorId)
                 .contentType("image/png")
-                .property(Asset.PROPERTY_POLICY_ID, USE_EU_POLICY)
+//                .property(Asset.PROPERTY_POLICY_ID, USE_EU_POLICY)
                 .version("1.0")
                 .build();
 
@@ -139,14 +139,14 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .type("AzureStorage")
                 .property("account", "edcshowcasegpstorage")
                 .property("container", "src-container")
-                .property("blobname", "complex_schematic_drawing")
+                .property("blobname", "complex_schematic_drawing.jpg")
                 .build();
 
         var asset4 = Asset.Builder.newInstance()
                 .property("type", "http")
                 .name("demo-todos")
                 .id("demo-todos_" + connectorId)
-                .property(Asset.PROPERTY_POLICY_ID, USE_EU_POLICY)
+//                .property(Asset.PROPERTY_POLICY_ID, USE_EU_POLICY)
                 .version("1.0")
                 .build();
 
@@ -159,7 +159,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .property("type", "http")
                 .name("demo-train-data")
                 .id("demo-train-data_" + connectorId)
-                .property(Asset.PROPERTY_POLICY_ID, USE_EU_POLICY)
+//                .property(Asset.PROPERTY_POLICY_ID, USE_EU_POLICY)
                 .version("1.0")
                 .build();
 

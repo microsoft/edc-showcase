@@ -32,7 +32,6 @@ dependencies {
     implementation("${group}:control-api:${edcversion}")
 
     // ids
-    implementation("${group}:ids-policy-mock:${edcversion}")
     implementation("${group}:ids:${edcversion}")
 
     // simple in-memory and filesystem implementations

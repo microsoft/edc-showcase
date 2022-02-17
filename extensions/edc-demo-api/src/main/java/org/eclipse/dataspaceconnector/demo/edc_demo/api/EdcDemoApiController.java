@@ -1,5 +1,7 @@
 package org.eclipse.dataspaceconnector.demo.edc_demo.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -9,24 +11,26 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.catalog.spi.QueryEngine;
 import org.eclipse.dataspaceconnector.catalog.spi.QueryResponse;
 import org.eclipse.dataspaceconnector.catalog.spi.model.FederatedCatalogCacheQuery;
-import org.eclipse.dataspaceconnector.core.schema.azure.AzureBlobStoreSchema;
+//import org.eclipse.dataspaceconnector.core.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.dataloading.AssetEntry;
 import org.eclipse.dataspaceconnector.dataloading.DataLoader;
 import org.eclipse.dataspaceconnector.dataloading.DataSink;
-import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.StorageTypeDto;
-import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.TransferProcessCreationDto;
-import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.TransferProcessDto;
+import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.*;
 import org.eclipse.dataspaceconnector.ids.spi.Protocols;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.dataspaceconnector.spi.contract.negotiation.ConsumerContractNegotiationManager;
+import org.eclipse.dataspaceconnector.spi.contract.negotiation.response.NegotiationResult;
 import org.eclipse.dataspaceconnector.spi.contract.offer.store.ContractDefinitionStore;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.transfer.TransferProcessManager;
 import org.eclipse.dataspaceconnector.spi.transfer.store.TransferProcessStore;
 import org.eclipse.dataspaceconnector.spi.types.domain.DataAddress;
+import org.eclipse.dataspaceconnector.spi.types.domain.contract.negotiation.ContractOfferRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractDefinition;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
@@ -61,8 +65,9 @@ public class EdcDemoApiController {
     private final ContractDefinitionStore contractDefinitionStore;
     private final String connectorId;
     private final DataSink<AssetEntry> assetSink;
+    private final ConsumerContractNegotiationManager consumerNegotiationManager;
 
-    public EdcDemoApiController(String connectorName, Monitor monitor, TransferProcessManager transferProcessManager, TransferProcessStore processStore, QueryEngine catalogQueryEngine, RemoteMessageDispatcherRegistry dispatcherRegistry, ContractDefinitionStore contractDefinitionStore, String connectorId, DataSink<AssetEntry> assetSink) {
+    public EdcDemoApiController(String connectorName, Monitor monitor, TransferProcessManager transferProcessManager, TransferProcessStore processStore, QueryEngine catalogQueryEngine, RemoteMessageDispatcherRegistry dispatcherRegistry, ContractDefinitionStore contractDefinitionStore, String connectorId, DataSink<AssetEntry> assetSink, ConsumerContractNegotiationManager consumerNegotiationManager) {
         this.connectorName = connectorName; // is connector id
         this.monitor = monitor;
         this.transferProcessManager = transferProcessManager;
@@ -72,6 +77,7 @@ public class EdcDemoApiController {
         this.contractDefinitionStore = contractDefinitionStore;
         this.connectorId = connectorId;
         this.assetSink = assetSink;
+        this.consumerNegotiationManager = consumerNegotiationManager;
     }
 
     @GET
@@ -103,6 +109,30 @@ public class EdcDemoApiController {
 
         // todo: replace this, return ContractOffers instead
         var result = queryResponse.getOffers().stream().map(ContractOffer::getAsset).collect(Collectors.toList());
+
+        return Response.ok(result).build();
+    }
+
+    @GET
+    @Path("contract-offers")
+    public Response getContractOffers() {
+        monitor.info("GET /edc-demo/contract-offers - getContractOffers()");
+
+        FederatedCatalogCacheQuery query = FederatedCatalogCacheQuery
+                .Builder
+                .newInstance()
+                .build();
+
+        var queryResponse = catalogQueryEngine.getCatalog(query);
+        if (queryResponse.getStatus() == QueryResponse.Status.NO_ADAPTER_FOUND) {
+            return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+        }
+
+        if (!queryResponse.getErrors().isEmpty()) {
+            return Response.status(400, String.join(", ", queryResponse.getErrors())).build();
+        }
+
+        var result = queryResponse.getOffers();
 
         return Response.ok(result).build();
     }
@@ -227,7 +257,7 @@ public class EdcDemoApiController {
             return Response.status(Response.Status.BAD_REQUEST).entity(transferResponse.getFailureMessages()).build();
 
         }
-        var tpId = Objects.requireNonNull(transferResponse.getData()).toString();
+        var tpId = Objects.requireNonNull(transferResponse.getContent()).toString();
         var transferProcess = processStore.find(tpId);
 
         return Response.ok().entity(mapToTransferProcessDto(transferProcess)).build();
@@ -259,17 +289,58 @@ public class EdcDemoApiController {
     }
 
     private TransferProcessDto mapToTransferProcessDto(TransferProcess transferProcess) {
-        return new TransferProcessDto(
-                transferProcess.getId(),
-                transferProcess.getType().toString(),
-                transferProcess.getState(),
-                new Timestamp(transferProcess.getStateTimestamp()),
-                transferProcess.getErrorDetail(),
-                transferProcess.getDataRequest().getConnectorAddress(),
-                transferProcess.getDataRequest().getProtocol(),
-                transferProcess.getDataRequest().getConnectorId(),
-                transferProcess.getDataRequest().getAssetId(),
-                transferProcess.getDataRequest().getContractId(),
-                transferProcess.getDataRequest().getDestinationType());
+        try {
+            var json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(transferProcess.getDataRequest().getDataDestination().getProperties());
+            return new TransferProcessDto(
+                    transferProcess.getId(),
+                    transferProcess.getType().toString(),
+                    transferProcess.getState(),
+                    new Timestamp(transferProcess.getStateTimestamp()),
+                    transferProcess.getErrorDetail(),
+                    transferProcess.getDataRequest().getConnectorAddress(),
+                    transferProcess.getDataRequest().getProtocol(),
+                    transferProcess.getDataRequest().getConnectorId(),
+                    transferProcess.getDataRequest().getAssetId(),
+                    transferProcess.getDataRequest().getContractId(),
+                    transferProcess.getDataRequest().getDestinationType(),
+                    json                    );
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @POST
+    @Path("negotiations")
+    public Response createNegotiation(NegotiationCreationDto negotiationCreationDto) {
+
+        monitor.info("POST /edc-demo/negotiation - createNegotiation()");
+
+        FederatedCatalogCacheQuery query = FederatedCatalogCacheQuery.Builder.newInstance()
+                .build();
+
+        var queryResponse = catalogQueryEngine.getCatalog(query);
+        var selectedOffer = queryResponse.getOffers().stream().filter(offer -> offer.getId().equals(negotiationCreationDto.getOfferId())).findFirst();
+
+        if (selectedOffer.isEmpty()) {
+            return Response.status(404).entity("Contract offer with ID " + negotiationCreationDto.getOfferId() + " was not found!").build();
+        }
+
+        var contractOfferRequest = ContractOfferRequest.Builder.newInstance()
+                .contractOffer(selectedOffer.get())
+                .protocol(negotiationCreationDto.getProtocol())
+                .connectorId(connectorId)
+                .connectorAddress(negotiationCreationDto.getConnectorAddress())
+                .type(ContractOfferRequest.Type.INITIAL)
+                .build();
+
+        var negotiationResult = consumerNegotiationManager.initiate(contractOfferRequest);
+        if (negotiationResult.failed() && negotiationResult.getFailure().getStatus() == NegotiationResult.Status.FATAL_ERROR) {
+            return Response.serverError().build();
+        }
+
+        var negotiationResultDto = new NegotiationResultDto(negotiationResult.getContent().getId(), negotiationCreationDto.getOfferId());
+
+        return Response.ok(negotiationResultDto).build();
     }
 }
+
