@@ -15,7 +15,6 @@ import org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.catalog.spi.QueryEngine;
 import org.eclipse.dataspaceconnector.catalog.spi.QueryResponse;
 import org.eclipse.dataspaceconnector.catalog.spi.model.FederatedCatalogCacheQuery;
-//import org.eclipse.dataspaceconnector.core.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.dataloading.AssetEntry;
 import org.eclipse.dataspaceconnector.dataloading.DataLoader;
 import org.eclipse.dataspaceconnector.dataloading.DataSink;
