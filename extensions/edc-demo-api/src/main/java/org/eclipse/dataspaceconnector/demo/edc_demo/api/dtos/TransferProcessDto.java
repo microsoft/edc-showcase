@@ -4,6 +4,7 @@ import org.eclipse.dataspaceconnector.spi.types.domain.transfer.*;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 
 public class TransferProcessDto {
     private String id;
@@ -17,8 +18,9 @@ public class TransferProcessDto {
     private String assetId;
     private String contractId;
     private String dataDestinationType;
+    private String destinationAddress;
 
-    public TransferProcessDto(String id, String type, int state, Timestamp stateTimestamp, String errorDetail, String connectorAddress, String protocol, String connectorId, String assetId, String contractId, String dataDestinationType) {
+    public TransferProcessDto(String id, String type, int state, Timestamp stateTimestamp, String errorDetail, String connectorAddress, String protocol, String connectorId, String assetId, String contractId, String dataDestinationType, String destinationAddress) {
         this.id = id;
         this.type = type;
         this.state = state;
@@ -30,6 +32,7 @@ public class TransferProcessDto {
         this.assetId = assetId;
         this.contractId = contractId;
         this.dataDestinationType = dataDestinationType;
+        this.destinationAddress = destinationAddress;
     }
 
     public String getId() {
@@ -119,4 +122,8 @@ public class TransferProcessDto {
     public void setDataDestinationType(String dataDestinationType) {
         this.dataDestinationType = dataDestinationType;
     }
+
+    public String getDestinationAddress() { return destinationAddress; }
+
+    public void setDestinationAddress(String destinationAddress) { this.destinationAddress = destinationAddress; }
 }

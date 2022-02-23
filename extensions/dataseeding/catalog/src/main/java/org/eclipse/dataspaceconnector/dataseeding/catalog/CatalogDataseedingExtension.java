@@ -75,7 +75,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
     private void saveNodeEntries(ServiceExtensionContext context) {
 
-        var nodes = readNodesFromJson("nodes.json");
+        var nodes = readNodesFromJson("nodes-local.json");
         nodes.forEach(nodeDirectory::insert);
     }
 
@@ -136,7 +136,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .type("AzureStorage")
                 .property("account", "edcshowcasegpstorage")
                 .property("container", "src-container")
-                .property("blobname", "complex_schematic_drawing")
+                .property("blobname", "complex_schematic_drawing.jpg")
                 .build();
 
         var asset4 = Asset.Builder.newInstance()
