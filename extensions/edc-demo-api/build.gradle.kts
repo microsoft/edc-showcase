@@ -25,7 +25,7 @@ dependencies {
     implementation("${group}:common-util:${edcversion}")
     implementation("${group}:federated-catalog-spi:${edcversion}")
     implementation("${group}:blob-core:${edcversion}")
-    implementation("${group}:dataloading-asset:${edcversion}")
+    implementation("${group}:dataloading:${edcversion}")
 
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:${rsApi}")
 

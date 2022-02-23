@@ -19,7 +19,6 @@ dependencies {
     implementation(project(":extensions:dataseeding:hub"))
     implementation(project(":extensions:transfer-azure-s3"))
     implementation(project(":extensions:identity-hub-verifier"))
-    implementation(project(":extensions:transfer-http-proxy"))
     implementation(project(":extensions:edc-demo-api"))
 
     // EDC core dependencies
@@ -28,8 +27,9 @@ dependencies {
     implementation("${group}:contract-definition-store-cosmos:${edcversion}")
 //    implementation("${group}:contract-negotiation-store-cosmos:${edcversion}")
     implementation("${group}:contractnegotiation-store-memory:${edcversion}")
-    // implementation("${group}:observability-api:${edcversion}")
+    implementation("${group}:observability-api:${edcversion}")
     implementation("${group}:control-api:${edcversion}")
+//    implementation("${group}:data-management-api:${edcversion}")
 
     // ids
     implementation("${group}:ids:${edcversion}")

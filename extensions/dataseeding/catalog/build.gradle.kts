@@ -11,6 +11,6 @@ dependencies {
     api("${group}:catalog-cache:${edcversion}")
     implementation("${group}:spi:${edcversion}")
     implementation("${group}:common-util:${edcversion}")
-    implementation("${group}:dataloading-asset:${edcversion}")
+    implementation("${group}:dataloading:${edcversion}")
 
 }

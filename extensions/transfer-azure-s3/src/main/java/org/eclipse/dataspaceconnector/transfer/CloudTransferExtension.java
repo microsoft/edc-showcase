@@ -12,8 +12,8 @@ import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 import org.eclipse.dataspaceconnector.spi.transfer.flow.DataFlowManager;
-import org.eclipse.dataspaceconnector.transfer.inline.core.InlineDataFlowController;
-import org.eclipse.dataspaceconnector.transfer.inline.spi.DataOperatorRegistry;
+import org.eclipse.dataspaceconnector.spi.transfer.inline.DataOperatorRegistry;
+import org.eclipse.dataspaceconnector.transfer.core.inline.InlineDataFlowController;
 
 public class CloudTransferExtension implements ServiceExtension {
 

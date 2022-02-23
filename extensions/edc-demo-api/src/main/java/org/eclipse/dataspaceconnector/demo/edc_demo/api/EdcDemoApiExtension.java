@@ -2,8 +2,8 @@ package org.eclipse.dataspaceconnector.demo.edc_demo.api;
 
 import org.eclipse.dataspaceconnector.catalog.spi.QueryEngine;
 import org.eclipse.dataspaceconnector.dataloading.AssetLoader;
-import org.eclipse.dataspaceconnector.spi.contract.negotiation.ConsumerContractNegotiationManager;
 import org.eclipse.dataspaceconnector.spi.WebService;
+import org.eclipse.dataspaceconnector.spi.contract.negotiation.ConsumerContractNegotiationManager;
 import org.eclipse.dataspaceconnector.spi.contract.offer.store.ContractDefinitionStore;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
@@ -43,7 +43,7 @@ public class EdcDemoApiExtension implements ServiceExtension {
         consumerNegotiationManager = context.getService(ConsumerContractNegotiationManager.class);
 
         var controller = new EdcDemoApiController(context.getConnectorId(), monitor, transferProcessManager, processStore, catalogQueryEngine, dispatcherRegistry, contractDefinitionStore, connectorId, assetSink, consumerNegotiationManager); //, policyRegistry);
-        webService.registerController(controller);
+        webService.registerResource(controller);
 
     }
 
