@@ -32,7 +32,7 @@ public class DemoApiExtension implements ServiceExtension {
 
         consumerNegotiationManager = context.getService(ConsumerContractNegotiationManager.class);
         var controller = new DemoApiController(context.getConnectorId(), monitor, transferProcessManager, processStore, catalogQueryEngine, dispatcherRegistry, consumerNegotiationManager);
-        webService.registerController(controller);
+        webService.registerResource(controller);
 
         monitor.info("Initialized Demo API Extension");
     }
