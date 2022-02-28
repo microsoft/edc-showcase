@@ -15,6 +15,7 @@ EXPOSE 8181
 ENTRYPOINT java \
     -Dids.webhook.address=${IDS_WEBHOOK_ADDRESS} \
     -Dedc.api.control.auth.apikey.value=x-edc-showcase-x \
+    -Dedc.web.rest.cors.enabled=true \
     -Dedc.vault.clientid=${CLIENTID} \
     -Dedc.vault.tenantid=${TENANTID} \
     -Dedc.vault.certificate=/cert/cert.pfx \

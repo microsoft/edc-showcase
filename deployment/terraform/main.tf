@@ -16,11 +16,11 @@ terraform {
       source  = "hashicorp/azuread"
       version = "2.9.0"
     }
-    aws     = {
+    aws = {
       source  = "hashicorp/aws"
       version = "3.65.0"
     }
-    http    = {
+    http = {
       source  = "hashicorp/http"
       version = "2.1.0"
     }
@@ -64,7 +64,7 @@ resource "azuread_application_certificate" "demo-main-identity-cert" {
 resource "azuread_service_principal" "main-app-sp" {
   application_id               = azuread_application.demo-app-id.application_id
   app_role_assignment_required = false
-  tags                         = [
+  tags = [
     "terraform"
   ]
 }
@@ -126,8 +126,8 @@ resource "azurerm_container_group" "registration-service" {
     username = var.docker_repo_username
   }
   container {
-    cpu    = 2
-    image  = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/regsvc:latest"
+    cpu   = 2
+    image = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/regsvc:latest"
     //    image  = "paullatzelsperger/gx-reg-svc:latest"
     memory = "2"
     name   = var.regsvc-name
@@ -192,7 +192,7 @@ resource "azurerm_container_group" "provider-connector" {
       TOPIC_NAME          = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT      = azurerm_eventgrid_topic.control-topic.endpoint
       DID_URL             = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:provider"
-      LOADER_BATCH_SIZE   = 2
+      LOADER_BATCH_SIZE   = 1
       DOH_SERVER          = "https://cloudflare-dns.com/dns-query"
       COSMOS_ACCOUNT      = azurerm_cosmosdb_account.showcase-cosmos-account.name
       COSMOS_DB           = azurerm_cosmosdb_sql_database.asset-index-db.name
