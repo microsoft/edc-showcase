@@ -64,7 +64,7 @@ resource "azuread_application_certificate" "demo-main-identity-cert" {
 resource "azuread_service_principal" "main-app-sp" {
   application_id               = azuread_application.demo-app-id.application_id
   app_role_assignment_required = false
-  tags = [
+  tags                         = [
     "terraform"
   ]
 }
@@ -113,51 +113,51 @@ resource "azurerm_role_assignment" "current-user-cryptoofficer" {
 
 
 # registration service = ion crawler
-resource "azurerm_container_group" "registration-service" {
-  name                = "${var.environment}-${var.regsvc-name}"
-  location            = azurerm_resource_group.core-resourcegroup.location
-  resource_group_name = azurerm_resource_group.core-resourcegroup.name
-  os_type             = "Linux"
-  ip_address_type     = "public"
-  dns_name_label      = "${var.environment}-${var.regsvc-name}"
-  image_registry_credential {
-    password = var.docker_repo_password
-    server   = var.docker_repo_url
-    username = var.docker_repo_username
-  }
-  container {
-    cpu   = 2
-    image = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/regsvc:latest"
-    //    image  = "paullatzelsperger/gx-reg-svc:latest"
-    memory = "2"
-    name   = var.regsvc-name
-
-    ports {
-      port     = 8181
-      protocol = "TCP"
-    }
-
-    environment_variables = {
-      CLIENTID          = azuread_application.demo-app-id.application_id,
-      TENANTID          = data.azurerm_client_config.current.tenant_id,
-      VAULTNAME         = azurerm_key_vault.main-vault.name,
-      CONNECTOR_NAME    = var.regsvc-name
-      TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
-      TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
-      ION_URL           = "http://gx-ion-node.westeurope.cloudapp.azure.com:3000/"
-      LOADER_BATCH_SIZE = 2
-    }
-
-    volume {
-      mount_path           = "/cert"
-      name                 = "certificates"
-      share_name           = "certificates"
-      storage_account_key  = var.backend_account_key
-      storage_account_name = var.backend_account_name
-      read_only            = true
-    }
-  }
-}
+#resource "azurerm_container_group" "registration-service" {
+#  name                = "${var.environment}-${var.regsvc-name}"
+#  location            = azurerm_resource_group.core-resourcegroup.location
+#  resource_group_name = azurerm_resource_group.core-resourcegroup.name
+#  os_type             = "Linux"
+#  ip_address_type     = "public"
+#  dns_name_label      = "${var.environment}-${var.regsvc-name}"
+#  image_registry_credential {
+#    password = var.docker_repo_password
+#    server   = var.docker_repo_url
+#    username = var.docker_repo_username
+#  }
+#  container {
+#    cpu   = 2
+#    image = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/regsvc:latest"
+#    //    image  = "paullatzelsperger/gx-reg-svc:latest"
+#    memory = "2"
+#    name   = var.regsvc-name
+#
+#    ports {
+#      port     = 8181
+#      protocol = "TCP"
+#    }
+#
+#    environment_variables = {
+#      CLIENTID          = azuread_application.demo-app-id.application_id,
+#      TENANTID          = data.azurerm_client_config.current.tenant_id,
+#      VAULTNAME         = azurerm_key_vault.main-vault.name,
+#      CONNECTOR_NAME    = var.regsvc-name
+#      TOPIC_NAME        = azurerm_eventgrid_topic.control-topic.name
+#      TOPIC_ENDPOINT    = azurerm_eventgrid_topic.control-topic.endpoint
+#      ION_URL           = "http://gx-ion-node.westeurope.cloudapp.azure.com:3000/"
+#      LOADER_BATCH_SIZE = 2
+#    }
+#
+#    volume {
+#      mount_path           = "/cert"
+#      name                 = "certificates"
+#      share_name           = "certificates"
+#      storage_account_key  = var.backend_account_key
+#      storage_account_name = var.backend_account_name
+#      read_only            = true
+#    }
+#  }
+#}
 
 # connector that acts as data provider
 resource "azurerm_container_group" "provider-connector" {

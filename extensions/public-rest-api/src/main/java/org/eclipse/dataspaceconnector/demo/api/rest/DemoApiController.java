@@ -34,8 +34,8 @@ import java.util.concurrent.ExecutionException;
 
 import static org.eclipse.dataspaceconnector.common.types.Cast.cast;
 
-@Consumes({MediaType.APPLICATION_JSON})
-@Produces({MediaType.APPLICATION_JSON})
+@Consumes({ MediaType.APPLICATION_JSON })
+@Produces({ MediaType.APPLICATION_JSON })
 @Path("/")
 public class DemoApiController {
     private final Monitor monitor;
@@ -172,7 +172,6 @@ public class DemoApiController {
         try {
             if (CollectionUtil.isAnyOf(process.getState(),
                     TransferProcessStates.DEPROVISIONED.code(),
-                    TransferProcessStates.DEPROVISIONING_REQ.code(),
                     TransferProcessStates.DEPROVISIONING.code(),
                     TransferProcessStates.ENDED.code()
             )) {
@@ -180,13 +179,13 @@ public class DemoApiController {
             } else {
                 monitor.info("starting to deprovision data request " + requestId);
                 process.transitionCompleted();
-                process.transitionDeprovisionRequested();
+                process.transitionDeprovisioning();
                 processStore.update(process);
             }
             return Response.ok(formatAsJson(TransferProcessStates.from(process.getState()).toString())).build();
         } catch (IllegalStateException ex) {
             monitor.severe(ex.getMessage());
-            return Response.status(400).entity("The process must be in one of these states: " + String.join(", ", TransferProcessStates.IN_PROGRESS.name(), TransferProcessStates.REQUESTED_ACK.name(), TransferProcessStates.STREAMING.name())).build();
+            return Response.status(400).entity("The process must be in one of these states: " + String.join(", ", TransferProcessStates.IN_PROGRESS.name(), TransferProcessStates.REQUESTED.name(), TransferProcessStates.STREAMING.name())).build();
         }
 
     }

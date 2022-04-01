@@ -9,6 +9,9 @@ output "primary_id_certfile" {
 output "provider-url" {
   value = "${azurerm_container_group.provider-connector.dns_name_label}.${var.location}.azurecontainer.io"
 }
+output "consumer-url" {
+  value = "${azurerm_container_group.consumer-connector.dns_name_label}.${var.location}.azurecontainer.io"
+}
 #
 #output "consumer-url" {
 #  value = "${azurerm_container_group.consumer-connector.dns_name_label}.${var.location}azureconainer.io"
@@ -30,11 +33,5 @@ output "static-web" {
 //  value = {
 //    provider    = "https://${module.provider-cluster-bmw.public-ip.fqdn}"
 //    consumer-fr = azurerm_container_group.consumer-fr.fqdn
-//  }
-//}
-
-//output "namespaces" {
-//  value = {
-//    connector = module.provider-bmw-deployment.connector-cluster-namespace
 //  }
 //}

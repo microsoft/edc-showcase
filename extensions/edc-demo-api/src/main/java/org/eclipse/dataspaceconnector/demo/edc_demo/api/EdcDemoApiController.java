@@ -18,7 +18,11 @@ import org.eclipse.dataspaceconnector.catalog.spi.model.FederatedCatalogCacheQue
 import org.eclipse.dataspaceconnector.dataloading.AssetEntry;
 import org.eclipse.dataspaceconnector.dataloading.DataLoader;
 import org.eclipse.dataspaceconnector.dataloading.DataSink;
-import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.*;
+import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.NegotiationCreationDto;
+import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.NegotiationResultDto;
+import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.StorageTypeDto;
+import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.TransferProcessCreationDto;
+import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.TransferProcessDto;
 import org.eclipse.dataspaceconnector.ids.spi.Protocols;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.contract.negotiation.ConsumerContractNegotiationManager;
@@ -287,27 +291,6 @@ public class EdcDemoApiController {
         return Response.ok().entity(assetEntry).build();
     }
 
-    private TransferProcessDto mapToTransferProcessDto(TransferProcess transferProcess) {
-        try {
-            var json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(transferProcess.getDataRequest().getDataDestination().getProperties());
-            return new TransferProcessDto(
-                    transferProcess.getId(),
-                    transferProcess.getType().toString(),
-                    transferProcess.getState(),
-                    new Timestamp(transferProcess.getStateTimestamp()),
-                    transferProcess.getErrorDetail(),
-                    transferProcess.getDataRequest().getConnectorAddress(),
-                    transferProcess.getDataRequest().getProtocol(),
-                    transferProcess.getDataRequest().getConnectorId(),
-                    transferProcess.getDataRequest().getAssetId(),
-                    transferProcess.getDataRequest().getContractId(),
-                    transferProcess.getDataRequest().getDestinationType(),
-                    json                    );
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @POST
     @Path("negotiations")
     public Response createNegotiation(NegotiationCreationDto negotiationCreationDto) {
@@ -340,6 +323,27 @@ public class EdcDemoApiController {
         var negotiationResultDto = new NegotiationResultDto(negotiationResult.getContent().getId(), negotiationCreationDto.getOfferId());
 
         return Response.ok(negotiationResultDto).build();
+    }
+
+    private TransferProcessDto mapToTransferProcessDto(TransferProcess transferProcess) {
+        try {
+            var json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(transferProcess.getDataRequest().getDataDestination().getProperties());
+            return new TransferProcessDto(
+                    transferProcess.getId(),
+                    transferProcess.getType().toString(),
+                    transferProcess.getState(),
+                    new Timestamp(transferProcess.getStateTimestamp()),
+                    transferProcess.getErrorDetail(),
+                    transferProcess.getDataRequest().getConnectorAddress(),
+                    transferProcess.getDataRequest().getProtocol(),
+                    transferProcess.getDataRequest().getConnectorId(),
+                    transferProcess.getDataRequest().getAssetId(),
+                    transferProcess.getDataRequest().getContractId(),
+                    transferProcess.getDataRequest().getDestinationType(),
+                    json);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 
