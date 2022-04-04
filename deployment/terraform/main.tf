@@ -1,12 +1,6 @@
 # Configure the Azure provider
 terraform {
   # comment out this object if you want to use local state only
-  backend "azurerm" {
-    resource_group_name  = "edc-infrastructure"
-    storage_account_name = "edcstate"
-    container_name       = "terraform-state-edc-showcase"
-    key                  = "terraform.state"
-  }
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -49,23 +43,84 @@ resource "azurerm_resource_group" "core-resourcegroup" {
 }
 
 # App registration for the primary identity
-resource "azuread_application" "demo-app-id" {
-  display_name     = "PrimaryIdentity-${var.environment}"
-  sign_in_audience = "AzureADMyOrg"
+data "azuread_application" "demo-app-id" {
+  application_id = var.application_id
+}
+data "azuread_service_principal" "main-app-sp" {
+  application_id = var.application_id
 }
 
 resource "azuread_application_certificate" "demo-main-identity-cert" {
   type                  = "AsymmetricX509Cert"
-  application_object_id = azuread_application.demo-app-id.id
-  value                 = var.CERTIFICATE
+  application_object_id = data.azuread_application.demo-app-id.id
+  value                 = file("${var.CERTIFICATE}.pem")
   end_date_relative     = "2400h"
 }
 
-resource "azuread_service_principal" "main-app-sp" {
-  application_id               = azuread_application.demo-app-id.application_id
-  app_role_assignment_required = false
-  tags                         = [
-    "terraform"
+data "azurerm_container_registry" "main" {
+  name                = var.acr
+  resource_group_name = var.acr_rg
+}
+locals {
+  docker_repo_url      = data.azurerm_container_registry.main.login_server
+  docker_repo_username = data.azurerm_container_registry.main.admin_username
+  docker_repo_password = data.azurerm_container_registry.main.admin_password
+}
+
+resource "azurerm_storage_account" "data" {
+  name                     = "sa${var.environment}prov"
+  location                 = azurerm_resource_group.core-resourcegroup.location
+  resource_group_name      = azurerm_resource_group.core-resourcegroup.name
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+resource "azurerm_storage_share" "cert" {
+  name                 = "certificates"
+  storage_account_name = azurerm_storage_account.data.name
+  quota                = 50
+}
+resource "azurerm_storage_share_file" "cert" {
+  name             = "cert.pfx"
+  storage_share_id = azurerm_storage_share.cert.id
+  source           = "${var.CERTIFICATE}.pfx"
+}
+locals {
+  share_account_key   = azurerm_storage_account.data.primary_access_key
+  share_account_name  = azurerm_storage_account.data.name
+  share_account_share = azurerm_storage_share.cert.name
+}
+
+locals {
+  nodes_json = <<-EOT
+    [
+    {
+      "name": "consumer",
+      "url": "http://${var.environment}-${var.consumer-name}.${var.location}.azurecontainer.io:8282",
+      "supportedProtocols": [
+        "ids-multipart"
+      ]
+    },
+    {
+      "name": "provider",
+      "url": "http://${var.environment}-${var.provider-name}.${var.location}.azurecontainer.io:8282",
+      "supportedProtocols": [
+        "ids-multipart"
+      ]
+    },
+    {
+      "name": "connector3",
+      "url": "http://${var.environment}-connector3.${var.location}.azurecontainer.io:8282",
+      "supportedProtocols": [
+        "ids-multipart"
+      ]
+    }
+  ]
+EOT
+}
+
+resource "null_resource" "connector_files" {
+  depends_on = [
+    azurerm_storage_share_file.cert,
   ]
 }
 
@@ -88,12 +143,12 @@ resource "azurerm_key_vault" "main-vault" {
 resource "azurerm_role_assignment" "primary-id" {
   scope                = azurerm_key_vault.main-vault.id
   role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = azuread_service_principal.main-app-sp.object_id
+  principal_id         = data.azuread_service_principal.main-app-sp.object_id
 }
 
 # Role assignment that the primary identity may provision/deprovision azure resources
 resource "azurerm_role_assignment" "primary-id-arm" {
-  principal_id         = azuread_service_principal.main-app-sp.object_id
+  principal_id         = data.azuread_service_principal.main-app-sp.object_id
   scope                = data.azurerm_subscription.primary.id
   role_definition_name = "Contributor"
 }
@@ -168,13 +223,14 @@ resource "azurerm_container_group" "provider-connector" {
   ip_address_type     = "public"
   dns_name_label      = "${var.environment}-${var.provider-name}"
   image_registry_credential {
-    password = var.docker_repo_password
-    server   = var.docker_repo_url
-    username = var.docker_repo_username
+    password = local.docker_repo_password
+    server   = local.docker_repo_url
+    username = local.docker_repo_username
   }
+  restart_policy = "Never"
   container {
     cpu    = 2
-    image  = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/connector:latest"
+    image  = "${local.docker_repo_url}/paullatzelsperger/edc-showcase/connector:latest"
     memory = "2"
     name   = var.provider-name
 
@@ -182,16 +238,21 @@ resource "azurerm_container_group" "provider-connector" {
       port     = 8181
       protocol = "TCP"
     }
+    ports {
+      port     = 8282
+      protocol = "TCP"
+    }
 
     environment_variables = {
-      IDS_WEBHOOK_ADDRESS = "http://${var.environment}-${var.provider-name}.${var.location}.azurecontainer.io:8181"
-      CLIENTID            = azuread_application.demo-app-id.application_id,
+      NODES_JSON          = local.nodes_json
+      IDS_WEBHOOK_ADDRESS = "http://${var.environment}-${var.provider-name}.${var.location}.azurecontainer.io:8282"
+      CLIENTID            = data.azuread_service_principal.main-app-sp.application_id,
       TENANTID            = data.azurerm_client_config.current.tenant_id,
       VAULTNAME           = azurerm_key_vault.main-vault.name,
       CONNECTOR_NAME      = var.provider-name
       TOPIC_NAME          = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT      = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL             = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:provider"
+      DID_URL             = "did:web:${azurerm_storage_account.main-blobstore.primary_web_host}:provider"
       LOADER_BATCH_SIZE   = 1
       DOH_SERVER          = "https://cloudflare-dns.com/dns-query"
       COSMOS_ACCOUNT      = azurerm_cosmosdb_account.showcase-cosmos-account.name
@@ -209,12 +270,15 @@ resource "azurerm_container_group" "provider-connector" {
     volume {
       mount_path           = "/cert"
       name                 = "certificates"
-      share_name           = "certificates"
-      storage_account_key  = var.backend_account_key
-      storage_account_name = var.backend_account_name
+      share_name           = local.share_account_share
+      storage_account_key  = local.share_account_key
+      storage_account_name = local.share_account_name
       read_only            = true
     }
   }
+  depends_on = [
+    null_resource.connector_files,
+  ]
 }
 
 # connector that acts as data consumer
@@ -226,13 +290,14 @@ resource "azurerm_container_group" "consumer-connector" {
   ip_address_type     = "public"
   dns_name_label      = "${var.environment}-${var.consumer-name}"
   image_registry_credential {
-    password = var.docker_repo_password
-    server   = var.docker_repo_url
-    username = var.docker_repo_username
+    password = local.docker_repo_password
+    server   = local.docker_repo_url
+    username = local.docker_repo_username
   }
+  restart_policy = "Never"
   container {
     cpu    = 2
-    image  = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/connector:latest"
+    image  = "${local.docker_repo_url}/paullatzelsperger/edc-showcase/connector:latest"
     memory = "2"
     name   = var.consumer-name
 
@@ -240,16 +305,21 @@ resource "azurerm_container_group" "consumer-connector" {
       port     = 8181
       protocol = "TCP"
     }
+    ports {
+      port     = 8282
+      protocol = "TCP"
+    }
 
     environment_variables = {
-      IDS_WEBHOOK_ADDRESS = "http://${var.environment}-${var.consumer-name}.${var.location}.azurecontainer.io:8181"
-      CLIENTID            = azuread_application.demo-app-id.application_id,
+      NODES_JSON          = local.nodes_json
+      IDS_WEBHOOK_ADDRESS = "http://${var.environment}-${var.consumer-name}.${var.location}.azurecontainer.io:8282"
+      CLIENTID            = data.azuread_service_principal.main-app-sp.application_id,
       TENANTID            = data.azurerm_client_config.current.tenant_id,
       VAULTNAME           = azurerm_key_vault.main-vault.name,
       CONNECTOR_NAME      = var.consumer-name
       TOPIC_NAME          = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT      = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL             = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:consumer"
+      DID_URL             = "did:web:${azurerm_storage_account.main-blobstore.primary_web_host}:consumer"
       DOH_SERVER          = "https://cloudflare-dns.com/dns-query"
       LOADER_BATCH_SIZE   = 2
       COSMOS_ACCOUNT      = azurerm_cosmosdb_account.showcase-cosmos-account.name
@@ -267,12 +337,15 @@ resource "azurerm_container_group" "consumer-connector" {
     volume {
       mount_path           = "/cert"
       name                 = "certificates"
-      share_name           = "certificates"
-      storage_account_key  = var.backend_account_key
-      storage_account_name = var.backend_account_name
+      share_name           = local.share_account_share
+      storage_account_key  = local.share_account_key
+      storage_account_name = local.share_account_name
       read_only            = true
     }
   }
+  depends_on = [
+    null_resource.connector_files,
+  ]
 }
 
 # arbitrary third connector that hosts its did on a static site
@@ -284,13 +357,14 @@ resource "azurerm_container_group" "connector3" {
   ip_address_type     = "public"
   dns_name_label      = "${var.environment}-connector3"
   image_registry_credential {
-    password = var.docker_repo_password
-    server   = var.docker_repo_url
-    username = var.docker_repo_username
+    password = local.docker_repo_password
+    server   = local.docker_repo_url
+    username = local.docker_repo_username
   }
+  restart_policy = "Never"
   container {
     cpu    = 2
-    image  = "${var.docker_repo_url}/paullatzelsperger/edc-showcase/connector:latest"
+    image  = "${local.docker_repo_url}/paullatzelsperger/edc-showcase/connector:latest"
     memory = "2"
     name   = "connector3"
 
@@ -298,16 +372,21 @@ resource "azurerm_container_group" "connector3" {
       port     = 8181
       protocol = "TCP"
     }
+    ports {
+      port     = 8282
+      protocol = "TCP"
+    }
 
     environment_variables = {
-      IDS_WEBHOOK_ADDRESS = "http://${var.environment}-connector3.${var.location}.azurecontainer.io:8181"
-      CLIENTID            = azuread_application.demo-app-id.application_id,
+      NODES_JSON          = local.nodes_json
+      IDS_WEBHOOK_ADDRESS = "http://${var.environment}-connector3.${var.location}.azurecontainer.io:8282"
+      CLIENTID            = data.azuread_service_principal.main-app-sp.application_id,
       TENANTID            = data.azurerm_client_config.current.tenant_id,
       VAULTNAME           = azurerm_key_vault.main-vault.name,
       CONNECTOR_NAME      = "connector3"
       TOPIC_NAME          = azurerm_eventgrid_topic.control-topic.name
       TOPIC_ENDPOINT      = azurerm_eventgrid_topic.control-topic.endpoint
-      DID_URL             = "did:web:edcshowcasegpstorage.z6.web.core.windows.net:connector3"
+      DID_URL             = "did:web:${azurerm_storage_account.main-blobstore.primary_web_host}:connector3"
       DOH_SERVER          = "https://cloudflare-dns.com/dns-query"
       LOADER_BATCH_SIZE   = 2
       COSMOS_ACCOUNT      = azurerm_cosmosdb_account.showcase-cosmos-account.name
@@ -325,10 +404,13 @@ resource "azurerm_container_group" "connector3" {
     volume {
       mount_path           = "/cert"
       name                 = "certificates"
-      share_name           = "certificates"
-      storage_account_key  = var.backend_account_key
-      storage_account_name = var.backend_account_name
+      share_name           = local.share_account_share
+      storage_account_key  = local.share_account_key
+      storage_account_name = local.share_account_name
       read_only            = true
     }
   }
+  depends_on = [
+    null_resource.connector_files,
+  ]
 }

@@ -57,8 +57,7 @@ import java.util.stream.Stream;
 @Path("/edc-demo")
 public class EdcDemoApiController {
     private static final List<StorageTypeDto> fakeStorageTypeDtos = Arrays.asList(
-            new StorageTypeDto("AzureStorage", "Azure Storage"),
-            new StorageTypeDto("AmazonS3", "AWS S3"));
+            new StorageTypeDto("AzureStorage", "Azure Storage"));
     private final Monitor monitor;
     private final TransferProcessManager transferProcessManager;
     private final TransferProcessStore processStore;

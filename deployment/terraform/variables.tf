@@ -1,6 +1,6 @@
 variable "location" {
   description = "geographic location of the Azure resources"
-  default     = "westeurope"
+  default     = "northeurope"
   type        = string
 }
 
@@ -20,35 +20,20 @@ variable "environment" {
   description = "identifying string that is used as prefix in all azure resources"
 }
 
-
-variable "backend_account_name" {
-  type        = string
-  description = "A storage account where the Terraform state and certificates etc. are stored"
-  default     = "edcstate"
+variable "acr" {
 }
 
-variable "backend_account_key" {
-  type        = string
-  description = "Access key of the storage account that holds the terraform state and the certificate file share."
+variable "acr_rg" {
+}
+
+variable "application_id" {
 }
 
 variable "CERTIFICATE" {
   type        = string
-  description = "PEM-encoded content of the private key file, that is used to secure the primary azure app SP"
+  description = "Base name of two local files (.pem and .pfx) both containing the private key, that is used to secure the primary azure app SP"
 }
 
-variable "docker_repo_password" {
-  type = string
-}
-
-variable "docker_repo_username" {
-  type = string
-}
-
-variable "docker_repo_url" {
-  type    = string
-  default = "ghcr.io"
-}
 # unique name for the consumer connector
 variable "consumer-name" {
   type    = string
@@ -70,4 +55,3 @@ variable "regsvc-name" {
 # partition key for the asset index based on cosmosdb
 variable "asset-index-partkey" {
   default = "assetIndexPartition"
-}

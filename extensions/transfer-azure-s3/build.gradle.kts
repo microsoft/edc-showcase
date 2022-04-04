@@ -26,7 +26,6 @@ dependencies {
     api("${group}:spi:${edcversion}")
     implementation("${group}:common-util:${edcversion}")
     implementation("${group}:blobstorage:${edcversion}")
-    implementation("${group}:aws-s3:${edcversion}")
     // used for the BlobStoreWriter
     implementation("com.azure:azure-storage-blob:${storageBlobVersion}")
 

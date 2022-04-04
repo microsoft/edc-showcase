@@ -53,8 +53,11 @@ resource "azurerm_storage_blob" "consumer-webdid" {
   storage_account_name   = azurerm_storage_account.main-blobstore.name
   storage_container_name = "$web"
   type                   = "Block"
-  source                 = "../did-web/consumer.json"
-  content_type           = "applicaton/json"
+  source_content = replace(replace(file(
+    "../did-web/consumer.json"
+    ), "edcshowcasegpstorage.z6.web.core.windows.net", azurerm_storage_account.main-blobstore.primary_web_host)
+  , "edc-showcase-consumer.westeurope.azurecontainer.io", azurerm_container_group.consumer-connector.fqdn)
+  content_type = "application/json"
 }
 
 # upload the DID document for the provider
@@ -63,8 +66,11 @@ resource "azurerm_storage_blob" "provider-webdid" {
   storage_account_name   = azurerm_storage_account.main-blobstore.name
   storage_container_name = "$web"
   type                   = "Block"
-  source                 = "../did-web/provider.json"
-  content_type           = "applicaton/json"
+  source_content = replace(replace(file(
+    "../did-web/provider.json"
+    ), "edcshowcasegpstorage.z6.web.core.windows.net", azurerm_storage_account.main-blobstore.primary_web_host)
+  , "edc-showcase-provider.westeurope.azurecontainer.io", azurerm_container_group.provider-connector.fqdn)
+  content_type = "application/json"
 }
 
 # upload the DID document for the 3rd connector
@@ -73,6 +79,9 @@ resource "azurerm_storage_blob" "connector3-webdid" {
   storage_account_name   = azurerm_storage_account.main-blobstore.name
   storage_container_name = "$web"
   type                   = "Block"
-  source                 = "../did-web/connector3.json"
-  content_type           = "applicaton/json"
+  source_content = replace(replace(file(
+    "../did-web/connector3.json"
+    ), "edcshowcasegpstorage.z6.web.core.windows.net", azurerm_storage_account.main-blobstore.primary_web_host)
+  , "edc-showcase-connector3.westeurope.azurecontainer.io", azurerm_container_group.connector3.fqdn)
+  content_type = "application/json"
 }

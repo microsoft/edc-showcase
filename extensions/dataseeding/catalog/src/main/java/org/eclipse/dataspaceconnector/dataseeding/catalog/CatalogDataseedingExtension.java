@@ -19,9 +19,11 @@ import org.eclipse.dataspaceconnector.spi.types.domain.DataAddress;
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractDefinition;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class CatalogDataseedingExtension implements ServiceExtension {
     public static final String USE_EU_POLICY = "use-eu";
@@ -75,18 +77,18 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
     private void saveNodeEntries(ServiceExtensionContext context) {
 
-        var nodes = readNodesFromJson("nodes-local.json");
+        var nodes = readNodesFromJson(Objects.requireNonNull(System.getenv("NODES_JSON"), "Env var NODES_JSON is null"));
         nodes.forEach(nodeDirectory::insert);
     }
 
-    private List<FederatedCacheNode> readNodesFromJson(String resourceName) {
-        try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName)) {
+    private List<FederatedCacheNode> readNodesFromJson(String json) {
+        try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
             var tr = new TypeReference<List<FederatedCacheNode>>() {
             };
-            return mapper.readValue(in, tr);
+            return mapper.readValue(json, tr);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

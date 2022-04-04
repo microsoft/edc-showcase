@@ -1,5 +1,5 @@
 output "primary_client_id" {
-  value = azuread_application.demo-app-id.application_id
+  value = data.azuread_service_principal.main-app-sp.application_id
 }
 
 output "primary_id_certfile" {
