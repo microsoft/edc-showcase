@@ -121,7 +121,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
         var dataAddress2 = DataAddress.Builder.newInstance()
                 .type("AzureStorage")
-                .property("account", "edcshowcasegpstorage")
+                .property("account", "peeyushenvgpstorage")
                 .property("container", "src-container")
                 .property("blobname", "test-document.txt")
                 .build();
@@ -136,7 +136,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
         var dataAddress3 = DataAddress.Builder.newInstance()
                 .type("AzureStorage")
-                .property("account", "edcshowcasegpstorage")
+                .property("account", "peeyushenvgpstorage")
                 .property("container", "src-container")
                 .property("blobname", "complex_schematic_drawing.jpg")
                 .build();
