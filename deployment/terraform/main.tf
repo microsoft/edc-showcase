@@ -220,7 +220,7 @@ resource "azurerm_container_group" "provider-connector" {
   location            = azurerm_resource_group.core-resourcegroup.location
   resource_group_name = azurerm_resource_group.core-resourcegroup.name
   os_type             = "Linux"
-  ip_address_type     = "public"
+  ip_address_type     = "Public"
   dns_name_label      = "${var.environment}-${var.provider-name}"
   image_registry_credential {
     password = local.docker_repo_password
@@ -287,7 +287,7 @@ resource "azurerm_container_group" "consumer-connector" {
   location            = azurerm_resource_group.core-resourcegroup.location
   resource_group_name = azurerm_resource_group.core-resourcegroup.name
   os_type             = "Linux"
-  ip_address_type     = "public"
+  ip_address_type     = "Public"
   dns_name_label      = "${var.environment}-${var.consumer-name}"
   image_registry_credential {
     password = local.docker_repo_password
@@ -354,7 +354,7 @@ resource "azurerm_container_group" "connector3" {
   location            = azurerm_resource_group.core-resourcegroup.location
   resource_group_name = azurerm_resource_group.core-resourcegroup.name
   os_type             = "Linux"
-  ip_address_type     = "public"
+  ip_address_type     = "Public"
   dns_name_label      = "${var.environment}-connector3"
   image_registry_credential {
     password = local.docker_repo_password
