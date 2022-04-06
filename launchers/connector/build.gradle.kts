@@ -17,6 +17,7 @@ dependencies {
     implementation(project(":extensions:public-rest-api"))
     implementation(project(":extensions:dataseeding:catalog"))
     implementation(project(":extensions:dataseeding:hub"))
+    implementation(project(":extensions:transfer-azure-s3"))
     implementation(project(":extensions:identity-hub-verifier"))
     implementation(project(":extensions:edc-demo-api"))
 
