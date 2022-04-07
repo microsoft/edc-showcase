@@ -10,7 +10,7 @@ appId=$(jq -r .appId secrets)
 tenant=$(jq -r .tenant secrets)
 password=$(jq -r .password secrets)
 
-ACR_NAME=algattikacr2
+ACR_NAME=ageramvdacr
 RES_GROUP=$ACR_NAME # Resource Group name
 az group create --resource-group $RES_GROUP --location westeurope -o none
 az acr create --resource-group $RES_GROUP --name $ACR_NAME --sku Standard --location westeurope --admin-enabled -o none
@@ -28,10 +28,10 @@ cd "$cwd"
 
 
 # 1. setup terraform
-TERRAFORM_STATE_STORAGE_RESOURCE_GROUP=algattiktf
-TERRAFORM_STATE_STORAGE_ACCOUNT=algattiktf
-TERRAFORM_STATE_STORAGE_CONTAINER=algattiktf
-TERRAFORM_STATE_STORAGE_BLOB=algattiktf
+TERRAFORM_STATE_STORAGE_RESOURCE_GROUP=ageramvdtf
+TERRAFORM_STATE_STORAGE_ACCOUNT=ageramvdtf
+TERRAFORM_STATE_STORAGE_CONTAINER=ageramvdtf
+TERRAFORM_STATE_STORAGE_BLOB=ageramvdtf
 TERRAFORM_STATE_STORAGE_LOCATION=westeurope
 
 az group create --name "$TERRAFORM_STATE_STORAGE_RESOURCE_GROUP" --location "$TERRAFORM_STATE_STORAGE_LOCATION" -o none
@@ -55,7 +55,7 @@ EOF
 terraform init
 
 export TF_VAR_CERTIFICATE=../cert
-export TF_VAR_environment=algattik4
+export TF_VAR_environment=ageramvd
 export TF_VAR_acr=$ACR_NAME
 export TF_VAR_acr_rg=$RES_GROUP
 export TF_VAR_application_id=$appId

@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "160c40e0-3965-463a-b181-4dac23decc18",
-		"name": "MSFT EDC Demo",
+		"name": "MSFT EDC Demo (ageraedc)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -11,9 +11,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/check/health",
+					"raw": "http://ageramvd-consumer.northeurope.azurecontainer.io:8181/api/check/health",
 					"host": [
-						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+						"http://ageramvd-consumer.northeurope.azurecontainer.io:8181"
 					],
 					"path": [
 						"api",
@@ -50,9 +50,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/catalog/cached",
+					"raw": "http://ageramvd-consumer.northeurope.azurecontainer.io:8181/api/catalog/cached",
 					"host": [
-						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+						"http://ageramvd-consumer.northeurope.azurecontainer.io:8181"
 					],
 					"path": [
 						"api",
@@ -82,7 +82,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"connectorAddress\":\"{{provider_url}}/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"offerId\": \"{{offerId}}\"\n}",
+					"raw": "{\n    \"connectorAddress\":\"http://ageramvd-provider.northeurope.azurecontainer.io:8282/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"offerId\": \"{{offerId}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -90,9 +90,9 @@
 					}
 				},
 				"url": {
-					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/negotiation",
+					"raw": "http://ageramvd-consumer.northeurope.azurecontainer.io:8181/api/negotiation",
 					"host": [
-						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+						"http://ageramvd-consumer.northeurope.azurecontainer.io:8181"
 					],
 					"path": [
 						"api",
@@ -142,9 +142,9 @@
 					}
 				},
 				"url": {
-					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/control/negotiation/{{negotiationId}}",
+					"raw": "http://ageramvd-consumer.northeurope.azurecontainer.io:8181/api/control/negotiation/{{negotiationId}}",
 					"host": [
-						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+						"http://ageramvd-consumer.northeurope.azurecontainer.io:8181"
 					],
 					"path": [
 						"api",
@@ -174,7 +174,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"{{provider_url}}/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"contractId\": \"{{agreementId}}\",\n    \"assetId\": \"demo-train-data_provider\",\n    \"dataDestination\":{\n        \"type\": \"http\"\n    },\n    \"isSync\": true,\n    \"managedResources\": false,\n    \"properties\":{\n        \"foo\": \"bar\",\n        \"isSync\": true\n    }\n}",
+					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"http://http://ageramvd-provider.northeurope.azurecontainer.io:8282/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"contractId\": \"{{agreementId}}\",\n    \"assetId\": \"demo-train-data_provider\",\n    \"dataDestination\":{\n        \"type\": \"http\"\n    },\n    \"isSync\": true,\n    \"managedResources\": false,\n    \"properties\":{\n        \"foo\": \"bar\",\n        \"isSync\": true\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -182,9 +182,9 @@
 					}
 				},
 				"url": {
-					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/datarequest",
+					"raw": "http://ageramvd-consumer.northeurope.azurecontainer.io:8181/api/datarequest",
 					"host": [
-						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+						"http://ageramvd-consumer.northeurope.azurecontainer.io:8181"
 					],
 					"path": [
 						"api",
@@ -214,7 +214,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"id\": null,\n    \"processId\": null,\n    \"connectorAddress\": \"{{provider_url}}/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\": \"consumer\",\n    \"assetId\": \"test-document-az_provider\",\n    \"contractId\": \"{{agreementId}}\",\n    \"dataDestination\": {\n        \"properties\": {\n            \"container\": \"dst-container\",\n            \"keyName\": \"marcgs1gpstorage-key1\",\n            \"type\": \"AzureStorage\",\n            \"account\": \"marcgs1gpstorage\",\n            \"blobname\": \"received.txt\"\n        },\n        \"keyName\": \"marcgs1gpstorage-key1\",\n        \"type\": \"AzureStorage\"\n    },\n    \"managedResources\": true,\n    \"destinationType\": \"AzureStorage\",\n    \"transferType\": {\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}",
+					"raw": "{\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"id\": null,\n    \"processId\": null,\n    \"connectorAddress\": \"http://http://ageramvd-provider.northeurope.azurecontainer.io:8282/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\": \"consumer\",\n    \"assetId\": \"test-document-az_provider\",\n    \"contractId\": \"{{agreementId}}\",\n    \"dataDestination\": {\n        \"properties\": {\n            \"container\": \"dst-container\",\n            \"keyName\": \"ageramvdgpstorage-key1\",\n            \"type\": \"AzureStorage\",\n            \"account\": \"ageramvdgpstorage\",\n            \"blobname\": \"received.txt\"\n        },\n        \"keyName\": \"ageramvdgpstorage-key1\",\n        \"type\": \"AzureStorage\"\n    },\n    \"managedResources\": true,\n    \"destinationType\": \"AzureStorage\",\n    \"transferType\": {\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -222,9 +222,9 @@
 					}
 				},
 				"url": {
-					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/datarequest",
+					"raw": "http://ageramvd-consumer.northeurope.azurecontainer.io:8181/api/datarequest",
 					"host": [
-						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+						"http://ageramvd-consumer.northeurope.azurecontainer.io:8181"
 					],
 					"path": [
 						"api",
@@ -240,9 +240,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/datarequest/{{processId}}/state",
+					"raw": "http://ageramvd-consumer.northeurope.azurecontainer.io:8181/api/datarequest/{{processId}}/state",
 					"host": [
-						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+						"http://ageramvd-consumer.northeurope.azurecontainer.io:8181"
 					],
 					"path": [
 						"api",
@@ -260,9 +260,9 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/datarequest/{{processId}}",
+					"raw": "http://ageramvd-consumer.northeurope.azurecontainer.io:8181/api/datarequest/{{processId}}",
 					"host": [
-						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+						"http://ageramvd-consumer.northeurope.azurecontainer.io:8181"
 					],
 					"path": [
 						"api",
