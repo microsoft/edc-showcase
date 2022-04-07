@@ -1,0 +1,277 @@
+{
+	"info": {
+		"_postman_id": "160c40e0-3965-463a-b181-4dac23decc18",
+		"name": "MSFT EDC Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health check consumer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/check/health",
+					"host": [
+						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+					],
+					"path": [
+						"api",
+						"check",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Dataspace Catalog",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let responseData=pm.response.text();",
+							"let catalogJson = JSON.parse(responseData);",
+							"for (var i = 0; i < catalogJson.length; i++){",
+							"",
+							"    let offer = catalogJson[i];",
+							"    if(offer.id.startsWith('test-document-az_provider') ){",
+							"        pm.environment.set(\"offerId\", offer.id)",
+							"    }",
+							"",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/catalog/cached",
+					"host": [
+						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+					],
+					"path": [
+						"api",
+						"catalog",
+						"cached"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Negotiate Contract (IDS Multipart)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let responseData=pm.response.text();",
+							"pm.environment.set(\"negotiationId\", responseData)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"connectorAddress\":\"{{provider_url}}/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"offerId\": \"{{offerId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/negotiation",
+					"host": [
+						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+					],
+					"path": [
+						"api",
+						"negotiation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Negotiation State",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let responseData=pm.response.text();",
+							"let json = JSON.parse(responseData);",
+							"pm.environment.set(\"agreementId\", null)",
+							"if(json.contractAgreement !== null)",
+							"    pm.environment.set(\"agreementId\", json.contractAgreement.id)",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"value": "x-edc-showcase-x",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/control/negotiation/{{negotiationId}}",
+					"host": [
+						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+					],
+					"path": [
+						"api",
+						"control",
+						"negotiation",
+						"{{negotiationId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request Data (sync, multipart) Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"{{provider_url}}/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"contractId\": \"{{agreementId}}\",\n    \"assetId\": \"demo-train-data_provider\",\n    \"dataDestination\":{\n        \"type\": \"http\"\n    },\n    \"isSync\": true,\n    \"managedResources\": false,\n    \"properties\":{\n        \"foo\": \"bar\",\n        \"isSync\": true\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/datarequest",
+					"host": [
+						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+					],
+					"path": [
+						"api",
+						"datarequest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request Data (async, multipart)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let responseData=pm.response.text();",
+							"let json = JSON.parse(responseData);",
+							"pm.environment.set(\"processId\", json.content)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"id\": null,\n    \"processId\": null,\n    \"connectorAddress\": \"{{provider_url}}/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\": \"consumer\",\n    \"assetId\": \"test-document-az_provider\",\n    \"contractId\": \"{{agreementId}}\",\n    \"dataDestination\": {\n        \"properties\": {\n            \"container\": \"dst-container\",\n            \"keyName\": \"marcgs1gpstorage-key1\",\n            \"type\": \"AzureStorage\",\n            \"account\": \"marcgs1gpstorage\",\n            \"blobname\": \"received.txt\"\n        },\n        \"keyName\": \"marcgs1gpstorage-key1\",\n        \"type\": \"AzureStorage\"\n    },\n    \"managedResources\": true,\n    \"destinationType\": \"AzureStorage\",\n    \"transferType\": {\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/datarequest",
+					"host": [
+						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+					],
+					"path": [
+						"api",
+						"datarequest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Status of Transfer Process",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/datarequest/{{processId}}/state",
+					"host": [
+						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+					],
+					"path": [
+						"api",
+						"datarequest",
+						"{{processId}}",
+						"state"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deprovision Request",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://marcgs1-consumer.northeurope.azurecontainer.io:8181/api/datarequest/{{processId}}",
+					"host": [
+						"http://marcgs1-consumer.northeurope.azurecontainer.io:8181"
+					],
+					"path": [
+						"api",
+						"datarequest",
+						"{{processId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
