@@ -174,7 +174,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"http://http://ageramvd-provider.northeurope.azurecontainer.io:8282/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"contractId\": \"{{agreementId}}\",\n    \"assetId\": \"demo-train-data_provider\",\n    \"dataDestination\":{\n        \"type\": \"http\"\n    },\n    \"isSync\": true,\n    \"managedResources\": false,\n    \"properties\":{\n        \"foo\": \"bar\",\n        \"isSync\": true\n    }\n}",
+					"raw": "{\n    \"id\": \"412123341234\",\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"connectorAddress\":\"http://ageramvd-provider.northeurope.azurecontainer.io:8282/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\":\"consumer\",\n    \"contractId\": \"{{agreementId}}\",\n    \"assetId\": \"demo-train-data_provider\",\n    \"dataDestination\":{\n        \"type\": \"http\"\n    },\n    \"isSync\": true,\n    \"managedResources\": false,\n    \"properties\":{\n        \"foo\": \"bar\",\n        \"isSync\": true\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -214,7 +214,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"id\": null,\n    \"processId\": null,\n    \"connectorAddress\": \"http://http://ageramvd-provider.northeurope.azurecontainer.io:8282/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\": \"consumer\",\n    \"assetId\": \"test-document-az_provider\",\n    \"contractId\": \"{{agreementId}}\",\n    \"dataDestination\": {\n        \"properties\": {\n            \"container\": \"dst-container\",\n            \"keyName\": \"ageramvdgpstorage-key1\",\n            \"type\": \"AzureStorage\",\n            \"account\": \"ageramvdgpstorage\",\n            \"blobname\": \"received.txt\"\n        },\n        \"keyName\": \"ageramvdgpstorage-key1\",\n        \"type\": \"AzureStorage\"\n    },\n    \"managedResources\": true,\n    \"destinationType\": \"AzureStorage\",\n    \"transferType\": {\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}",
+					"raw": "{\n    \"edctype\": \"dataspaceconnector:datarequest\",\n    \"id\": null,\n    \"processId\": null,\n    \"connectorAddress\": \"http://ageramvd-provider.northeurope.azurecontainer.io:8282/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"connectorId\": \"consumer\",\n    \"assetId\": \"test-document-az_provider\",\n    \"contractId\": \"{{agreementId}}\",\n    \"dataDestination\": {\n        \"properties\": {\n            \"container\": \"dst-container\",\n            \"keyName\": \"ageramvdgpstorage-key1\",\n            \"type\": \"AzureStorage\",\n            \"account\": \"ageramvdgpstorage\",\n            \"blobname\": \"received.txt\"\n        },\n        \"keyName\": \"ageramvdgpstorage-key1\",\n        \"type\": \"AzureStorage\"\n    },\n    \"managedResources\": true,\n    \"destinationType\": \"AzureStorage\",\n    \"transferType\": {\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
