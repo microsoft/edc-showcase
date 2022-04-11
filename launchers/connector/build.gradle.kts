@@ -29,13 +29,14 @@ dependencies {
     implementation("${group}:contractnegotiation-store-memory:${edcversion}")
     implementation("${group}:observability-api:${edcversion}")
     implementation("${group}:control-api:${edcversion}")
-//    implementation("${group}:data-management-api:${edcversion}")
+    implementation("${group}:data-management-api:${edcversion}")
 
     // ids
     implementation("${group}:ids:${edcversion}")
 
     // simple in-memory and filesystem implementations
     implementation("${group}:identity-hub-memory:${edcversion}")
+    implementation("${group}:policy-store-memory:${edcversion}")
     implementation("${group}:did-document-store-memory:${edcversion}")
     implementation("${group}:filesystem-configuration:${edcversion}")
     implementation("${group}:assetindex-cosmos:${edcversion}")

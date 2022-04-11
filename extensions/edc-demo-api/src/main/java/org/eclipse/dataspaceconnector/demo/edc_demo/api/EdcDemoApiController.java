@@ -26,10 +26,10 @@ import org.eclipse.dataspaceconnector.demo.edc_demo.api.dtos.TransferProcessDto;
 import org.eclipse.dataspaceconnector.ids.spi.Protocols;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.contract.negotiation.ConsumerContractNegotiationManager;
-import org.eclipse.dataspaceconnector.spi.contract.negotiation.response.NegotiationResult;
 import org.eclipse.dataspaceconnector.spi.contract.offer.store.ContractDefinitionStore;
 import org.eclipse.dataspaceconnector.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.eclipse.dataspaceconnector.spi.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.transfer.TransferProcessManager;
 import org.eclipse.dataspaceconnector.spi.transfer.store.TransferProcessStore;
 import org.eclipse.dataspaceconnector.spi.types.domain.DataAddress;
@@ -316,7 +316,7 @@ public class EdcDemoApiController {
                 .build();
 
         var negotiationResult = consumerNegotiationManager.initiate(contractOfferRequest);
-        if (negotiationResult.failed() && negotiationResult.getFailure().getStatus() == NegotiationResult.Status.FATAL_ERROR) {
+        if (negotiationResult.failed() && negotiationResult.getFailure().status() == ResponseStatus.FATAL_ERROR) {
             return Response.serverError().build();
         }
 

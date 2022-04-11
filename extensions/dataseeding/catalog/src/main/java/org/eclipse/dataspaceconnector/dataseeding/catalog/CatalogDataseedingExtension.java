@@ -7,11 +7,15 @@ import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
 import org.eclipse.dataspaceconnector.dataloading.AssetLoader;
 import org.eclipse.dataspaceconnector.policy.model.Action;
+import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
+import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
+import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.asset.AssetSelectorExpression;
 import org.eclipse.dataspaceconnector.spi.contract.offer.store.ContractDefinitionStore;
+import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
@@ -22,6 +26,7 @@ import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractDe
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class CatalogDataseedingExtension implements ServiceExtension {
     public static final String USE_EU_POLICY = "use-eu";
@@ -32,10 +37,11 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     private ContractDefinitionStore contractDefinitionStore;
     @Inject
     private FederatedCacheNodeDirectory nodeDirectory;
+    private Monitor monitor;
 
     @Override
     public void initialize(ServiceExtensionContext context) {
-        var monitor = context.getMonitor();
+        monitor = context.getMonitor();
 
         var assets = saveAssets(context.getConnectorId());
         offerAssets(assets);
@@ -49,19 +55,42 @@ public class CatalogDataseedingExtension implements ServiceExtension {
 
         assets.stream().map(a -> ContractDefinition.Builder.newInstance()
                         .id(a.getId())
-                        .accessPolicy(createPolicyFor(a.getId()))
-                        .contractPolicy(createPolicyFor(a.getId()))
+                        .accessPolicy(createAccessPolicy())
+                        .contractPolicy(createContractPolicy())
                         .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals(Asset.PROPERTY_ID, getId(a)).build())
                         .build())
+                .peek(def -> logDefinition(def))
                 .forEach(contractDefinitionStore::save);
 
 
     }
 
-    private Policy createPolicyFor(String assetId) {
+    private void logDefinition(ContractDefinition def) {
+//        monitor.info(String.format("created contract definition: %s, contract policy: %s, access policy: %s", def.getId(), def.getContractPolicy().getUid(), def.getAccessPolicy().getUid()));
+    }
+
+    private Policy createAccessPolicy() {
         return Policy.Builder.newInstance()
+                .id("ap-" + UUID.randomUUID().toString())
                 .permission(Permission.Builder.newInstance()
-                        .target(assetId)
+                        .target("")
+                        .action(Action.Builder.newInstance()
+                                .type("USE")
+                                .build())
+                        .constraint(AtomicConstraint.Builder.newInstance()
+                                .leftExpression(new LiteralExpression("foo"))
+                                .operator(Operator.EQ)
+                                .rightExpression(new LiteralExpression("bar"))
+                                .build())
+                        .build())
+                .build();
+    }
+
+    private Policy createContractPolicy() {
+        return Policy.Builder.newInstance()
+                .id("cp-" + UUID.randomUUID().toString())
+                .permission(Permission.Builder.newInstance()
+                        .target("")
                         .action(Action.Builder.newInstance()
                                 .type("USE")
                                 .build())
