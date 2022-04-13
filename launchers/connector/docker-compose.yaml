@@ -1,0 +1,74 @@
+version: "3.9"
+services:
+  consumer:
+    container_name: consumer
+    build: .
+    ports:
+      - "8181:8181"
+      - "8182:8182"
+      - "8282:8282"
+    environment:
+      - IDS_PORT=8282
+      - DATA_PORT=8182
+      - IDS_ID=urn:connector:consumer
+      - IDS_WEBHOOK_ADDRESS=http://consumer:8282
+      - CLIENTID=85e1ff6d-9e61-4637-8e72-d78184467d74
+      - TENANTID=1d9b26d0-b6ea-4495-97d3-e85ccf73a154
+      - VAULTNAME=edc-showcase-vault
+      - CONNECTOR_NAME=consumer
+      - DID_URL=did:web:edcshowcasegpstorage.z6.web.core.windows.net:consumer
+      - LOADER_BATCH_SIZE=1
+      - DOH_SERVER=https://cloudflare-dns.com/dns-query
+      - COSMOS_ACCOUNT=edc-showcase-cosmos
+      - COSMOS_DB=asset-index
+      - COSMOS_CONTAINER=consumer
+      - COSMOS_PARTKEY=assetIndexPartKey
+      - CDS_DATABASE=contract-definition-store
+      - CDS_CONTAINER=consumer
+      - CNS_DATABASE=contract-negotiation-store
+      - CNS_CONTAINER=consumer
+    volumes:
+      - type: bind
+        source: ../../deployment/
+        target: /cert
+    deploy:
+      resources:
+        reservations:
+          cpus: "6"
+          memory: "8g"
+  provider:
+    container_name: provider
+    build: .
+    ports:
+      - "9191:8181"
+      - "9192:9192"
+      - "9292:9292"
+    environment:
+      - IDS_PORT=9292
+      - DATA_PORT=9192
+      - IDS_ID=urn:connector:provider
+      - IDS_WEBHOOK_ADDRESS=http://provider:9292
+      - CLIENTID=85e1ff6d-9e61-4637-8e72-d78184467d74
+      - TENANTID=1d9b26d0-b6ea-4495-97d3-e85ccf73a154
+      - VAULTNAME=edc-showcase-vault
+      - CONNECTOR_NAME=provider
+      - DID_URL=did:web:edcshowcasegpstorage.z6.web.core.windows.net:provider
+      - LOADER_BATCH_SIZE=1
+      - DOH_SERVER=https://cloudflare-dns.com/dns-query
+      - COSMOS_ACCOUNT=edc-showcase-cosmos
+      - COSMOS_DB=asset-index
+      - COSMOS_CONTAINER=provider
+      - COSMOS_PARTKEY=assetIndexPartKey
+      - CDS_DATABASE=contract-definition-store
+      - CDS_CONTAINER=provider
+      - CNS_DATABASE=contract-negotiation-store
+      - CNS_CONTAINER=provider
+    volumes:
+      - type: bind
+        source: ../../deployment/
+        target: /cert
+    deploy:
+      resources:
+        reservations:
+          cpus: "6"
+          memory: "8g"
