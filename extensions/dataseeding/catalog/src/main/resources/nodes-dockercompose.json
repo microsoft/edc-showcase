@@ -1,0 +1,16 @@
+[
+  {
+    "name": "consumer",
+    "url": "http://consumer:8282",
+    "supportedProtocols": [
+      "ids-multipart"
+    ]
+  },
+  {
+    "name": "provider",
+    "url": "http://provider:9292",
+    "supportedProtocols": [
+      "ids-multipart"
+    ]
+  }
+]

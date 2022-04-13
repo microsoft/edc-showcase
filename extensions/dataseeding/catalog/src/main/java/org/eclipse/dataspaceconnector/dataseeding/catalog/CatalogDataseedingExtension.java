@@ -59,14 +59,9 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                         .contractPolicy(createContractPolicy())
                         .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals(Asset.PROPERTY_ID, getId(a)).build())
                         .build())
-                .peek(def -> logDefinition(def))
                 .forEach(contractDefinitionStore::save);
 
 
-    }
-
-    private void logDefinition(ContractDefinition def) {
-//        monitor.info(String.format("created contract definition: %s, contract policy: %s, access policy: %s", def.getId(), def.getContractPolicy().getUid(), def.getAccessPolicy().getUid()));
     }
 
     private Policy createAccessPolicy() {
