@@ -2,7 +2,9 @@ version: "3.9"
 services:
   consumer:
     container_name: consumer
-    build: .
+    build:
+      context: launchers/connector
+      dockerfile: Dockerfile.compose
     ports:
       - "8181:8181"
       - "8182:8182"
@@ -29,7 +31,7 @@ services:
       - CNS_CONTAINER=consumer
     volumes:
       - type: bind
-        source: ../../deployment/
+        source: ./deployment/
         target: /cert
     deploy:
       resources:
@@ -38,7 +40,9 @@ services:
           memory: "8g"
   provider:
     container_name: provider
-    build: .
+    build:
+      context: launchers/connector
+      dockerfile: Dockerfile.compose
     ports:
       - "9191:8181"
       - "9192:9192"
@@ -65,7 +69,7 @@ services:
       - CNS_CONTAINER=provider
     volumes:
       - type: bind
-        source: ../../deployment/
+        source: ./deployment/
         target: /cert
     deploy:
       resources:
