@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
+import org.eclipse.dataspaceconnector.dataloading.AssetEntry;
 import org.eclipse.dataspaceconnector.dataloading.AssetLoader;
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
@@ -12,11 +13,11 @@ import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
 import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
-import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.EdcSetting;
 import org.eclipse.dataspaceconnector.spi.asset.AssetSelectorExpression;
 import org.eclipse.dataspaceconnector.spi.contract.offer.store.ContractDefinitionStore;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.eclipse.dataspaceconnector.spi.policy.store.PolicyStore;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
@@ -25,9 +26,10 @@ import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractDefinition;
 
 import java.io.InputStream;
-import java.util.Collections;
+import java.security.SecureRandom;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class CatalogDataseedingExtension implements ServiceExtension {
     @EdcSetting
@@ -38,6 +40,8 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     private ContractDefinitionStore contractDefinitionStore;
     @Inject
     private FederatedCacheNodeDirectory nodeDirectory;
+    @Inject
+    private PolicyStore policyStore;
 
     @Override
     public void initialize(ServiceExtensionContext context) {
@@ -46,30 +50,44 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         var nodesFile = context.getSetting(NODES_FILE_SETTING, "nodes.json");
         monitor.info("Using FCC Node directory file " + nodesFile);
 
-        var assets = saveAssets(context.getConnectorId());
-        offerAssets(assets);
-        saveNodeEntries(nodesFile);
+        //generate+save assets
+        var assets = createAssets(context.getConnectorId());
+        assets.forEach(assetIndexLoader::accept);
+
+        // generate+save policies
+        var accessPolicies = IntStream.range(0, 10).mapToObj(i -> createAccessPolicy("edc-demo-access-policy-" + i)).peek(policyStore::save).collect(Collectors.toList());
+        var contractPolicies = IntStream.range(0, 10).mapToObj(i -> createContractPolicy("edc-demo-contract-policy-" + i)).peek(policyStore::save).collect(Collectors.toList());
+
+        //publish asset
+        assets.stream().map(AssetEntry::getAsset)
+                .forEach(a -> publishAsset(a, random(accessPolicies), random(contractPolicies)));
+
+        // populate node directory
+        var nodes = readNodesFromJson(nodesFile);
+        nodes.forEach(nodeDirectory::insert);
 
         monitor.info("Catalog Data seeding done");
     }
 
-    public void offerAssets(List<Asset> assets) {
-
-
-        assets.stream().map(a -> ContractDefinition.Builder.newInstance()
-                        .id(a.getId())
-                        .accessPolicy(createAccessPolicy())
-                        .contractPolicy(createContractPolicy())
-                        .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals(Asset.PROPERTY_ID, getId(a)).build())
-                        .build())
-                .forEach(contractDefinitionStore::save);
-
-
+    public void publishAsset(Asset asset, Policy accessPolicy, Policy contractPolicy) {
+        var cdef = ContractDefinition.Builder.newInstance()
+                .id(asset.getId())
+                .accessPolicy(accessPolicy)
+                .contractPolicy(contractPolicy)
+                .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals(Asset.PROPERTY_ID, asset.getId()).build())
+                .build();
+        contractDefinitionStore.save(cdef);
     }
 
-    private Policy createAccessPolicy() {
+    private <T> T random(List<T> items) {
+        var random = new SecureRandom();
+        var rnd = random.nextInt(items.size());
+        return items.get(rnd);
+    }
+
+    private Policy createAccessPolicy(String id) {
         return Policy.Builder.newInstance()
-                .id("ap-" + UUID.randomUUID().toString())
+                .id(id)
                 .permission(Permission.Builder.newInstance()
                         .target("")
                         .action(Action.Builder.newInstance()
@@ -84,9 +102,9 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .build();
     }
 
-    private Policy createContractPolicy() {
+    private Policy createContractPolicy(String id) {
         return Policy.Builder.newInstance()
-                .id("cp-" + UUID.randomUUID().toString())
+                .id(id)
                 .permission(Permission.Builder.newInstance()
                         .target("")
                         .action(Action.Builder.newInstance()
@@ -96,15 +114,6 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .build();
     }
 
-    private String getId(Asset a) {
-        return a.getId();
-    }
-
-    private void saveNodeEntries(String nodesFile) {
-
-        var nodes = readNodesFromJson(nodesFile);
-        nodes.forEach(nodeDirectory::insert);
-    }
 
     private List<FederatedCacheNode> readNodesFromJson(String resourceName) {
         try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName)) {
@@ -119,7 +128,7 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         }
     }
 
-    private List<Asset> saveAssets(String connectorId) {
+    private List<AssetEntry> createAssets(String connectorId) {
 
         var asset1 = Asset.Builder.newInstance()
                 .property("type", "file")
@@ -190,17 +199,8 @@ public class CatalogDataseedingExtension implements ServiceExtension {
                 .property("targetUrl", "https://jsonplaceholder.typicode.com/todos/2")
                 .build();
 
-        try {
-            assetIndexLoader.accept(asset1, dataAddress1);
-            assetIndexLoader.accept(asset2, dataAddress2);
-            assetIndexLoader.accept(asset3, dataAddress3);
-            assetIndexLoader.accept(asset4, dataAddress4);
-            assetIndexLoader.accept(asset5, dataAddress5);
-            return List.of(asset1, asset2, asset3, asset4, asset5);
-        } catch (EdcException ex) {
-            ex.printStackTrace();
-        }
-        return Collections.emptyList();
+
+        return List.of(new AssetEntry(asset1, dataAddress1), new AssetEntry(asset2, dataAddress2), new AssetEntry(asset3, dataAddress3), new AssetEntry(asset4, dataAddress4), new AssetEntry(asset5, dataAddress5));
     }
 }
 
