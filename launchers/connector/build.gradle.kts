@@ -19,7 +19,7 @@ dependencies {
     implementation(project(":extensions:dataseeding:hub"))
     implementation(project(":extensions:transfer-azure-s3"))
     implementation(project(":extensions:identity-hub-verifier"))
-    implementation(project(":extensions:edc-demo-api"))
+    implementation(project(":extensions:federated-catalog-api"))
 
     // EDC core dependencies
     implementation("${group}:core:${edcversion}")

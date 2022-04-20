@@ -13,6 +13,7 @@ import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.EdcException;
+import org.eclipse.dataspaceconnector.spi.EdcSetting;
 import org.eclipse.dataspaceconnector.spi.asset.AssetSelectorExpression;
 import org.eclipse.dataspaceconnector.spi.contract.offer.store.ContractDefinitionStore;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -29,23 +30,25 @@ import java.util.List;
 import java.util.UUID;
 
 public class CatalogDataseedingExtension implements ServiceExtension {
-    public static final String USE_EU_POLICY = "use-eu";
-    public static final String USE_US_POLICY = "use-us";
+    @EdcSetting
+    private static final String NODES_FILE_SETTING = "edc.showcase.fcc.nodes.file";
     @Inject
     private AssetLoader assetIndexLoader;
     @Inject
     private ContractDefinitionStore contractDefinitionStore;
     @Inject
     private FederatedCacheNodeDirectory nodeDirectory;
-    private Monitor monitor;
 
     @Override
     public void initialize(ServiceExtensionContext context) {
-        monitor = context.getMonitor();
+        Monitor monitor = context.getMonitor();
+
+        var nodesFile = context.getSetting(NODES_FILE_SETTING, "nodes.json");
+        monitor.info("Using FCC Node directory file " + nodesFile);
 
         var assets = saveAssets(context.getConnectorId());
         offerAssets(assets);
-        saveNodeEntries(context);
+        saveNodeEntries(nodesFile);
 
         monitor.info("Catalog Data seeding done");
     }
@@ -97,9 +100,9 @@ public class CatalogDataseedingExtension implements ServiceExtension {
         return a.getId();
     }
 
-    private void saveNodeEntries(ServiceExtensionContext context) {
+    private void saveNodeEntries(String nodesFile) {
 
-        var nodes = readNodesFromJson("nodes-local.json");
+        var nodes = readNodesFromJson(nodesFile);
         nodes.forEach(nodeDirectory::insert);
     }
 

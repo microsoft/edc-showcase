@@ -46,4 +46,5 @@ ENTRYPOINT java \
     -Dedc.contractnegotiationstore.cosmos.account-name=${COSMOS_ACCOUNT} \
     -Dedc.contractnegotiationstore.cosmos.database-name=${CNS_DATABASE} \
     -Dedc.contractnegotiationstore.cosmos.container-name=${CNS_CONTAINER} \
+    -Dedc.showcase.fcc.nodes.file=nodes.json \
     -Djava.security.edg=file:/dev/.urandom -jar connector.jar
