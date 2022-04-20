@@ -23,6 +23,7 @@ ENTRYPOINT java \
     -Dedc.api.control.auth.apikey.value=x-edc-showcase-x \
     -Dedc.api.auth.key=x-edc-showcase-x \
     -Dedc.web.rest.cors.enabled=true \
+    -Dedc.web.rest.cors.headers=origin,content-type,accept,authorization,x-api-key \
     -Dedc.vault.clientid=${CLIENTID} \
     -Dedc.vault.tenantid=${TENANTID} \
     -Dedc.vault.certificate=/cert/cert.pfx \
