@@ -30,6 +30,7 @@ dependencies {
     implementation("${group}:observability-api:${edcversion}")
     implementation("${group}:control-api:${edcversion}")
     implementation("${group}:data-management-api:${edcversion}")
+    implementation("${group}:auth-tokenbased:${edcversion}")
 
     // ids
     implementation("${group}:ids:${edcversion}")
