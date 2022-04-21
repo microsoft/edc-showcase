@@ -72,8 +72,8 @@ public class CatalogDataseedingExtension implements ServiceExtension {
     public void publishAsset(Asset asset, Policy accessPolicy, Policy contractPolicy) {
         var cdef = ContractDefinition.Builder.newInstance()
                 .id(asset.getId())
-                .accessPolicy(accessPolicy)
-                .contractPolicy(contractPolicy)
+                .accessPolicyId(accessPolicy.getUid())
+                .contractPolicyId(contractPolicy.getUid())
                 .selectorExpression(AssetSelectorExpression.Builder.newInstance().whenEquals(Asset.PROPERTY_ID, asset.getId()).build())
                 .build();
         contractDefinitionStore.save(cdef);
