@@ -20,7 +20,7 @@ public class FederatedCatalogApiExtension implements ServiceExtension {
         var monitor = context.getMonitor();
 
         var controller = new FederatedCatalogApiController(monitor, catalogQueryEngine);
-        webService.registerResource(controller);
+        webService.registerResource("data", controller);
 
     }
 
