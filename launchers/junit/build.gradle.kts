@@ -16,10 +16,6 @@ dependencies {
 
     testImplementation("${group}:spi:${edcversion}")
     testImplementation("${group}:core.transfer:${edcversion}")
-    testImplementation("${group}:transfer-process-store-memory:${edcversion}")
-    testImplementation("${group}:policy-registry-memory:${edcversion}")
-    testImplementation("${group}:in-memory.metadata:${edcversion}")
-    testImplementation("${group}:in-memory.identity-hub:${edcversion}")
     testImplementation("${group}:ion.ion-core:${edcversion}")
     testImplementation("${group}:ion.ion-client:${edcversion}")
 

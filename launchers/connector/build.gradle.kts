@@ -23,10 +23,8 @@ dependencies {
 
     // EDC core dependencies
     implementation("${group}:core:${edcversion}")
-    implementation("${group}:transfer-process-store-memory:${edcversion}")
     implementation("${group}:contract-definition-store-cosmos:${edcversion}")
 //    implementation("${group}:contract-negotiation-store-cosmos:${edcversion}")
-    implementation("${group}:contractnegotiation-store-memory:${edcversion}")
     implementation("${group}:observability-api:${edcversion}")
     implementation("${group}:control-api:${edcversion}")
     implementation("${group}:data-management-api:${edcversion}")
@@ -36,9 +34,6 @@ dependencies {
     implementation("${group}:ids:${edcversion}")
 
     // simple in-memory and filesystem implementations
-    implementation("${group}:identity-hub-memory:${edcversion}")
-    implementation("${group}:policy-store-memory:${edcversion}")
-    implementation("${group}:did-document-store-memory:${edcversion}")
     implementation("${group}:filesystem-configuration:${edcversion}")
     implementation("${group}:assetindex-cosmos:${edcversion}")
     implementation("${group}:contract-definition-store-cosmos:${edcversion}")
@@ -56,8 +51,6 @@ dependencies {
 
     // embed an FCC into the runtime
     implementation("${group}:catalog:${edcversion}")
-    implementation("${group}:catalog-node-directory-memory:${edcversion}")
-    implementation("${group}:catalog-cache-store-memory:${edcversion}")
 
 }
 
