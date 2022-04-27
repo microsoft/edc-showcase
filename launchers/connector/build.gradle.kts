@@ -55,8 +55,7 @@ dependencies {
     implementation("${group}:identity-did-service:${edcversion}")
 
     // embed an FCC into the runtime
-    implementation("${group}:catalog-spi:${edcversion}")
-    implementation("${group}:catalog-cache:${edcversion}")
+    implementation("${group}:catalog:${edcversion}")
     implementation("${group}:catalog-node-directory-memory:${edcversion}")
     implementation("${group}:catalog-cache-store-memory:${edcversion}")
 
