@@ -45,4 +45,5 @@ ENTRYPOINT java \
     -Dedc.contractnegotiationstore.cosmos.database-name=${CNS_DATABASE} \
     -Dedc.contractnegotiationstore.cosmos.container-name=${CNS_CONTAINER} \
     -Dedc.showcase.fcc.nodes.file=nodes-dockercompose.json \
+    -Dedc.catalog.cache.execution.delay-seconds=1 \
     -Djava.security.edg=file:/dev/.urandom -jar connector.jar
