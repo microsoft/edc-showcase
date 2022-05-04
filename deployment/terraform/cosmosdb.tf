@@ -36,7 +36,7 @@ resource "azurerm_cosmosdb_sql_container" "consumer-assetindex-container" {
   resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
   account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
   database_name         = azurerm_cosmosdb_sql_database.asset-index-db.name
-  partition_key_path    = "/partkey"
+  partition_key_path    = "/partitionKey"
   partition_key_version = 1
   throughput            = 400
 
@@ -64,7 +64,7 @@ resource "azurerm_cosmosdb_sql_container" "provider-assetindex-container" {
   resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
   account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
   database_name         = azurerm_cosmosdb_sql_database.asset-index-db.name
-  partition_key_path    = "/${var.asset-index-partkey}"
+  partition_key_path    = "/partitionKey"
   partition_key_version = 1
   throughput            = 400
 
@@ -100,7 +100,7 @@ resource "azurerm_cosmosdb_sql_container" "consumer-contractdefstore-container" 
   resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
   account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
   database_name         = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
-  partition_key_path    = "/partkey"
+  partition_key_path    = "/partitionKey"
   partition_key_version = 1
   throughput            = 400
 
@@ -128,7 +128,7 @@ resource "azurerm_cosmosdb_sql_container" "provider-contractdefstore-container" 
   resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
   account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
   database_name         = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
-  partition_key_path    = "/${var.asset-index-partkey}"
+  partition_key_path    = "/partitionKey"
   partition_key_version = 1
   throughput            = 400
 
@@ -164,7 +164,7 @@ resource "azurerm_cosmosdb_sql_container" "consumer-contractnegotiation-containe
   resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
   account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
   database_name         = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
-  partition_key_path    = "/partkey"
+  partition_key_path    = "/partitionKey"
   partition_key_version = 1
   throughput            = 400
 
@@ -192,7 +192,7 @@ resource "azurerm_cosmosdb_sql_container" "provider-contractnegotiation-containe
   resource_group_name   = azurerm_cosmosdb_account.showcase-cosmos-account.resource_group_name
   account_name          = azurerm_cosmosdb_account.showcase-cosmos-account.name
   database_name         = azurerm_cosmosdb_sql_database.contractnegotiation-store-db.name
-  partition_key_path    = "/partkey"
+  partition_key_path    = "/partitionKey"
   partition_key_version = 1
   throughput            = 400
 

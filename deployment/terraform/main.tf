@@ -196,7 +196,7 @@ resource "azurerm_container_group" "provider-connector" {
       DOH_SERVER          = "https://cloudflare-dns.com/dns-query"
       COSMOS_ACCOUNT      = azurerm_cosmosdb_account.showcase-cosmos-account.name
       COSMOS_DB           = azurerm_cosmosdb_sql_database.asset-index-db.name
-      COSMOS_PARTKEY      = azurerm_cosmosdb_sql_container.provider-assetindex-container.partition_key_path
+      COSMOS_PARTKEY      = "edcpartkeyprov"
       COSMOS_CONTAINER    = azurerm_cosmosdb_sql_container.provider-assetindex-container.name
 
       CDS_DATABASE  = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
@@ -254,7 +254,7 @@ resource "azurerm_container_group" "consumer-connector" {
       LOADER_BATCH_SIZE   = 2
       COSMOS_ACCOUNT      = azurerm_cosmosdb_account.showcase-cosmos-account.name
       COSMOS_DB           = azurerm_cosmosdb_sql_database.asset-index-db.name
-      COSMOS_PARTKEY      = azurerm_cosmosdb_sql_container.consumer-assetindex-container.partition_key_path
+      COSMOS_PARTKEY      = "edcpartkeycons"
       COSMOS_CONTAINER    = azurerm_cosmosdb_sql_container.consumer-assetindex-container.name
 
       CDS_DATABASE  = azurerm_cosmosdb_sql_database.contractdefinition-store-db.name
