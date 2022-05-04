@@ -24,7 +24,7 @@ services:
       - COSMOS_ACCOUNT=edc-showcase-cosmos
       - COSMOS_DB=asset-index
       - COSMOS_CONTAINER=consumer
-      - COSMOS_PARTKEY=assetIndexPartKey
+      - COSMOS_PARTKEY=edcpartkeycons
       - CDS_DATABASE=contract-definition-store
       - CDS_CONTAINER=consumer
       - CNS_DATABASE=contract-negotiation-store
@@ -62,7 +62,7 @@ services:
       - COSMOS_ACCOUNT=edc-showcase-cosmos
       - COSMOS_DB=asset-index
       - COSMOS_CONTAINER=provider
-      - COSMOS_PARTKEY=assetIndexPartKey
+      - COSMOS_PARTKEY=edcpartkeyprov
       - CDS_DATABASE=contract-definition-store
       - CDS_CONTAINER=provider
       - CNS_DATABASE=contract-negotiation-store

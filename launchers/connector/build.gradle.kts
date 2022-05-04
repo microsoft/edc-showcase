@@ -37,6 +37,7 @@ dependencies {
     implementation("${group}:filesystem-configuration:${edcversion}")
     implementation("${group}:assetindex-cosmos:${edcversion}")
     implementation("${group}:contract-definition-store-cosmos:${edcversion}")
+    implementation("${group}:contract-negotiation-store-cosmos:${edcversion}")
 
     //cloud stuff
     implementation("${group}:azure-vault:${edcversion}")
