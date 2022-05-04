@@ -33,6 +33,7 @@ ENTRYPOINT java \
     -Dedc.events.topic.endpoint=${TOPIC_ENDPOINT} \
     -Dedc.identity.did.url=${DID_URL} \
     -Dedc.catalog.cache.loader.batch.size=${LOADER_BATCH_SIZE} \
+    -Dedc.catalog.cache.execution.delay.seconds=2 \
     -Dedc.webdid.doh.url=${DOH_SERVER} \
     -Dedc.assetindex.cosmos.account-name=${COSMOS_ACCOUNT}  \
     -Dedc.assetindex.cosmos.database-name=${COSMOS_DB} \
